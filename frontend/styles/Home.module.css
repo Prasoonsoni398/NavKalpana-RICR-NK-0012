@@ -1,0 +1,56 @@
+/* src/styles/Home.module.css */
+
+.heroWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px;
+  background-color: var(--bg-white);
+}
+
+.title {
+  font-size: 3.5rem;
+  color: var(--primary-green);
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  max-width: 700px;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 15px;
+}
+
+.primaryBtn {
+  background-color: var(--primary-green);
+  color: #ffffff;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.primaryBtn:hover {
+  opacity: 0.9;
+}
+
+.secondaryBtn {
+  background-color: transparent;
+  color: var(--primary-green);
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: 2px solid var(--primary-green);
+  cursor: pointer;
+}
