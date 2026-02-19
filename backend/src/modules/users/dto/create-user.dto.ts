@@ -1,22 +1,48 @@
-import { IsEmail, IsEnum, IsOptional, IsString, IsBoolean } from 'class-validator';
-import { UserRole } from '../../../common/entities/user.entity';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  IsBoolean,
+  Length,
+  IsNotEmpty,
+} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateUserDto {
+  @ApiProperty({
+    example: 'John Doe',
+    description: 'Full name of the user',
+  })
   @IsString()
+  @IsNotEmpty()
+  @Length(1, 255)
   name: string;
 
+  @ApiProperty({
+    example: 'john@example.com',
+    description: 'Unique email address of the user',
+  })
   @IsEmail()
+  @IsNotEmpty()
+  @Length(1, 255)
   email: string;
 
-  @IsEnum(UserRole)
-  @IsOptional()
-  role?: UserRole = UserRole.STUDENT;
+  
 
+  @ApiPropertyOptional({
+    example: 'https://example.com/profile.jpg',
+    description: 'Profile image URL',
+  })
   @IsString()
   @IsOptional()
-  profile_image?: string | null;
+  profileImage?: string | null;
 
+  @ApiPropertyOptional({
+    example: true,
+    description: 'Whether the user is active',
+    default: true,
+  })
   @IsBoolean()
   @IsOptional()
-  is_active?: boolean = true;
+  isActive?: boolean;
 }

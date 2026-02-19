@@ -2,9 +2,50 @@
 
 import { useState } from 'react';
 import styles from '@/styles/Auth.module.css';
+import { authService } from '@/services/auth.services';
+import { StudentSignupRequest } from '@/models/auth.model';
 
 export default function StudentAuth() {
   const [isLogin, setIsLogin] = useState(true);
+  const [form, setForm] = useState<StudentSignupRequest>({
+    name: '',
+    email: '',
+    password: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+
+  // Handle input change dynamically
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submit
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setMessage('');
+    setLoading(true);
+
+    try {
+      if (isLogin) {
+        // Call login API (to implement later)
+        // const res = await authService.userLogin({ email: form.email, password: form.password });
+        setMessage('Login functionality coming soon!');
+      } else {
+        // Call signup API
+        const res = await authService.userSignup(form);
+        setMessage(res.message || 'OTP sent to your email!');
+        setForm({ name: '', email: '', password: '' }); // reset form
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Something went wrong!');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.authWrapper}>
@@ -15,12 +56,14 @@ export default function StudentAuth() {
         <div className={styles.toggleContainer}>
           <div className={`${styles.toggleSlider} ${!isLogin ? styles.sliderRight : ''}`}></div>
           <button 
+            type="button"
             className={`${styles.toggleBtn} ${isLogin ? styles.activeToggle : ''}`} 
             onClick={() => setIsLogin(true)}
           >
             Login
           </button>
           <button 
+            type="button"
             className={`${styles.toggleBtn} ${!isLogin ? styles.activeToggle : ''}`} 
             onClick={() => setIsLogin(false)}
           >
@@ -28,24 +71,49 @@ export default function StudentAuth() {
           </button>
         </div>
 
+        {/* Error / Message */}
+        {error && <p className={styles.errorMsg}>{error}</p>}
+        {message && <p className={styles.successMsg}>{message}</p>}
+
         {/* Form Content */}
-        <form>
+        <form onSubmit={handleSubmit}>
           {!isLogin && (
             <div className={styles.formGroup}>
               <label>Full Name</label>
-              <input type="text" placeholder="Enter your name" required />
+              <input
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Enter your name"
+                required
+              />
             </div>
           )}
           <div className={styles.formGroup}>
             <label>Email Address</label>
-            <input type="email" placeholder="Enter email" required />
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="Enter email"
+              required
+            />
           </div>
           <div className={styles.formGroup}>
             <label>Password</label>
-            <input type="password" placeholder="Enter password" required />
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="Enter password"
+              required
+            />
           </div>
-          <button type="submit" className={styles.loginBtn}>
-            {isLogin ? 'Login to Account' : 'Create Account'}
+          <button type="submit" className={styles.loginBtn} disabled={loading}>
+            {loading ? 'Please wait...' : isLogin ? 'Login to Account' : 'Create Account'}
           </button>
         </form>
 

@@ -17,54 +17,163 @@ export class MailService {
     });
   }
 
-  async sendOtpEmail(to: string, otp: string) {
+async sendOtpEmail(to: string, otp: string) {
   await this.mailer.sendMail({
     to,
-    subject: 'Password Reset OTP',
+    subject: 'Your OTP for RENS Account',
     html: `
-      <p>Your password reset OTP is:</p>
-      <h2>${otp}</h2>
-      <p>This OTP is valid for 10 minutes.</p>
-    `,
-  });
-}
-
-async sendOtpAndResetLink(
-  to: string,
-  otp: string,
-  resetLink: string
-) {
-  await this.mailer.sendMail({
-    to,
-    subject: 'Reset Your Password | RENS',
-    html: `
-     <table width="100%" cellpadding="0" cellspacing="0" style="
-  background: linear-gradient(135deg, #eef2f7, #f9fbfd);
-  padding: 30px;
-  font-family: Segoe UI, Arial, Helvetica, sans-serif;
+<table width="100%" cellpadding="0" cellspacing="0" style="
+  background: linear-gradient(135deg, #E4F1FF, #AED2FF);
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
 ">
   <tr>
     <td align="center">
+
+      <!-- Main Card -->
       <table width="600" cellpadding="0" cellspacing="0" style="
-        background-color:#ffffff;
-        padding:35px;
-        border-radius:12px;
-        box-shadow:0 8px 24px rgba(0,0,0,0.08);
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 12px 32px rgba(0,0,0,0.08);
       ">
 
         <!-- Logo -->
         <tr>
+          <td align="center" style="padding-bottom: 20px;">
+            <img src="https://yourdomain.com/assets/logo.png" alt="RENS Logo" width="120" style="display:block;" />
+          </td>
         </tr>
 
         <!-- Header -->
         <tr>
           <td align="center">
             <h1 style="
-              color:#1f2937;
-              font-size:24px;
-              margin:0 0 10px 0;
+              color: #27005D;
+              font-size: 26px;
+              font-weight: 700;
+              margin: 0 0 10px 0;
             ">
-              Password Reset Request
+              Your One-Time Password (OTP)
+            </h1>
+          </td>
+        </tr>
+
+        <tr>
+          <td align="center" style="
+            color: #4b5563;
+            font-size: 15px;
+            padding-bottom: 30px;
+          ">
+            Use the OTP below to verify your RENS account. It is valid for <strong>10 minutes</strong>.
+          </td>
+        </tr>
+
+        <!-- OTP Box -->
+        <tr>
+          <td align="center" style="
+            background: linear-gradient(135deg, #AED2FF, #E4F1FF);
+            border-radius: 12px;
+            padding: 22px;
+            border: 2px dashed #9400FF;
+          ">
+            <div style="
+              font-size: 36px;
+              font-weight: 700;
+              letter-spacing: 6px;
+              color: #9400FF;
+              margin: 12px 0 8px 0;
+            ">
+              ${otp}
+            </div>
+          </td>
+        </tr>
+
+        <!-- Divider -->
+        <tr>
+          <td align="center" style="
+            padding: 28px 0;
+            color: #27005D;
+            font-size: 14px;
+            font-weight: bold;
+          ">
+            — OR —
+          </td>
+        </tr>
+
+        <!-- Optional Button (like confirm account) -->
+        <tr>
+          <td align="center">
+            <a href="https://yourdomain.com/verify-otp?email=${to}&otp=${otp}" style="
+              display: inline-block;
+              padding: 18px 36px;
+              background: linear-gradient(135deg, #9400FF, #27005D);
+              color: #ffffff;
+              text-decoration: none;
+              border-radius: 50px;
+              font-size: 16px;
+              font-weight: 600;
+              transition: all 0.3s ease;
+            " onmouseover="this.style.background='linear-gradient(135deg, #27005D, #9400FF)'">
+              🔑 Verify OTP
+            </a>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td align="center" style="
+            padding-top: 28px;
+            font-size: 11px;
+            color: #27005D;
+          ">
+            © ${new Date().getFullYear()} RENS. All rights reserved.
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+    `,
+  });
+}
+
+
+async sendOtpAndResetLink(
+  to: string,
+  otp: string,
+  resetLink: string
+) {
+await this.mailer.sendMail({
+  to,
+  subject: 'Reset Your Password | RENS',
+  html: `
+<table width="100%" cellpadding="0" cellspacing="0" style="
+  background: linear-gradient(135deg, #E4F1FF, #AED2FF);
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+">
+  <tr>
+    <td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="
+        background-color:#ffffff;
+        padding:40px;
+        border-radius:16px;
+        box-shadow:0 12px 32px rgba(0,0,0,0.08);
+      ">
+
+        <!-- Header -->
+        <tr>
+          <td align="center">
+            <h1 style="
+              color:#27005D;
+              font-size:26px;
+              margin:0 0 10px 0;
+              font-weight:700;
+            ">
+              Reset Your Password
             </h1>
           </td>
         </tr>
@@ -75,33 +184,33 @@ async sendOtpAndResetLink(
             font-size:15px;
             padding-bottom:30px;
           ">
-            You requested to reset your RENS account password.
+            We received a request to reset your RENS account password.
           </td>
         </tr>
 
-        <!-- OTP -->
+        <!-- OTP Box -->
         <tr>
           <td align="center" style="
-            background-color:#f1f5ff;
-            border:1px dashed #007bff;
-            border-radius:10px;
-            padding:18px;
+            background: linear-gradient(135deg, #AED2FF, #E4F1FF);
+            border-radius:12px;
+            padding:22px;
+            border:2px dashed #9400FF;
           ">
-            <p style="margin:0 0 8px 0; font-size:14px; color:#374151;">
+            <p style="margin:0 0 6px 0; font-size:14px; color:#27005D; font-weight:600;">
               Your One-Time Password (OTP)
             </p>
 
             <div style="
-              font-size:32px;
-              font-weight:600;
+              font-size:36px;
+              font-weight:700;
               letter-spacing:6px;
-              color:#007bff;
-              margin:10px 0;
+              color:#9400FF;
+              margin:12px 0 8px 0;
             ">
               ${otp}
             </div>
 
-            <p style="margin:0; font-size:13px; color:#6b7280;">
+            <p style="margin:0; font-size:13px; color:#27005D;">
               ⏱ Valid for <strong>10 minutes</strong>
             </p>
           </td>
@@ -110,35 +219,36 @@ async sendOtpAndResetLink(
         <!-- Divider -->
         <tr>
           <td align="center" style="
-            padding:25px 0;
-            color:#9ca3af;
-            font-size:13px;
+            padding:28px 0;
+            color:#27005D;
+            font-size:14px;
             font-weight:bold;
           ">
             — OR —
           </td>
         </tr>
 
-        <!-- Button -->
+        <!-- Reset Button -->
         <tr>
           <td align="center">
             <a href="${resetLink}" style="
               display:inline-block;
-              padding:16px 30px;
-              background:#007bff;
+              padding:18px 36px;
+              background: linear-gradient(135deg, #9400FF, #27005D);
               color:#ffffff;
               text-decoration:none;
               border-radius:50px;
-              font-size:15px;
+              font-size:16px;
               font-weight:600;
-            ">
+              transition: all 0.3s ease;
+            " onmouseover="this.style.background='linear-gradient(135deg, #27005D, #9400FF)'">
               🔒 Reset Password
             </a>
 
             <p style="
               margin-top:12px;
               font-size:13px;
-              color:#6b7280;
+              color:#27005D;
             ">
               Link expires in <strong>15 minutes</strong>
             </p>
@@ -148,9 +258,9 @@ async sendOtpAndResetLink(
         <!-- Footer -->
         <tr>
           <td align="center" style="
-            padding-top:25px;
+            padding-top:28px;
             font-size:11px;
-            color:#9ca3af;
+            color:#27005D;
           ">
             © ${new Date().getFullYear()} RENS. All rights reserved.
           </td>
@@ -160,9 +270,9 @@ async sendOtpAndResetLink(
     </td>
   </tr>
 </table>
+  `,
+});
 
-    `,
-  });
 }
 
 

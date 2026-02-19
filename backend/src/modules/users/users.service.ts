@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User, UserRole } from '../../common/entities/user.entity';
+import { User } from '../../common/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -16,8 +16,8 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create({
       ...createUserDto,
-      role: createUserDto.role || UserRole.STUDENT,
-      is_active: createUserDto.is_active ?? true,
+      role:'STUDENT',
+      isActive:true
     });
     return await this.userRepository.save(user);
   }
@@ -45,10 +45,13 @@ export class UsersService {
 
   // Delete a user by ID
   async remove(id: number): Promise<{ deleted: boolean }> {
-    const result = await this.userRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+    const ifUser = await  this.userRepository.findOne({where:{id:id}})
+    if(!ifUser)
+    {
+      throw new NotFoundException(`User with ID ${id} not found`)
     }
+    ifUser.isActive = false
+    await this.userRepository.save(ifUser)
     return { deleted: true };
   }
 }
