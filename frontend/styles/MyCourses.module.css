@@ -1,0 +1,104 @@
+.container {
+  padding: 20px;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  color: #1b5e20;
+  font-size: 1.8rem;
+}
+
+.primaryBtn {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Table Container */
+.tableWrapper {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e8f5e9;
+  overflow-x: auto; /* रिस्पॉन्सिव बनाने के लिए */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.courseTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px; /* टेबल को बहुत छोटा होने से रोकने के लिए */
+}
+
+.courseTable th {
+  background-color: #f1f8e9;
+  color: #2e7d32;
+  text-align: left;
+  padding: 15px;
+  font-weight: 600;
+  border-bottom: 2px solid #e8f5e9;
+}
+
+.courseTable td {
+  padding: 15px;
+  border-bottom: 1px solid #f1f8e9;
+  color: #444;
+  vertical-align: middle;
+}
+
+.titleCell {
+  font-weight: 600;
+  color: #222;
+}
+
+.priceCell {
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+/* Status & Buttons */
+.statusBadge {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.actionCell {
+  display: flex;
+  gap: 10px;
+}
+
+.editBtn {
+  background: none;
+  border: 1px solid #2e7d32;
+  color: #2e7d32;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteBtn {
+  background: none;
+  border: 1px solid #d32f2f;
+  color: #d32f2f;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  background-color: #ffebee;
+}

@@ -1,6 +1,6 @@
 // src/app/page.tsx
 import styles from '@/styles/Home.module.css';
-import CourseCard from '../components/features/CoueseCard';
+import CourseCard from '../components/features/CourseCard';
 
 /**
  * Home Page Component

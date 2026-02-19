@@ -1,4 +1,5 @@
 import styles from "@/styles/CourseCard.module.css";
+import Link from "next/link";
 
 interface CourseCardProps {
     title: string;
@@ -6,7 +7,7 @@ interface CourseCardProps {
     price: string;
 }
 
-export default function CourseCard({ title, category, price }: CourseCardProps) {
+export default function CourseCard({ id, title, category, price }: CourseCardProps) {
     return (
         <div className={styles.card}>
             <div className={styles.imagePlaceholder}></div>
@@ -15,7 +16,9 @@ export default function CourseCard({ title, category, price }: CourseCardProps) 
                 <h3 className={styles.coursetitle}>{title}</h3>
                 <div className={styles.footer}>
                     <span className={styles.price}>{price}</span>
-                    <button className={styles.enrollbtn}>Enroll Now</button>
+                    <Link href={`/courses/${id}`}>
+                        <button className={styles.enrollbtn}>Enroll Now</button>
+                    </Link>
                 </div>
             </div>
         </div>
