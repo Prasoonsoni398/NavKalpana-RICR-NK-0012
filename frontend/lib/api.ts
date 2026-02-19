@@ -16,66 +16,66 @@ export const api = axios.create({
 });
 
 // Request Interceptor
-api.interceptors.request.use(
-  (config) => {
-    if (typeof window !== "undefined") {
-      const accessToken = localStorage.getItem("access_token");
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// api.interceptors.request.use(
+//   (config) => {
+//     if (typeof window !== "undefined") {
+//       const accessToken = localStorage.getItem("access_token");
+//       if (accessToken) {
+//         config.headers.Authorization = `Bearer ${accessToken}`;
+//       }
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
 
-// Response Interceptor
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+// // Response Interceptor
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
 
-    if (error.response?.status === 403) {
-     console.log("You are not authorized to access this");
-    }
+//     if (error.response?.status === 403) {
+//      console.log("You are not authorized to access this");
+//     }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
 
-      try {
-        if (typeof window === "undefined") throw error;
+//       try {
+//         if (typeof window === "undefined") throw error;
 
-        const refreshToken = localStorage.getItem("refresh_token");
-        if (!refreshToken) throw new Error("No refresh token");
+//         const refreshToken = localStorage.getItem("refresh_token");
+//         if (!refreshToken) throw new Error("No refresh token");
 
-        const refreshResponse = await axios.post(
-          `${API_URL}/auth/refresh-token`,
-          { refreshToken }
-        );
+//         const refreshResponse = await axios.post(
+//           `${API_URL}/auth/refresh-token`,
+//           { refreshToken }
+//         );
 
-        const { accessToken, refreshToken: newRefreshToken } =
-          refreshResponse.data;
+//         const { accessToken, refreshToken: newRefreshToken } =
+//           refreshResponse.data;
 
-        store.dispatch(
-          setTokens({ accessToken, refreshToken: newRefreshToken })
-        );
+//         store.dispatch(
+//           setTokens({ accessToken, refreshToken: newRefreshToken })
+//         );
 
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return api(originalRequest);
-      } catch (err) {
-        store.dispatch(logout());
+//         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+//         return api(originalRequest);
+//       } catch (err) {
+//         store.dispatch(logout());
 
-        if (typeof window !== "undefined") {
-          window.location.replace("/");
-        }
+//         if (typeof window !== "undefined") {
+//           window.location.replace("/");
+//         }
 
-        return Promise.reject(err);
-      }
-    }
+//         return Promise.reject(err);
+//       }
+//     }
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
 
 // Utility
 export const getImageUrl = (path: string) => `${IMAGE_URL}/${path}`;

@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './common/database/database.module';
 import { MailModule } from './common/config/mail/mail.module';
 import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 import mailConfig from './common/config/mail/mail.config'; // ✅ import the mail config
 
 @Module({
@@ -19,6 +20,7 @@ import mailConfig from './common/config/mail/mail.config'; // ✅ import the mai
     DatabaseModule,
     MailModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
