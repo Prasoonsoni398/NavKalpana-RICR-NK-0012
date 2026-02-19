@@ -1,0 +1,133 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.headerSection {
+  margin-bottom: 30px;
+}
+
+.badge {
+  background-color: #e8f5e9;
+  color: var(--primary-green);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.courseTitle {
+  font-size: 2.5rem;
+  color: #1a1a1a;
+  margin: 15px 0;
+}
+
+.instructor {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+/* Left Side - Main Content */
+.videoPlaceholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.mainContent h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.mainContent p {
+  line-height: 1.7;
+  color: #555;
+}
+
+/* Right Side - Sidebar Card */
+.sidebar {
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.enrollCard {
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+}
+
+.enrollBtn {
+  width: 100%;
+  background-color: var(--primary-green);
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.enrollBtn:hover {
+  background-color: #388E3C;
+  transform: translateY(-2px);
+}
+
+.features {
+  margin-top: 25px;
+  padding: 0;
+  list-style: none;
+}
+
+.features li {
+  margin-bottom: 12px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+
+.features li::before {
+  content: '✓';
+  color: var(--primary-green);
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+  }
+}

@@ -1,0 +1,138 @@
+/* Container जो Sidebar के बगल में रहेगा */
+.container {
+  padding: 40px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Header Section: Title and Add Course Button */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  border-bottom: 2px solid #f1f8e9;
+  padding-bottom: 20px;
+}
+
+.header h1 {
+  color: #1b5e20; /* Professional Green */
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* Statistics Grid: 3 or 4 Cards in a row */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-bottom: 50px;
+}
+
+/* Individual Stat Card */
+.statCard {
+  background: #f9fdf9; /* Very Light Green */
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #c8e6c9;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+}
+
+.statCard span {
+  color: #4caf50;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.statCard h2 {
+  color: #2e7d32;
+  font-size: 32px;
+  margin: 0;
+}
+
+/* Table Section for Courses */
+.tableSection {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tableSection h3 {
+  padding: 20px;
+  background-color: #f1f8e9;
+  margin: 0;
+  color: #1b5e20;
+  font-size: 18px;
+}
+
+.courseTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.courseTable th {
+  background: #f9fdf9;
+  padding: 15px;
+  text-align: left;
+  color: #2e7d32;
+  font-weight: 600;
+  border-bottom: 2px solid #e8f5e9;
+}
+
+.courseTable td {
+  padding: 15px;
+  border-bottom: 1px solid #f1f1f1;
+  color: #444;
+}
+
+/* Status Badge for Table */
+.statusBadge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* Buttons */
+.primaryBtn {
+  background: #2e7d32;
+  color: #ffffff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.primaryBtn:hover {
+  background: #1b5e20;
+}
+
+.editBtn {
+  background: transparent;
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+  padding: 6px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.editBtn:hover {
+  background: #e8f5e9;
+}

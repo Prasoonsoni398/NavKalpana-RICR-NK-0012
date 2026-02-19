@@ -24,8 +24,8 @@ export default function Navbar() {
             <span>▾</span>
           </button>
           <div className={styles.dropdownContent}>
-            <Link href="/auth/student">Student Portal</Link>
-            <Link href="/auth/teacher">Teacher Portal</Link>
+            <Link href="/auth/student-login">Student Portal</Link>
+            <Link href="/auth/teacher-login">Teacher Portal</Link>
             <Link href="/auth/admin-login">Admin Login</Link>
           </div>
         </li>

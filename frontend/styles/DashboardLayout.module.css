@@ -1,0 +1,14 @@
+.layoutWrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.mainContent {
+  flex: 1; /* यह बचा हुआ सारा स्पेस ले लेगा */
+  background-color: #f9fdf9;
+  padding: 20px;
+  /* अगर साइडबार की विड्थ 260px है, तो यह सुनिश्चित करता है कि कंटेंट वहां से शुरू हो */
+  min-width: 0; 
+}

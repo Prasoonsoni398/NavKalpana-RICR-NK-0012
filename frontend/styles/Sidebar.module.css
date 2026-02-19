@@ -1,0 +1,84 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background-color: #ffffff;
+  border-right: 1px solid #e8f5e9;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+}
+
+.logoSection {
+  padding: 30px 20px;
+  border-bottom: 1px solid #f1f8e9;
+}
+
+.logoText {
+  color: #2e7d32;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.logoText span {
+  color: #4caf50;
+}
+
+.navMenu {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menuLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #999;
+  margin: 20px 0 10px 10px;
+  font-weight: 700;
+}
+
+.link, .activeLink {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: #555;
+}
+
+.icon {
+  margin-right: 12px;
+  font-size: 1.1rem;
+}
+
+.link:hover {
+  background-color: #f1f8e9;
+  color: #2e7d32;
+}
+
+.activeLink {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.divider {
+  height: 1px;
+  background-color: #f1f8e9;
+  margin: 20px 0;
+}
+
+.logoutLink {
+  composes: link;
+  margin-top: auto;
+  color: #d32f2f;
+}
+
+.logoutLink:hover {
+  background-color: #ffebee;
+}
