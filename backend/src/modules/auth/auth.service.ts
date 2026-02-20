@@ -27,12 +27,12 @@ export class AuthService {
      private readonly mailService: MailService,
   ) {}
 
-  // 🟢 STUDENT SIGNUP
+  //  STUDENT SIGNUP
   async signupStudent(dto:StudentSignupDto) {
     return this.signup(dto, 'STUDENT');
   }
 
-  // 🟢 TEACHER SIGNUP
+  // TEACHER SIGNUP
   async signupTeacher(dto: TeacherSignupDto) {
     return this.signup(dto, 'TEACHER');
   }
@@ -71,7 +71,6 @@ export class AuthService {
     return { message: `OTP sent to ${role.toLowerCase()} email` };
   }
 
-  // 🟢 VERIFY OTP
   async verifyOtp(dto: VerifyOtpDto) {
     const user = await this.userRepository.findOne({
       where: { email: dto.email },
