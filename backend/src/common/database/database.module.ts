@@ -15,7 +15,6 @@ import { join } from 'path';
       ): Promise<TypeOrmModuleOptions> => {
 
         const isDev = configService.get('NODE_ENV') === 'dev';
-
         return {
           type: 'postgres',
 
@@ -26,14 +25,14 @@ import { join } from 'path';
           database: configService.get('DB_NAME', 'LMS'),
 
           // ✅ CRITICAL FIX
-          synchronize: false,
+          synchronize: true,
 
           // ✅ Much cleaner entity loading
           entities: [
             join(__dirname, '/../entities/*.entity.{js,ts}'),
           ],
 
-          // ✅ Optional but recommended for debugging
+          // Optional but recommended for debugging
           logging: isDev,
 
           ssl: configService.get('NODE_ENV') === 'prod'
