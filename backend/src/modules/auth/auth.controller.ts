@@ -12,6 +12,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiQuery,
+  ApiBody,
 } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -22,6 +23,8 @@ import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginDto } from './dto/login.dto';
 import { RequestOtpDto } from './dto/request-otp.dto';
 import { LoginWithOtpDto } from './dto/login-with-otp.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -53,7 +56,7 @@ export class AuthController {
   @Post('verify-otp')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify email OTP' })
-  @ApiResponse({ status: 200, description: 'Account verified' })
+  @ApiResponse({ status: 200, description: 'Account verified successfully' })
   verifyOtp(@Body() dto: VerifyOtpDto) {
     return this.authService.verifyOtp(dto);
   }
@@ -64,35 +67,19 @@ export class AuthController {
 
   @Post('login/student')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login with email & password' })
-  @ApiQuery({
-    name: 'role',
-    example: 'STUDENT',
-    required: true,
-  })
+  @ApiOperation({ summary: 'Student login with email & password' })
   @ApiResponse({ status: 200, description: 'Login successful' })
-  loginStudent(
-    @Body() dto: LoginDto,
-  ) {
-    return this.authService.loginWithPassword(dto, "STUDENT");
+  loginStudent(@Body() dto: LoginDto) {
+    return this.authService.loginWithPassword(dto, 'STUDENT');
   }
 
-
-    @Post('login/teacher')
+  @Post('login/teacher')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login with email & password' })
-  @ApiQuery({
-    name: 'role',
-    example: 'TEACHER',
-    required: true,
-  })
+  @ApiOperation({ summary: 'Teacher login with email & password' })
   @ApiResponse({ status: 200, description: 'Login successful' })
-  loginTeacher(
-    @Body() dto: LoginDto,
-  ) {
-    return this.authService.loginWithPassword(dto, "TEACHER");
+  loginTeacher(@Body() dto: LoginDto) {
+    return this.authService.loginWithPassword(dto, 'TEACHER');
   }
-
 
   /* =========================================================
      ✅ REQUEST LOGIN OTP
@@ -149,5 +136,37 @@ export class AuthController {
     @Query('role') role: string,
   ) {
     return this.authService.resendOtp(dto.email, role);
+  }
+
+  /* =========================================================
+     ✅ FORGOT PASSWORD
+  ========================================================= */
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request OTP for password reset' })
+  @ApiBody({ type: ForgotPasswordDto })
+  @ApiResponse({
+    status: 200,
+    description: 'OTP sent for password reset',
+  })
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto);
+  }
+
+  /* =========================================================
+     ✅ RESET PASSWORD
+  ========================================================= */
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reset password using OTP' })
+  @ApiBody({ type: ResetPasswordDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset successfully',
+  })
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 }

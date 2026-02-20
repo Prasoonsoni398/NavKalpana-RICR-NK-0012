@@ -12,7 +12,10 @@ import * as bcrypt from 'bcrypt';
 import { generateToken } from '../../utils/jwt.util';
 import { User } from '../../common/entities/user.entity';
 import { Otp } from '../../common/entities/otps.entity';
-import { AuthProvider } from '../../common/entities/auth_providers.entity';
+import {
+  AuthProvider,
+  AuthProviderType,
+} from '../../common/entities/auth_providers.entity';
 
 import { StudentSignupDto } from './dto/student-signup.dto';
 import { TeacherSignupDto } from './dto/teacher-signup.dto';
@@ -22,8 +25,8 @@ import { RequestOtpDto } from './dto/request-otp.dto';
 import { LoginWithOtpDto } from './dto/login-with-otp.dto';
 import { OtpPurpose } from 'src/common/enums/otp-purpose.enum';
 import { MailService } from '../../common/config/mail/mail.service';
-
-
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -71,11 +74,12 @@ export class AuthService {
       isVerified: false,
     });
 
-    // Store password in provider table (GOOD ARCHITECTURE ✅)
+    // ✅ Store password in auth_providers table
     await this.authProviderRepository.save({
       user,
-      provider: 'LOCAL',
+      provider: AuthProviderType.LOCAL,
       passwordHash: hashedPassword,
+      providerUserId: null,
     });
 
     return this.sendOtp(user, OtpPurpose.EMAIL_VERIFICATION);
@@ -110,7 +114,6 @@ export class AuthService {
 
     user.isActive = true;
     user.isVerified = true;
-
     await this.userRepository.save(user);
 
     return { message: 'Account verified successfully' };
@@ -126,7 +129,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Invalid email or password');
     }
 
     if (!user.isActive) {
@@ -136,7 +139,7 @@ export class AuthService {
     const provider = await this.authProviderRepository.findOne({
       where: {
         user: { id: user.id },
-        provider: 'LOCAL',
+        provider: AuthProviderType.LOCAL,
       },
     });
 
@@ -150,10 +153,10 @@ export class AuthService {
     );
 
     if (!isMatch) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Invalid email or password');
     }
 
-    const token = generateToken(user);
+    const token = generateToken({id:user.id,role:role});
 
     return {
       message: 'Login successful',
@@ -209,7 +212,7 @@ export class AuthService {
     otp.isUsed = true;
     await this.otpRepository.save(otp);
 
-    const token = generateToken(user);
+    const token = generateToken({id:user.id,role:user.role});
 
     return {
       message: 'Login successful',
@@ -243,6 +246,7 @@ export class AuthService {
   private async sendOtp(user: User, purpose: OtpPurpose) {
     const code = this.generateOtp();
 
+    // Invalidate old OTPs
     await this.otpRepository.update(
       {
         user: { id: user.id },
@@ -269,6 +273,68 @@ export class AuthService {
       message: `OTP sent for ${purpose.toLowerCase()}`,
     };
   }
+
+  async resetPassword(dto: ResetPasswordDto,) {
+  const user = await this.userRepository.findOne({
+    where: { email: dto.email,role:'STUDENT' },
+  });
+
+  if (!user) {
+    throw new NotFoundException('User not found');
+  }
+
+  const otp = await this.otpRepository.findOne({
+    where: {
+      user: { id: user.id },
+      code: dto.code,
+      type: OtpPurpose.FORGOT_PASSWORD,
+      isUsed: false,
+    },
+  });
+
+  if (!otp || otp.expiresAt < new Date()) {
+    throw new BadRequestException('Invalid or expired OTP');
+  }
+
+  otp.isUsed = true;
+  await this.otpRepository.save(otp);
+
+  const provider = await this.authProviderRepository.findOne({
+    where: {
+      user: { id: user.id },
+      provider: AuthProviderType.LOCAL,
+    },
+  });
+
+  if (!provider) {
+    throw new BadRequestException('Password login not available');
+  }
+
+  const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
+
+  provider.passwordHash = hashedPassword;
+  await this.authProviderRepository.save(provider);
+
+  return {
+    message: 'Password reset successfully',
+  };
+}
+
+  async forgotPassword(dto: ForgotPasswordDto) {
+  const user = await this.userRepository.findOne({
+    where: { email: dto.email, role:dto.role },
+  });
+
+  if (!user) {
+    throw new NotFoundException('User not found');
+  }
+
+  if (!user.isActive) {
+    throw new UnauthorizedException('Account not verified');
+  }
+
+  return this.sendOtp(user, OtpPurpose.FORGOT_PASSWORD);
+}
 
   private generateOtp(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
