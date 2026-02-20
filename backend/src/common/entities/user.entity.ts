@@ -8,20 +8,19 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'users' })
-export class User {
-  @PrimaryGeneratedColumn('increment')
-  id: number;;
+@Index(['email', 'role'], { unique: true })
 
- 
+export class User {
+
+  @PrimaryGeneratedColumn('increment')
+  id: number;
+
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
- 
-  @Index({ unique: true })
   @Column({ type: 'varchar', length: 255 })
   email: string;
 
- 
   @Column({
     type: 'varchar',
     length: 50,
@@ -29,22 +28,22 @@ export class User {
   })
   role: string;
 
-  
   @Column({ name: 'profile_image', type: 'text', nullable: true })
   profileImage: string | null;
 
- 
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
- 
+  
+  @Column({ name: 'is_verified', type: 'boolean', default: false })
+  isVerified: boolean;
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',
   })
   createdAt: Date;
 
-  // ✅ Updated At
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamp',
