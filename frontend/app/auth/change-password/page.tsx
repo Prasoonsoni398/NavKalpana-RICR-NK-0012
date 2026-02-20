@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import styles from "@/styles/ResetPassword.module.css";
+import styles from "@/styles/ChangePassword.module.css";
 import { FiEye } from "react-icons/fi";
+import { userService } from "@/services/user.services";
 
-export default function ResetPassword() {
+export default function ChangePassword() {
   const [current, setCurrent] = useState("");
   const [newPass, setNewPass] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -12,6 +13,11 @@ export default function ResetPassword() {
   const [hoverCurrent, setHoverCurrent] = useState(false);
   const [hoverNew, setHoverNew] = useState(false);
   const [hoverConfirm, setHoverConfirm] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  
 
   const validatePassword = (password: string) => {
     const regex =
@@ -24,17 +30,37 @@ export default function ResetPassword() {
     newPass === confirm &&
     current.length > 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ✅ API CALL ADDED HERE
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
 
-    alert("Password updated successfully!");
+    setLoading(true);
+    setError("");
+    setMessage("");
+
+    try {
+      const res = await userService.changepassword({
+        oldpassword: current,
+        newpassword: newPass,
+        confirmpassword:confirm,
+      });
+
+      setMessage(res.message || "Password updated successfully!");
+      setCurrent("");
+      setNewPass("");
+      setConfirm("");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className={styles.container}>
       <form className={styles.form} onSubmit={handleSubmit}>
-        <h2 className={styles.title}>Reset Password</h2>
+        <h2 className={styles.title}>Change Password</h2>
 
         {/* Current Password */}
         <div className={styles.inputWrapper}>
@@ -74,7 +100,6 @@ export default function ResetPassword() {
           </span>
         </div>
 
-        {/* Live Validation */}
         {newPass && !validatePassword(newPass) && (
           <p className={styles.error}>
             Must be 8+ characters, include uppercase, lowercase,
@@ -101,18 +126,23 @@ export default function ResetPassword() {
           </span>
         </div>
 
+
         {confirm && newPass !== confirm && (
           <p className={styles.error}>Passwords do not match</p>
         )}
+
+        {/* API Error / Success Message */}
+        {error && <p className={styles.error}>{error}</p>}
+        {message && <p className={styles.success}>{message}</p>}
 
         <button
           type="submit"
           className={`${styles.button} ${
             !isFormValid ? styles.disabled : ""
           }`}
-          disabled={!isFormValid}
+          disabled={!isFormValid || loading}
         >
-          Save Changes
+          {loading ? "Please wait..." : "Save Changes"}
         </button>
       </form>
     </div>
