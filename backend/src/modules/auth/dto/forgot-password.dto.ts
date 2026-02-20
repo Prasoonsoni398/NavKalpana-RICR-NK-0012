@@ -9,12 +9,4 @@ export class ForgotPasswordDto {
   })
   @IsEmail()
   email: string;
-
-  @ApiProperty({
-    example: UserRole.STUDENT,
-    description: 'Role of the user',
-    enum: UserRole,
-  })
-  @IsEnum(UserRole)
-  role: UserRole;
 }
