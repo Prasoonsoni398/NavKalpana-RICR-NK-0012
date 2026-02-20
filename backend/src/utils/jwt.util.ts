@@ -15,14 +15,10 @@ const JWT_EXPIRES_MOBILE_IN: number =
  */
 export function generateToken(
   payload: object,
-  clientType: string,
   tokenExpiry?: SignOptions['expiresIn'],
 ): string {
   let expiresIn = JWT_EXPIRES_WEB_IN;
 
-  if (clientType === 'mobile') {
-    expiresIn = JWT_EXPIRES_MOBILE_IN;
-  }
 
   const options: SignOptions = {
     expiresIn: expiresIn,
