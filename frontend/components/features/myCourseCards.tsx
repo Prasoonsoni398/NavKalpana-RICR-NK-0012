@@ -3,17 +3,11 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import styles from "@/styles/CourseCard1.module.css";
+import { CourseResponse } from "@/models/course.model";
 
-type Course = {
-    id: number;
-    title: string;
-    instructor: string;
-    image: string;
-    progress: number;
-    description: string;
-};
 
-const CourseCard = ({ course }: { course: Course }) => {
+
+const CourseCard = ({ course }: { course: CourseResponse }) => {
 
     const router = useRouter();
 
@@ -21,9 +15,9 @@ const CourseCard = ({ course }: { course: Course }) => {
 
     useEffect(() => {
         setTimeout(() => {
-            setProgressWidth(course.progress);
+            setProgressWidth(10);
         }, 200);
-    }, [course.progress]);
+    }, [10]);
 
     return (
 
@@ -43,7 +37,7 @@ const CourseCard = ({ course }: { course: Course }) => {
             >
 
                 <img
-                    src={course.image}
+                    src={course.thumbnailUrl || "/default-course.jpg"}
                     alt={course.title}
                     className={styles.image}
                 />
@@ -58,7 +52,7 @@ const CourseCard = ({ course }: { course: Course }) => {
                     </p>
 
                     <p className={styles.instructor}>
-                        Instructor: {course.instructor}
+                        Instructor: {course.instructorName}
                     </p>
 
                     <div className={styles.progressBar}>
@@ -69,7 +63,7 @@ const CourseCard = ({ course }: { course: Course }) => {
                     </div>
 
                     <p className={styles.progressText}>
-                        Progress: {course.progress}%
+                        Progress: {10}%
                     </p>
 
                     <button
