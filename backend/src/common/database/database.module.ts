@@ -2,7 +2,6 @@ import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { readdirSync } from 'fs';
 
 @Global()
 @Module({
@@ -11,25 +10,34 @@ import { readdirSync } from 'fs';
 
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => {
-        const entitiesDir = join(__dirname, '../entities');
-        const entityFiles = readdirSync(entitiesDir).filter(
-          (f) => f.endsWith('.entity.ts') || f.endsWith('.entity.js'),
-        );
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<TypeOrmModuleOptions> => {
 
-        const entities: Function[] = entityFiles
-          .map((f) => require(join(entitiesDir, f)))
-          .map((mod) => Object.values(mod)[0] as Function);
-
+        const isDev = configService.get('NODE_ENV') === 'dev';
         return {
           type: 'postgres',
+
           host: configService.get('DB_HOST', 'localhost'),
           port: Number(configService.get('DB_PORT', 5432)),
           username: configService.get('DB_USER', 'postgres'),
-          password: configService.get('DB_PASSWORD', 'postgres'),
+          password: configService.get('DB_PASS', 'postgres'),
           database: configService.get('DB_NAME', 'LMS'),
-          synchronize: true,  
-          entities,
+
+          // ✅ CRITICAL FIX
+          synchronize: true,
+
+          // ✅ Much cleaner entity loading
+          entities: [
+            join(__dirname, '/../entities/*.entity.{js,ts}'),
+          ],
+
+          // Optional but recommended for debugging
+          logging: isDev,
+
+          ssl: configService.get('NODE_ENV') === 'prod'
+            ? { rejectUnauthorized: false }
+            : undefined,
         };
       },
     }),

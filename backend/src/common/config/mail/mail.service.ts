@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { OtpPurpose } from '../../enums/otp-purpose.enum';
 
 @Injectable()
 export class MailService {
@@ -16,11 +17,39 @@ export class MailService {
       `,
     });
   }
+async sendOtpEmail(
+  to: string,
+  otp: string,
+  purpose: OtpPurpose,
+) {
 
-async sendOtpEmail(to: string, otp: string) {
+  let subject = '';
+  let title = '';
+  let description = '';
+
+  switch (purpose) {
+    case OtpPurpose.EMAIL_VERIFICATION:
+      subject = 'Verify Your RENS Account';
+      title = 'Verify Your Email Address';
+      description = 'Use the OTP below to verify your RENS account.';
+      break;
+
+    case OtpPurpose.LOGIN:
+      subject = 'Your RENS Login OTP';
+      title = 'Login Verification';
+      description = 'Use the OTP below to securely login to your account.';
+      break;
+
+    case OtpPurpose.PASSWORD_RESET:
+      subject = 'Reset Your RENS Password';
+      title = 'Password Reset Request';
+      description = 'Use the OTP below to reset your password.';
+      break;
+  }
+
   await this.mailer.sendMail({
     to,
-    subject: 'Your OTP for RENS Account',
+    subject,
     html: `
 <table width="100%" cellpadding="0" cellspacing="0" style="
   background: linear-gradient(135deg, #E4F1FF, #AED2FF);
@@ -30,7 +59,6 @@ async sendOtpEmail(to: string, otp: string) {
   <tr>
     <td align="center">
 
-      <!-- Main Card -->
       <table width="600" cellpadding="0" cellspacing="0" style="
         background-color: #ffffff;
         padding: 40px;
@@ -38,23 +66,24 @@ async sendOtpEmail(to: string, otp: string) {
         box-shadow: 0 12px 32px rgba(0,0,0,0.08);
       ">
 
-        <!-- Logo -->
         <tr>
           <td align="center" style="padding-bottom: 20px;">
-            <img src="https://yourdomain.com/assets/logo.png" alt="RENS Logo" width="120" style="display:block;" />
+            <img src="https://yourdomain.com/assets/logo.png" 
+                 alt="RENS Logo" 
+                 width="120" 
+                 style="display:block;" />
           </td>
         </tr>
 
-        <!-- Header -->
         <tr>
           <td align="center">
             <h1 style="
               color: #27005D;
-              font-size: 26px;
+              font-size: 24px;
               font-weight: 700;
               margin: 0 0 10px 0;
             ">
-              Your One-Time Password (OTP)
+              ${title}
             </h1>
           </td>
         </tr>
@@ -65,11 +94,12 @@ async sendOtpEmail(to: string, otp: string) {
             font-size: 15px;
             padding-bottom: 30px;
           ">
-            Use the OTP below to verify your RENS account. It is valid for <strong>10 minutes</strong>.
+            ${description}
+            <br />
+            This OTP is valid for <strong>10 minutes</strong>.
           </td>
         </tr>
 
-        <!-- OTP Box -->
         <tr>
           <td align="center" style="
             background: linear-gradient(135deg, #AED2FF, #E4F1FF);
@@ -89,41 +119,36 @@ async sendOtpEmail(to: string, otp: string) {
           </td>
         </tr>
 
-        <!-- Divider -->
         <tr>
           <td align="center" style="
             padding: 28px 0;
             color: #27005D;
-            font-size: 14px;
-            font-weight: bold;
+            font-size: 13px;
           ">
-            — OR —
+            If you did not request this, please ignore this email.
           </td>
         </tr>
 
-        <!-- Optional Button (like confirm account) -->
         <tr>
           <td align="center">
             <a href="https://yourdomain.com/verify-otp?email=${to}&otp=${otp}" style="
               display: inline-block;
-              padding: 18px 36px;
+              padding: 16px 32px;
               background: linear-gradient(135deg, #9400FF, #27005D);
               color: #ffffff;
               text-decoration: none;
               border-radius: 50px;
-              font-size: 16px;
+              font-size: 15px;
               font-weight: 600;
-              transition: all 0.3s ease;
-            " onmouseover="this.style.background='linear-gradient(135deg, #27005D, #9400FF)'">
-              🔑 Verify OTP
+            ">
+              Verify OTP
             </a>
           </td>
         </tr>
 
-        <!-- Footer -->
         <tr>
           <td align="center" style="
-            padding-top: 28px;
+            padding-top: 30px;
             font-size: 11px;
             color: #27005D;
           ">
