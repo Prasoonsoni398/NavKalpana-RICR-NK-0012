@@ -2,12 +2,12 @@
 
 :root {
   /* Green and White Theme Configuration */
-  --primary-green: #2E7D32;
-  --secondary-green: #4CAF50;
-  --bg-white: #FFFFFF;
-  --text-primary: #1B5E20;
-  --text-secondary: #424242;
-  --border-light: #E0E0E0;
+  --primary-green: #6098f1;
+  --secondary-green: rgba(230, 230, 26, 0);
+  --bg-white: #0F172A;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --border-light: #334155;
   --transition-speed: 0.3s;
 }
 

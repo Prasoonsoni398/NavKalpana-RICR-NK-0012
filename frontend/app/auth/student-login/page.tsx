@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from 'react';
-import styles from '@/styles/auth.module.css';
-import { authService } from '@/services/auth.services';
-import { StudentSignupRequest } from '@/models/auth.model';
+import styles from '@/styles/Auth.module.css';
+import { loginUser } from '@/services/auth.services';
+import { TextField } from '@mui/material';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation'; 
 
-export default function StudentAuth() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [form, setForm] = useState<StudentSignupRequest>({
-    name: '',
+export default function StudentLogin() {
+  const router = useRouter(); 
+  const [form, setForm] = useState({
     email: '',
     password: '',
   });
@@ -16,13 +17,11 @@ export default function StudentAuth() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
-  // Handle input change dynamically
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -30,105 +29,116 @@ export default function StudentAuth() {
     setLoading(true);
 
     try {
-      if (isLogin) {
-        // Call login API (to implement later)
-        // const res = await authService.userLogin({ email: form.email, password: form.password });
-        setMessage('Login functionality coming soon!');
+      // 1. API Call
+      const res = await loginUser({ 
+        email: form.email, 
+        password: form.password 
+      });
+
+      const token = res.data?.accessToken|| res.accessToken; 
+      
+      if (token) {
+        localStorage.setItem('studentToken', token); 
+        setMessage('Login successful! Redirecting...');
+        
+        // 3. Redirect to Dashboard
+        setTimeout(() => {
+          router.push('/dashboard/student');
+        }, 1500);
       } else {
-        // Call signup API
-        const res = await authService.userSignup(form);
-        setMessage(res.message || 'OTP sent to your email!');
-        setForm({ name: '', email: '', password: '' }); // reset form
+        throw new Error("Token not received from server");
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Something went wrong!');
+      
+    } catch (err) {
+
+      const errorMessage = err?.response?.data?.message || err.message || 'Invalid email or password!';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={styles.authWrapper}>
-      <div className={styles.authCard}>
-        <h2 className={styles.title}>Student Portal</h2>
-
-        {/* Toggle Switch */}
-        <div className={styles.toggleContainer}>
-          <div className={`${styles.toggleSlider} ${!isLogin ? styles.sliderRight : ''}`}></div>
-          <button 
-            type="button"
-            className={`${styles.toggleBtn} ${isLogin ? styles.activeToggle : ''}`} 
-            onClick={() => setIsLogin(true)}
-          >
-            Login
-          </button>
-          <button 
-            type="button"
-            className={`${styles.toggleBtn} ${!isLogin ? styles.activeToggle : ''}`} 
-            onClick={() => setIsLogin(false)}
-          >
-            Register
-          </button>
+    <div className={styles.authWrapper} style={{ backgroundColor: '#0F172A' }}>
+      <div className={styles.authCard} style={{ backgroundColor: '#1E293B' }}>
+        <div className={styles.headerSection}>
+          <h2 className={styles.title} style={{ color: '#E2E8F0' }}>Student Login</h2>
+          <p className={styles.subtitle} style={{ color: '#94A3B8' }}>Welcome back! Please enter your details.</p>
         </div>
 
-        {/* Error / Message */}
-        {error && <p className={styles.errorMsg}>{error}</p>}
-        {message && <p className={styles.successMsg}>{message}</p>}
+        {error && <p className={styles.errorMsg} style={{ color: '#EF4444' }}>{error}</p>}
+        {message && <p className={styles.successMsg} style={{ color: '#22C55E' }}>{message}</p>}
 
-        {/* Form Content */}
-        <form onSubmit={handleSubmit}>
-          {!isLogin && (
-            <div className={styles.formGroup}>
-              <label>Full Name</label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Enter your name"
-                required
-              />
-            </div>
-          )}
+        <form onSubmit={handleSubmit} className={styles.formElement}>
           <div className={styles.formGroup}>
-            <label>Email Address</label>
-            <input
-              type="email"
+            <label style={{ color: '#E2E8F0' }}>Email Address</label>
+            <TextField
               name="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="Enter email"
               required
+              fullWidth
+              type="email"
+              placeholder="name@gmail.com"
+              variant="outlined"
+              sx={muiDarkStyles} 
             />
           </div>
+
           <div className={styles.formGroup}>
-            <label>Password</label>
-            <input
-              type="password"
+            <label style={{ color: '#E2E8F0' }}>Password</label>
+            <TextField
               name="password"
               value={form.password}
               onChange={handleChange}
-              placeholder="Enter password"
+              fullWidth
               required
+              type="password"
+              placeholder="••••••••"
+              variant="outlined"
+              sx={muiDarkStyles}
             />
+            <div className={styles.forgotPass}>
+                <Link href="/auth/forgot-password" style={{ color: '#3B82F6' }}>Forgot password?</Link>
+            </div>
           </div>
-          <button type="submit" className={styles.loginBtn} disabled={loading}>
-            {loading ? 'Please wait...' : isLogin ? 'Login to Account' : 'Create Account'}
+
+          <button 
+            type="submit" 
+            className={styles.loginBtn} 
+            disabled={loading}
+            style={{ backgroundColor: loading ? '#334155' : '#3B82F6' }}
+          >
+            {loading ? 'Logging in...' : 'Sign In'}
           </button>
         </form>
 
-        {/* Google Login Option */}
-        <div className={styles.divider}>OR</div>
+        <div className={styles.divider} style={{ color: '#94A3B8' }}>OR</div>
 
-        <button className={styles.googleBtn}>
-          <img 
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
-            alt="Google" 
-            className={styles.googleIcon} 
+        <button className={styles.googleBtn} type="button" style={{ background: 'white' }}>
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+            className={styles.googleIcon}
           />
-          {isLogin ? 'Sign in with Google' : 'Sign up with Google'}
+          Sign in with Google
         </button>
+
+        <p className={styles.footerText} style={{ color: '#94A3B8' }}>
+          Don't have an account? <Link href="/auth/student-signup" style={{ color: '#3B82F6' }}>Create one</Link>
+        </p>
       </div>
     </div>
   );
 }
+
+
+const muiDarkStyles = {
+  "& .MuiOutlinedInput-root": {
+    color: "#E2E8F0",
+    "& fieldset": { borderColor: "#334155" },
+    "&:hover fieldset": { borderColor: "#3B82F6" },
+    "&.Mui-focused fieldset": { borderColor: "#3B82F6" },
+  },
+  "& .MuiInputBase-input::placeholder": { color: "#94A3B8", opacity: 1 }
+};
