@@ -322,7 +322,7 @@ export class AuthService {
 
   async forgotPassword(dto: ForgotPasswordDto) {
   const user = await this.userRepository.findOne({
-    where: { email: dto.email, role:dto.role },
+    where: { email: dto.email, },
   });
 
   if (!user) {
