@@ -95,6 +95,16 @@ export class UsersService {
       'Password provider not found for this user',
     );
   }
+
+  const isOldPasswordValid = await bcrypt.compare(
+    changePasswordDto.oldPassword,
+    provider.passwordHash,
+  );
+
+  if (!isOldPasswordValid) {
+    throw new BadRequestException('Old password is incorrect');
+  }
+
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   
