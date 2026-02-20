@@ -1,4 +1,4 @@
-import CourseCard from "@/components/features/CourseCard";
+import CourseCard from "@/components/features/myCourseCards";
 
 const MyCourses = () => {
   const courses = [
