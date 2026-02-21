@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import styles from '@/styles/auth.module.css';
+import styles from '@/styles/Auth.module.css';
 import { authService } from '@/services/auth.services';
 import { TextField } from '@mui/material';
 import Link from 'next/link';
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { setTokens, } from '@/redux/globalSlice';
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
+
 
 export default function StudentLogin() {
   const router = useRouter(); 
@@ -63,7 +64,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     toast.success("Welcome 🎉 Login completed successfully!", { id: toastId });
 
     setTimeout(() => {
-      router.push("/student/my-courses");
+      router.push("/student/student-dashboard");
     }, 1000);
 
   } catch (err: any) {

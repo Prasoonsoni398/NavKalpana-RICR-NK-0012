@@ -2,86 +2,84 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "@/styles/Navbar.module.css";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Mock state: In a real app, use your Auth Context here
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [userRole, setUserRole] = useState("student"); // 'student' or 'teacher'
+
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const closeMenu = () => { setMenuOpen(false); setDropdownOpen(false); };
 
   return (
     <nav className={styles.navbar}>
-      {/* Logo */}
-      <Link href="/" className={styles.logo}>
-        EduLeaf
-      </Link>
+      <div className={styles.navContainer}>
+        {/* Logo */}
+        <Link href="/" className={styles.logo} onClick={closeMenu}>
+          Edu<span>Leaf</span>
+        </Link>
 
-      {/* Hamburger Button */}
-      <button
-        className={styles.menuToggle}
-        onClick={() => setMenuOpen(!menuOpen)}
-      >
-        ☰
-      </button>
+        {/* Desktop Navigation */}
+        <ul className={`${styles.navLinks} ${menuOpen ? styles.active : ""}`}>
+          <li><Link href="/" className={pathname === "/" ? styles.activeLink : ""}>Home</Link></li>
+          <li><Link href="/courses" className={pathname === "/courses" ? styles.activeLink : ""}>Courses</Link></li>
+          
+          {isLoggedIn && userRole === "student" && (
+            <li><Link href="/dashboard/student">My Learning</Link></li>
+          )}
 
-      {/* Navigation Links */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.ul
-            key="mobile-menu"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className={`${styles.navLinks} ${
-              menuOpen ? styles.active : ""
-            }`}
-          >
-            <li>
-              <Link href="/">Home</Link>
-            </li>
-            <li>
-              <Link href="/courses">Courses</Link>
-            </li>
-            <li>
-              <Link href="/about">About Us</Link>
-            </li>
-
-            {/* Dropdown */}
-            <li className={styles.dropdown}>
-              <button
-                className={styles.dropbtn}
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                Login / Join <span>▾</span>
+          {/* Dynamic Action Button / Dropdown */}
+          <li className={styles.dropdown}>
+            {isLoggedIn ? (
+              <div className={styles.userProfile} onClick={() => setDropdownOpen(!dropdownOpen)}>
+                <div className={styles.avatar}>{userRole[0].toUpperCase()}</div>
+                <span className={styles.desktopOnly}>Account ▾</span>
+              </div>
+            ) : (
+              <button className={styles.loginBtn} onClick={() => setDropdownOpen(!dropdownOpen)}>
+                Join Now
               </button>
+            )}
 
-              <AnimatePresence>
-                {dropdownOpen && (
-                  <motion.div
-                    key="dropdown"
-                    className={styles.dropdownContent}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Link href="/auth/student-login">
-                      Student Portal
-                    </Link>
-                    <Link href="/auth/teacher-login">
-                      Teacher Portal
-                    </Link>
-                    <Link href="/auth/admin-login">
-                      Admin Login
-                    </Link>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </li>
-          </motion.ul>
-        )}
-      </AnimatePresence>
+            <AnimatePresence>
+              {dropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className={styles.dropdownContent}
+                >
+                  {!isLoggedIn ? (
+                    <>
+                      <Link href="/auth/student-login" onClick={closeMenu}>Student Portal</Link>
+                      <Link href="/auth/teacher-login" onClick={closeMenu}>Teacher Portal</Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/profile" onClick={closeMenu}>Settings</Link>
+                      <button className={styles.logoutBtn} onClick={() => setIsLoggedIn(false)}>
+                        Logout
+                      </button>
+                    </>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </li>
+        </ul>
+
+        {/* Mobile Toggle */}
+        <button className={styles.menuToggle} onClick={toggleMenu} aria-label="Toggle Menu">
+          <div className={`${styles.hamburger} ${menuOpen ? styles.open : ""}`}></div>
+        </button>
+      </div>
     </nav>
   );
 }
