@@ -2,80 +2,112 @@ import axios from "axios";
 import { store } from "@/redux/store";
 import { setTokens, logout } from "@/redux/globalSlice";
 
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 const IMAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL!;
 
 if (!API_URL) throw new Error("NEXT_PUBLIC_API_URL is not defined");
 if (!IMAGE_URL) throw new Error("NEXT_PUBLIC_IMAGE_URL is not defined");
 
-// Create Axios instance
+// ===============================
+// 🔹 Helper: Get Cookie
+// ===============================
+const getCookie = (name: string): string | null => {
+  if (typeof document === "undefined") return null;
+
+  const match = document.cookie.match(
+    new RegExp("(^| )" + name + "=([^;]+)")
+  );
+
+  return match ? match[2] : null;
+};
+
+// ===============================
+// 🔹 Axios Instance
+// ===============================
 export const api = axios.create({
   baseURL: API_URL,
   headers: { "Content-Type": "application/json" },
 });
 
-// Request Interceptor
-// api.interceptors.request.use(
-//   (config) => {
-//     if (typeof window !== "undefined") {
-//       const accessToken = localStorage.getItem("access_token");
-//       if (accessToken) {
-//         config.headers.Authorization = `Bearer ${accessToken}`;
-//       }
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
+// ===============================
+// 🔹 Request Interceptor
+// ===============================
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = getCookie("accessToken");
 
-// // Response Interceptor
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
 
-//     if (error.response?.status === 403) {
-//      console.log("You are not authorized to access this");
-//     }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
+// ===============================
+// 🔹 Response Interceptor
+// ===============================
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
 
-//       try {
-//         if (typeof window === "undefined") throw error;
+    if (error.response?.status === 403) {
+      console.log("You are not authorized to access this");
+    }
 
-//         const refreshToken = localStorage.getItem("refresh_token");
-//         if (!refreshToken) throw new Error("No refresh token");
+    // 🔥 Handle 401 (Token expired)
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
 
-//         const refreshResponse = await axios.post(
-//           `${API_URL}/auth/refresh-token`,
-//           { refreshToken }
-//         );
+      try {
+        const refreshToken = getCookie("refreshToken");
+        if (!refreshToken) throw new Error("No refresh token");
 
-//         const { accessToken, refreshToken: newRefreshToken } =
-//           refreshResponse.data;
+        const refreshResponse = await axios.post(
+          `${API_URL}/auth/refresh-token`,
+          { refreshToken }
+        );
 
-//         store.dispatch(
-//           setTokens({ accessToken, refreshToken: newRefreshToken })
-//         );
+        const { accessToken, refreshToken: newRefreshToken } =
+          refreshResponse.data;
 
-//         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-//         return api(originalRequest);
-//       } catch (err) {
-//         store.dispatch(logout());
+        // ✅ Update Redux
+        store.dispatch(
+          setTokens({
+            accessToken,
+            refreshToken: newRefreshToken,
+          })
+        );
 
-//         if (typeof window !== "undefined") {
-//           window.location.replace("/");
-//         }
+        // ✅ Update Cookies
+        document.cookie = `accessToken=${accessToken}; path=/; max-age=86400; SameSite=Lax`;
+        document.cookie = `refreshToken=${newRefreshToken}; path=/; max-age=604800; SameSite=Lax`;
 
-//         return Promise.reject(err);
-//       }
-//     }
+        // Retry original request
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return api(originalRequest);
+      } catch (err) {
+        // ❌ Logout if refresh fails
+        store.dispatch(logout());
 
-//     return Promise.reject(error);
-//   }
-// );
+        document.cookie = "accessToken=; path=/; max-age=0;";
+        document.cookie = "refreshToken=; path=/; max-age=0;";
 
-// Utility
+        if (typeof window !== "undefined") {
+          window.location.replace("/auth/student-login");
+        }
+
+        return Promise.reject(err);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+// ===============================
+// 🔹 Utility
+// ===============================
 export const getImageUrl = (path: string) => `${IMAGE_URL}/${path}`;

@@ -48,7 +48,7 @@ export default function Home() {
           gap: '30px',
           justifyItems: 'center'
         }}>
-          <CourseCard 
+          {/* <CourseCard 
             title="Next.js Mastery" 
             category="Development" 
             price="$49" 
@@ -62,7 +62,7 @@ export default function Home() {
             title="Full Stack LMS" 
             category="Engineering" 
             price="$99" 
-          />
+          /> */}
         </div>
       </section>
     </main>

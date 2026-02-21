@@ -2,6 +2,7 @@ import styles from "@/styles/CourseCard.module.css";
 import Link from "next/link";
 
 interface CourseCardProps {
+    id: string;
     title: string;
     category: string;
     price: string;
