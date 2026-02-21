@@ -6,6 +6,9 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
+import { Otp } from './otps.entity';
+import { CourseProgress } from './course_progress.entity';
+import { LessonProgress } from './lesson_progress.entity';
 
 @Entity({ name: 'users' })
 @Index(['email', 'role'], { unique: true })
@@ -49,4 +52,10 @@ export class User {
     type: 'timestamp',
   })
   updatedAt: Date;
+
+  // ─── RELATIONS ──────────────────────────────
+  courseProgress: CourseProgress[]
+  lessonProgress: LessonProgress[]
+  otps: Otp[]
+
 }

@@ -1,27 +1,35 @@
+// components/CourseCard.tsx
 import styles from "@/styles/CourseCard.module.css";
 import Link from "next/link";
+import type { CourseResponse } from "@/models/course.model";
 
-interface CourseCardProps {
-    id: string;
-    title: string;
-    category: string;
-    price: string;
-}
+export default function CourseCard(data: CourseResponse) {
+  return (
+    <div className={styles.card}>
+      {/* Thumbnail / Image */}
+      <div className={styles.imageWrapper}>
+        {data.thumbnailUrl ? (
+          <img
+            src={data.thumbnailUrl}
+            alt={data.title}
+            className={styles.thumbnail}
+          />
+        ) : (
+          <div className={styles.imagePlaceholder}>No Image</div>
+        )}
+      </div>
 
-export default function CourseCard({ id, title, category, price }: CourseCardProps) {
-    return (
-        <div className={styles.card}>
-            <div className={styles.imagePlaceholder}></div>
-            <div className={styles.content}>
-                <span className={styles.category}>{category}</span>
-                <h3 className={styles.coursetitle}>{title}</h3>
-                <div className={styles.footer}>
-                    <span className={styles.price}>{price}</span>
-                    <Link href={`/courses/${id}`}>
-                        <button className={styles.enrollbtn}>Enroll Now</button>
-                    </Link>
-                </div>
-            </div>
+      {/* Content */}
+      <div className={styles.content}>
+        <h3 className={styles.courseTitle}>{data.title}</h3>
+        <p className={styles.description}>{data.description}</p>
+        <p className={styles.instructor}>By {data.instructorName}</p>
+
+        <div className={styles.footer}>
+          {/* Remove price if not available */}
+          {/* <span className={styles.price}>{price}</span> */}
         </div>
-    )
+      </div>
+    </div>
+  );
 }

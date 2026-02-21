@@ -3,13 +3,16 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Module } from './module.entity';
+import { CourseProgress } from './course_progress.entity';
 
 @Entity({ name: 'courses' })
 export class Course {
 
   @PrimaryGeneratedColumn('increment')
-id: number;
+  id: number;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;
@@ -31,4 +34,12 @@ id: number;
     type: 'timestamp',
   })
   createdAt: Date;
+
+  // ─── RELATIONS ──────────────────────────────
+  @OneToMany(() => Module, (module) => module.course, {
+  })
+  modules: Module[];
+
+  @OneToMany(() => CourseProgress, (cp) => cp.course)
+  progress: CourseProgress[];
 }

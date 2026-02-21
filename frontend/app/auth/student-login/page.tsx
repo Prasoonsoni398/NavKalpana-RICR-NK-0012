@@ -28,7 +28,7 @@ export default function StudentLogin() {
 
 const dispatch = useDispatch<AppDispatch>();
 
-const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   setError("");
   setMessage("");
@@ -63,7 +63,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     toast.success("Welcome 🎉 Login completed successfully!", { id: toastId });
 
     setTimeout(() => {
-      router.push("/dashboard/student");
+      router.push("/student/my-courses");
     }, 1000);
 
   } catch (err: any) {
