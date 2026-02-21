@@ -30,8 +30,8 @@ export default function StudentSignup() {
     setLoading(true);
 
     try {
-      const res = await userSignup(form);
-      setMessage(res.message || 'OTP sent to your email!');
+      // const res = await userSignup(form);
+      // setMessage(res.message || 'OTP sent to your email!');
       setForm({ name: '', email: '', password: '' }); 
     } catch (err: any) {
       setError(err.response?.data?.message || 'Something went wrong!');
