@@ -625,7 +625,7 @@ export default function CoursePage() {
         {/* ── TOP BAR ─────────────────────────────────────────────────────── */}
         <div className={styles.topbar}>
           <div className={styles.topbarBreadcrumb}>
-            <a href="/courses" className={styles.topbarLink}>My Courses</a>
+            <a href="/student/my-courses" className={styles.topbarLink}>My Courses</a>
             <span className={styles.topbarSep}>›</span>
             <span className={styles.topbarCurrent}>{course.title}</span>
           </div>
