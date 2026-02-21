@@ -11,6 +11,7 @@ import { setTokens, } from '@/redux/globalSlice';
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
 
+
 export default function StudentLogin() {
   const router = useRouter(); 
   const [form, setForm] = useState({
@@ -63,7 +64,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     toast.success("Welcome 🎉 Login completed successfully!", { id: toastId });
 
     setTimeout(() => {
-      router.push("/dashboard/student");
+      router.push("/student/student-dashboard");
     }, 1000);
 
   } catch (err: any) {
