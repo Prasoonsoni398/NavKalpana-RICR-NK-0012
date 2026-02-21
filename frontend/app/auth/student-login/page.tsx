@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import styles from '@/styles/Auth.module.css';
+import styles from '@/styles/auth.module.css';
 import { authService } from '@/services/auth.services';
 import { TextField } from '@mui/material';
 import Link from 'next/link';
