@@ -29,7 +29,7 @@ export default function StudentLogin() {
 
 const dispatch = useDispatch<AppDispatch>();
 
-const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   setError("");
   setMessage("");
