@@ -1,26 +1,17 @@
-// Login API Call Function
-export const loginUser = async (credentials: { email: string; password: string }) => {
-  try {
-    const response = await fetch('http://31.97.207.88:6200/auth/login/student', { 
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(credentials),
-    });
+import { api } from "../lib/api";
+import type { StudentLoginRequest,StudentLoginResponse } from "@/models/auth.model";
 
-    const data = await response.json();
+class AuthService {
+  private baseUrl = "/auth";
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Login failed');
-    }
+// Student Login
+async login(
+  data: StudentLoginRequest
+): Promise<StudentLoginResponse> {
+  const response = await api.post(`${this.baseUrl}/login/student`, data);
+  return response.data;
+}
+ 
+}
 
-    if (data.token) {
-      localStorage.setItem('token', data.token);
-    }
-
-    return data;
-  } catch (error: any) {
-    throw error.message;
-  }
-};
+export const authService = new AuthService();

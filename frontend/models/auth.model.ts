@@ -12,3 +12,20 @@ export interface UserSignupResponse {
   userId: number;
 }
 
+export interface StudentLoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface StudentLoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  };
+}
+
+

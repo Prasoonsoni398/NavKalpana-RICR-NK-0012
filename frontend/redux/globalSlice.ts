@@ -9,12 +9,33 @@ interface GlobalState {
   refreshToken: string | null;
 }
 
+/* ---------------- SAFE HELPERS ---------------- */
+
+const safeParse = (value: string | null) => {
+  try {
+    return value ? JSON.parse(value) : null;
+  } catch {
+    return null;
+  }
+};
+
+const getStorageItem = (key: string) => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+
+/* ---------------- INITIAL STATE ---------------- */
+
 const initialState: GlobalState = {
   menus: [],
-  user: JSON.parse(localStorage.getItem("user") || "null"),
-  accessToken: localStorage.getItem("access_token"),
-  refreshToken: localStorage.getItem("refresh_token"),
+  user: safeParse(getStorageItem("user")),
+  accessToken: getStorageItem("access_token"),
+  refreshToken: getStorageItem("refresh_token"),
 };
+
+/* ---------------- SLICE ---------------- */
 
 const globalSlice = createSlice({
   name: "global",
@@ -26,10 +47,13 @@ const globalSlice = createSlice({
 
     setUser(state, action: PayloadAction<any | null>) {
       state.user = action.payload;
-      if (action.payload) {
-        localStorage.setItem("user", JSON.stringify(action.payload));
-      } else {
-        localStorage.removeItem("user");
+
+      if (typeof window !== "undefined") {
+        if (action.payload) {
+          localStorage.setItem("user", JSON.stringify(action.payload));
+        } else {
+          localStorage.removeItem("user");
+        }
       }
     },
 
@@ -38,17 +62,24 @@ const globalSlice = createSlice({
       action: PayloadAction<{ accessToken: string; refreshToken: string }>
     ) {
       const { accessToken, refreshToken } = action.payload;
+
       state.accessToken = accessToken;
       state.refreshToken = refreshToken;
-      localStorage.setItem("access_token", accessToken);
-      localStorage.setItem("refresh_token", refreshToken);
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("access_token", accessToken);
+        localStorage.setItem("refresh_token", refreshToken);
+      }
     },
 
     clearTokens(state) {
       state.accessToken = null;
       state.refreshToken = null;
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+      }
     },
 
     logout(state) {
@@ -57,13 +88,16 @@ const globalSlice = createSlice({
       state.accessToken = null;
       state.refreshToken = null;
 
-      localStorage.removeItem("user");
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user");
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+      }
     },
   },
 });
 
 export const { setMenus, setUser, setTokens, clearTokens, logout } =
   globalSlice.actions;
+
 export default globalSlice.reducer;

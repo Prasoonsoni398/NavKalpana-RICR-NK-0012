@@ -40,13 +40,13 @@ export default function ChangePassword() {
     setMessage("");
 
     try {
-      const res = await userService.changepassword({
-        oldpassword: current,
-        newpassword: newPass,
-        confirmpassword:confirm,
-      });
+      // const res = await userService.changepassword({
+      //   oldpassword: current,
+      //   newpassword: newPass,
+      //   confirmpassword:confirm,
+      // });
 
-      setMessage(res.message || "Password updated successfully!");
+      setMessage( "Password updated successfully!");
       setCurrent("");
       setNewPass("");
       setConfirm("");

@@ -2,10 +2,14 @@
 
 import { useState } from 'react';
 import styles from '@/styles/Auth.module.css';
-import { loginUser } from '@/services/auth.services';
+import { authService } from '@/services/auth.services';
 import { TextField } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'; 
+import toast from "react-hot-toast";
+import { setTokens, } from '@/redux/globalSlice';
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/redux/store";
 
 export default function StudentLogin() {
   const router = useRouter(); 
@@ -22,42 +26,59 @@ export default function StudentLogin() {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setMessage('');
-    setLoading(true);
+const dispatch = useDispatch<AppDispatch>();
 
-    try {
-      // 1. API Call
-      const res = await loginUser({ 
-        email: form.email, 
-        password: form.password 
-      });
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError("");
+  setMessage("");
+  setLoading(true);
+  const toastId = toast.loading("Logging in...");
 
-      const token = res.data?.accessToken|| res.accessToken; 
-      
-      if (token) {
-        localStorage.setItem('studentToken', token); 
-        setMessage('Login successful! Redirecting...');
-        
-        // 3. Redirect to Dashboard
-        setTimeout(() => {
-          router.push('/dashboard/student');
-        }, 1500);
-      } else {
-        throw new Error("Token not received from server");
-      }
-      
-    } catch (err) {
+  try {
+    const res = await authService.login({
+      email: form.email,
+      password: form.password,
+    });
 
-      const errorMessage = err?.response?.data?.message || err.message || 'Invalid email or password!';
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
+    console.log("Login response:", res); // Debugging log
+
+    const token = res?.accessToken ;
+
+    if (!token) {
+      throw new Error("Token not received from server");
     }
-  };
 
+    //  1. Save to Redux
+    dispatch(
+      setTokens({
+        accessToken: token,
+        refreshToken: "",
+      })
+    );
+
+    // Save token in Cookie (IMPORTANT for middleware)
+    document.cookie = `accessToken=${token}; path=/; max-age=86400; SameSite=Lax`;
+
+    toast.success("Welcome 🎉 Login completed successfully!", { id: toastId });
+
+    setTimeout(() => {
+      router.push("/dashboard/student");
+    }, 1000);
+
+  } catch (err: any) {
+    const errorMessage =
+      err?.response?.data?.message ||
+      err?.response?.data?.error ||
+      err?.message ||
+      "Something went wrong";
+
+    toast.error(errorMessage, { id: toastId });
+    setError(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className={styles.authWrapper} style={{ backgroundColor: '#0F172A' }}>
       <div className={styles.authCard} style={{ backgroundColor: '#1E293B' }}>
@@ -66,7 +87,7 @@ export default function StudentLogin() {
           <p className={styles.subtitle} style={{ color: '#94A3B8' }}>Welcome back! Please enter your details.</p>
         </div>
 
-        {error && <p className={styles.errorMsg} style={{ color: '#EF4444' }}>{error}</p>}
+        
         {message && <p className={styles.successMsg} style={{ color: '#22C55E' }}>{message}</p>}
 
         <form onSubmit={handleSubmit} className={styles.formElement}>
