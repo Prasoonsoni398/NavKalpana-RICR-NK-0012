@@ -3,7 +3,7 @@
 import { useState } from "react";
 import styles from "@/styles/ChangePassword.module.css";
 import { FiEye } from "react-icons/fi";
-import { userService } from "@/services/user.services";
+// import { userService } from "@/services/user.services";
 
 export default function ChangePassword() {
   const [current, setCurrent] = useState("");
