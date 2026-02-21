@@ -1,11 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Assignment } from '../../common/entities/assignment.entity';
 import { Submission } from '../../common/entities/submission.entity';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
-import { UpdateAssignmentDto } from './dto/update-assignment.dto';
-import { SubmitAssignmentDto } from './dto/submit-assignment.dto';
+// import { UpdateAssignmentDto } from './dto/update-submit-assignment.dto';
+import { SubmitAssignmentDto } from './dto/update-submit-assignment.dto';
 import { EvaluateAssignmentDto } from './dto/evaluate-assignment.dto';
 
 @Injectable()
@@ -36,21 +40,23 @@ export class AssignmentService {
     });
 
     if (!assignment) {
-      throw new NotFoundException(`Assignment with ID ${id} not found`);
+      throw new NotFoundException(
+        `Assignment with ID ${id} not found`,
+      );
     }
 
     return assignment;
   }
 
   // ✅ Update Assignment
-  async update(
-    id: number,
-    updateAssignmentDto: UpdateAssignmentDto,
-  ): Promise<Assignment> {
-    const assignment = await this.findOne(id);
-    Object.assign(assignment, updateAssignmentDto);
-    return await this.assignmentRepository.save(assignment);
-  }
+  // async update(
+  //   id: number,
+  //   updateAssignmentDto: UpdateAssignmentDto,
+  // ): Promise<Assignment> {
+  //   const assignment = await this.findOne(id);
+  //   Object.assign(assignment, updateAssignmentDto);
+  //   return await this.assignmentRepository.save(assignment);
+  // }
 
   // ✅ Delete Assignment
   async remove(id: number): Promise<{ deleted: boolean }> {
@@ -59,13 +65,24 @@ export class AssignmentService {
     return { deleted: true };
   }
 
-  // ✅ Submit Assignment
+  // ✅ Submit Assignment (Real-time + Late Detection)
   async submit(
     assignmentId: number,
     userId: number,
     submitDto: SubmitAssignmentDto,
   ): Promise<Submission> {
     const assignment = await this.findOne(assignmentId);
+
+    // Ensure at least one submission type is provided
+    if (
+      !submitDto.fileUrl &&
+      !submitDto.textAnswer &&
+      !submitDto.externalLink
+    ) {
+      throw new BadRequestException(
+        'At least one submission type must be provided',
+      );
+    }
 
     const now = new Date();
     const isLate = now > assignment.deadline;
@@ -81,7 +98,7 @@ export class AssignmentService {
     return await this.submissionRepository.save(submission);
   }
 
-  // ✅ Evaluate Submission
+  // ✅ Evaluate Submission (Dummy Evaluation Allowed)
   async evaluate(
     submissionId: number,
     evaluateDto: EvaluateAssignmentDto,

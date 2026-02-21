@@ -14,3 +14,4 @@ export class SubmitAssignmentDto {
   @IsString()
   externalLink?: string;
 }
+

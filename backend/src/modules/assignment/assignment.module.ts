@@ -6,8 +6,11 @@ import { AssignmentService } from './assignment.service';
 import { AssignmentController } from './assignment.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Assignment, Submission])],
+  imports: [
+    TypeOrmModule.forFeature([Assignment, Submission]), // VERY IMPORTANT
+  ],
   controllers: [AssignmentController],
-  providers: [AssignmentService],
+  providers: [AssignmentService], // MUST BE HERE
+  exports: [AssignmentService], // optional but good practice
 })
 export class AssignmentModule {}
