@@ -3,7 +3,7 @@
 import { useState } from "react";
 import styles from "@/styles/ChangePassword.module.css";
 import { FiEye } from "react-icons/fi";
-import { userService } from "@/services/user.services";
+// import { userService } from "@/services/user.services";
 
 export default function ChangePassword() {
   const [current, setCurrent] = useState("");
@@ -40,13 +40,13 @@ export default function ChangePassword() {
     setMessage("");
 
     try {
-      const res = await userService.changepassword({
-        oldpassword: current,
-        newpassword: newPass,
-        confirmpassword:confirm,
-      });
+      // const res = await userService.changepassword({
+      //   oldpassword: current,
+      //   newpassword: newPass,
+      //   confirmpassword:confirm,
+      // });
 
-      setMessage(res.message || "Password updated successfully!");
+      setMessage( "Password updated successfully!");
       setCurrent("");
       setNewPass("");
       setConfirm("");

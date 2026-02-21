@@ -129,11 +129,11 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new BadRequestException('Invalid email or password');
     }
 
     if (!user.isActive) {
-      throw new UnauthorizedException('Please verify your email first');
+      throw new BadRequestException('Please verify your email first');
     }
 
     const provider = await this.authProviderRepository.findOne({
@@ -144,7 +144,7 @@ export class AuthService {
     });
 
     if (!provider?.passwordHash) {
-      throw new UnauthorizedException('Password login not available');
+      throw new BadRequestException('Password login not available');
     }
 
     const isMatch = await bcrypt.compare(
@@ -153,7 +153,7 @@ export class AuthService {
     );
 
     if (!isMatch) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new BadRequestException('Invalid email or password');
     }
 
     const token = generateToken({id:user.id,role:role});
