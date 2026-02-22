@@ -42,8 +42,12 @@ export default function LandingPage() {
       <section className={styles.heroWrapper}>
         <div className={styles.content}>
           <span className={styles.badge}>Learn coding the right way</span>
+          {/* Hero Section के अंदर */}
+
           <h1 className={styles.title}>Welcome to <span>EduLeaf</span></h1>
-          <div className={styles.typingText}>Learn Web Development |</div>
+          <div className={styles.typingContainer}>
+            Learn <span className={styles.changingText}></span>
+          </div>
           <p className={styles.subtitle}>
             Confused about which course to take? We've got you covered!
             EduLeaf is our effort to prepare you for real-world projects.
