@@ -1,97 +1,430 @@
-/* src/styles/StudentDashboard.module.css */
-.wrapper {
-  background-color: #0F172A;
+/* --- Global Reset & Wrapper --- */
+.dashboardWrapper {
+  display: flex;
+  background-color: #F7F9FC;
   min-height: 100vh;
-  color: #E2E8F0;
   font-family: 'Inter', sans-serif;
+  color: #1E293B;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
+/* --- 1. Sidebar Styling --- */
+.sidebar {
+  width: 260px;
+  background: white;
+  padding: 30px 10px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #E2E8F0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 
-.header h1 {
-  font-size: 2rem;
-  margin-bottom: 8px;
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1E293B;
+  padding: 0 20px 40px;
+  letter-spacing: -1.5px;
 }
 
-.subtitle {
-  color: #94A3B8;
+.navMenu {
+  flex: 1;
 }
 
-/* Stats Grid */
-.statsGrid {
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #64748B;
+  font-weight: 500;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  margin-bottom: 5px;
+}
+
+.navItem:hover {
+  background: #FEFCE8;
+  color: #EAB308;
+  transform: translateX(5px);
+}
+
+.navActive {
+  background: #FACC15 !important;
+  color: #000 !important;
+  font-weight: 600;
+  box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.3);
+}
+
+.logoutWrapper {
+  padding-top: 20px;
+  border-top: 1px solid #F1F5F9;
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  color: #EF4444;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+/* --- 2. Main Content & Header --- */
+.mainContent {
+  flex: 1;
+  padding: 30px 40px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 35px;
+}
+
+.greetingText {
+  font-size: 30px;
+  font-weight: 800;
+  margin: 0;
+  color: #0F172A;
+}
+
+.subText {
+  color: #64748B;
+  margin-top: 5px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 14px;
+  border: 1px solid #E2E8F0;
+  gap: 10px;
+}
+
+.searchBox input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  width: 180px;
+}
+
+.profileImg {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #FACC15;
+  padding: 2px;
+}
+
+/* --- 3. Bento Grid (Stats) --- */
+.bentoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 2fr 1fr 1fr;
   gap: 20px;
-  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
-.statCard {
-  background: #1E293B;
+.bentoCard {
+  background: white;
   padding: 25px;
-  borderRadius: 15px;
-  border: 1px solid #334155;
-  transition: transform 0.2s;
+  border-radius: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+  transition: transform 0.3s ease;
 }
 
-.statCard:hover {
+.bentoCard:hover {
   transform: translateY(-5px);
 }
 
-.statValue {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 10px 0;
-  display: block;
-}
-
-/* Course Progress Card */
-.courseSection {
-  margin-top: 50px;
-}
-
-.resumeCard {
+.scoreCard {
   background: #1E293B;
-  padding: 25px;
-  border-radius: 15px;
-  border: 1px solid #334155;
-  margin-top: 20px;
-}
-
-.cardTop {
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+.scoreInfo h2 {
+  font-size: 42px;
+  color: #FACC15;
+  margin: 10px 0;
+}
+
+.trendText {
+  font-size: 12px;
+  color: #4ADE80;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* --- 4. Middle Row (Skills & Activity) --- */
+.middleRow {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.skillsSection, .activitySection, .leaderboardCard {
+  background: white;
+  padding: 25px;
+  border-radius: 24px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.pillsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skillPill {
+  background: #FEFCE8;
+  color: #854D0E;
+  padding: 8px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #FEF08A;
+}
+
+/* --- 5. Bar Chart Styling --- */
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 150px;
+  padding-top: 20px;
+}
+
+.barContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  justify-content: flex-end;
+  width: 30px;
+}
+
+.barFill {
+  width: 100%;
+  background: #FACC15;
+  border-radius: 6px 6px 2px 2px;
+  animation: growUp 1s ease-out;
+}
+
+.barLabel {
+  font-size: 11px;
+  color: #94A3B8;
+  font-weight: 700;
+}
+
+/* --- 6. Leaderboard --- */
+.leaderItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  background: #F8FAFC;
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+
+.rank { font-weight: 800; width: 40px; color: #94A3B8; }
+.userName { flex: 1; font-weight: 600; }
+.userScore { color: #EAB308; font-weight: 700; }
+
+/* --- 7. Right Panel & Calendar --- */
+.rightPanel {
+  width: 320px;
+  background: white;
+  padding: 30px 20px;
+  border-left: 1px solid #E2E8F0;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.dayHead { font-size: 11px; font-weight: 700; color: #94A3B8; margin-bottom: 5px;}
+
+.calDate {
+  font-size: 12px;
+  padding: 8px 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.calActive {
+  background: #FACC15;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(250, 204, 21, 0.4);
+}
+
+.eventBox {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+  padding: 12px;
+  background: #F8FAFC;
+  border-radius: 12px;
+}
+
+.eventMarker { width: 4px; border-radius: 4px; }
+
+/* --- Animations --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes growUp {
+  from { height: 0; }
+}
+
+/* Courses Section Styles */
+.coursesSection {
+  margin-bottom: 2rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.viewAllBtn {
+  background: transparent;
+  border: none;
+  color: #854d0e; /* Dark yellow/brown for contrast */
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.courseCard {
+  background: #ffffff;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid #f1f5f9;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.courseCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.courseInfo h4 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: #0f172a;
+}
+
+.courseInfo p {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+
+/* Progress Bar */
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+}
+
 .progressBar {
   width: 100%;
   height: 8px;
-  background: #334155;
-  border-radius: 10px;
-  margin-top: 20px;
+  background: #f1f5f9;
+  border-radius: 99px;
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
-  background: #3B82F6;
-  border-radius: 10px;
+  background: #FACC15; /* Your preferred Yellow */
+  border-radius: 99px;
 }
 
-.resumeBtn {
-  background: #3B82F6;
-  color: white;
+.courseCard {
+  background: #ffffff;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid #f1f5f9;
+  display: flex; /* Added flex to align button at bottom */
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 200px; /* Ensures all cards are uniform height */
+}
+
+/* Progress bar margin to separate from button */
+.progressContainer {
+  margin-bottom: 1.25rem;
+}
+
+/* The View Button */
+.viewCourseBtn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #FACC15; /* Your Theme Yellow */
+  color: #000000;
   border: none;
-  padding: 10px 25px;
-  border-radius: 8px;
-  cursor: pointer;
+  border-radius: 10px;
   font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.resumeBtn:hover {
-  background: #2563EB;
+.viewCourseBtn:hover {
+  background-color: #eab308; /* Slightly darker yellow on hover */
+  
 }
