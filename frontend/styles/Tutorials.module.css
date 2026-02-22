@@ -1,9 +1,11 @@
 /* src/styles/Tutorials.module.css */
+
 .container {
-  background-color: #0F172A; /* Your Dark Slate */
+  background-color: var(--bg-light); /* प्रीमियम लाइट ग्रे/वाइट बैकग्राउंड */
   min-height: 100vh;
-  padding: 40px 20px;
-  color: white;
+  padding: 60px 20px;
+  color: var(--text-primary);
+  transition: background var(--transition-speed);
 }
 
 .header {
@@ -12,12 +14,29 @@
 }
 
 .header h1 {
-  font-size: 2.5rem;
-  color: white;
+  font-size: 2.8rem;
+  color: var(--text-primary);
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
 .header span {
-  color: #3B82F6; /* Your Theme Blue */
+  color: var(--primary-yellow); /* ब्लू की जगह अब थीम वाला पीला */
+  position: relative;
+  display: inline-block;
+}
+
+/* हेडर के नीचे एक छोटा सा डेकोरेटिव बार */
+.header span::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: var(--primary-yellow);
+  opacity: 0.3;
+  z-index: -1;
 }
 
 .grid {
@@ -29,64 +48,106 @@
 }
 
 .card {
-  background: #1E293B;
-  border-radius: 12px;
-  border: 1px solid #334155;
+  background: var(--bg-white);
+  border-radius: 20px; /* ज़्यादा मॉडर्न और राउंडेड कोर्नर्स */
+  border: 1px solid var(--border-light);
   overflow: hidden;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: all var(--transition-speed) ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .card:hover {
-  transform: translateY(-8px);
-  border-color: #3B82F6;
+  transform: translateY(-10px);
+  border-color: var(--primary-yellow);
+  box-shadow: 0 20px 25px -5px rgba(250, 204, 21, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .thumbnail {
   width: 100%;
-  height: 180px;
+  height: 200px;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card:hover .thumbnail {
+  transform: scale(1.05); /* इमेज ज़ूम इफेक्ट */
 }
 
 .content {
-  padding: 20px;
+  padding: 25px;
 }
 
 .category {
   font-size: 0.75rem;
-  color: #3B82F6;
+  color: var(--primary-yellow-hover); /* थीम वाला डार्क पीला */
   text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
 }
 
 .courseTitle {
-  font-size: 1.25rem;
-  margin: 10px 0;
-  font-weight: 600;
+  font-size: 1.4rem;
+  margin: 12px 0;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .description {
-  color: #94A3B8;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  height: 60px; /* Text alignment */
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  height: 60px; 
   overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 2 लाइन के बाद ... लगा देगा */
+  -webkit-box-orient: vertical;
 }
 
 .btn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 12px;
-  background: #3B82F6;
-  color: white;
+  padding: 14px;
+  background: var(--primary-yellow);
+  color: var(--text-primary); /* पीली बटन पर काला टेक्स्ट प्रीमियम लगता है */
   text-align: center;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-top: 20px;
-  font-weight: 600;
-  transition: 0.3s;
+  font-weight: 700;
+  transition: all var(--transition-speed);
+  border: 2px solid transparent;
 }
 
 .btn:hover {
-  background: #2563EB;
+  background: var(--primary-yellow-hover);
+  transform: scale(1.02);
+}
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr; /* मोबाइल पर सिंगल कॉलम */
+    padding: 0 10px;
+  }
+
+  .card {
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 40px 15px;
+  }
+  
+  .courseTitle {
+    font-size: 1.2rem;
+  }
 }

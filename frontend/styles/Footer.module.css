@@ -1,10 +1,14 @@
 /* src/styles/Footer.module.css */
 
 .footer {
-  background-color: var(--primary-green);
-  color: #ffffff;
+  /* Updated from green to your Premium Yellow */
+  background-color: var(--primary-yellow);
+  /* Text changed to your Navy-Black for readability on yellow */
+  color: var(--text-primary);
   padding: 40px 5% 20px 5%;
   margin-top: 50px;
+  /* Added subtle top border for a premium feel */
+  border-top: 1px solid var(--border-light);
 }
 
 .footerContainer {
@@ -23,13 +27,16 @@
 .footerSection h3 {
   font-size: 1.5rem;
   margin-bottom: 20px;
-  color: #ffffff;
+  /* Heading now uses the theme's primary text color */
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .footerSection p {
   font-size: 0.9rem;
   line-height: 1.6;
-  opacity: 0.9;
+  /* Changed from white opacity to your theme's secondary grey */
+  color: var(--text-secondary);
 }
 
 .footerSection ul {
@@ -42,21 +49,26 @@
 }
 
 .footerSection ul li a {
-  color: #ffffff;
+  /* Links now use the primary navy-black */
+  color: var(--text-primary);
   text-decoration: none;
   font-size: 0.9rem;
+  font-weight: 500;
   opacity: 0.8;
-  transition: opacity 0.3s;
+  transition: all var(--transition-speed);
 }
 
 .footerSection ul li a:hover {
   opacity: 1;
+  /* Subtle hover effect using the darker yellow hover variable */
+  color: var(--primary-yellow-hover);
 }
 
 .copyright {
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  /* Border adjusted to use a darker transparent navy for better contrast on yellow */
+  border-top: 1px solid rgba(15, 23, 42, 0.1);
   padding-top: 20px;
   text-align: center;
   font-size: 0.85rem;
-  opacity: 0.7;
+  color: var(--text-secondary);
 }

@@ -1,17 +1,12 @@
-/* ================================
-   MAIN CONTAINER
-================================ */
-
 .container {
   display: flex;
   min-height: 100vh;
-  background: #f8fafc;
+  background: var(--bg-light);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   transition: background 0.3s ease;
 }
 
 /* Dark Mode */
-
 .dark {
   background: #0f172a;
   color: #e2e8f0;
@@ -20,10 +15,9 @@
 /* ================================
    SIDEBAR
 ================================ */
-
 .sidebar {
   width: 280px;
-  background: #0f172a;
+  background: var(--sidebar-bg);
   color: white;
   padding: 25px 20px;
   position: fixed;
@@ -35,8 +29,6 @@
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Scrollbar */
-
 .sidebar::-webkit-scrollbar {
   width: 6px;
 }
@@ -46,14 +38,11 @@
   border-radius: 10px;
 }
 
-/* Sidebar Heading */
-
 .sidebar h2 {
   font-size: 18px;
   margin-bottom: 20px;
+  color: var(--primary-yellow); /* हेडिंग येलो कर दी */
 }
-
-/* Collapse Button */
 
 .collapseBtn {
   background: none;
@@ -64,14 +53,12 @@
   margin-bottom: 20px;
 }
 
-/* Open Sidebar Button */
-
 .openBtn {
   position: fixed;
   top: 20px;
   left: 20px;
-  background: #0f172a;
-  color: white;
+  background: var(--sidebar-bg);
+  color: var(--primary-yellow);
   border: none;
   padding: 8px 12px;
   border-radius: 6px;
@@ -83,13 +70,12 @@
 /* ================================
    MODULES
 ================================ */
-
 .module {
   margin-bottom: 15px;
 }
 
 .moduleTitle {
-  background: #1e293b;
+  background: #334155;
   padding: 10px 12px;
   border-radius: 8px;
   cursor: pointer;
@@ -100,17 +86,17 @@
 }
 
 .moduleTitle:hover {
-  background: #334155;
+  background: #475569;
+  color: var(--primary-yellow);
 }
 
 /* ================================
    SUBTOPICS
 ================================ */
-
 .subtopics {
   margin-top: 8px;
   padding-left: 10px;
-  border-left: 2px solid #1e293b;
+  border-left: 2px solid var(--primary-yellow); /* येलो बॉर्डर */
 }
 
 .subtopic {
@@ -126,19 +112,20 @@
 }
 
 .subtopic:hover {
-  background: #1e293b;
+  background: #334155;
   padding-left: 14px;
+  color: var(--primary-yellow);
 }
 
 .activeSubtopic {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  color: white;
+  background: var(--primary-yellow); /* एक्टिव सबटॉपिक येलो */
+  color: #000; /* ब्लैक टेक्स्ट ताकि दिखे */
+  font-weight: 600;
 }
 
 /* ================================
    MAIN CONTENT
 ================================ */
-
 .content {
   flex: 1;
   margin-left: 280px;
@@ -153,7 +140,6 @@
 /* ================================
    TOP BAR
 ================================ */
-
 .topBar {
   display: flex;
   justify-content: space-between;
@@ -170,19 +156,18 @@
 }
 
 .topBar span:hover {
-  color: #2563eb;
+  color: var(--primary-yellow);
 }
 
 .activeTab {
-  color: #2563eb;
-  border-bottom: 2px solid #2563eb;
+  color: var(--primary-yellow);
+  border-bottom: 2px solid var(--primary-yellow);
   padding-bottom: 4px;
 }
 
 /* ================================
    RIGHT CONTROLS
 ================================ */
-
 .rightControls {
   display: flex;
   align-items: center;
@@ -194,26 +179,27 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  background: #143170;
-  color: white;
+  background: var(--sidebar-bg);
+  color: var(--primary-yellow);
   transition: 0.2s;
+  border: 1px solid var(--primary-yellow);
 }
 
 .themeBtn:hover {
-  background: #1e40af;
+  background: var(--primary-yellow);
+  color: #000;
 }
 
 /* ================================
    PROGRESS BAR
 ================================ */
-
 .progressBox {
   width: 220px;
 }
 
 .progressBox span {
   font-size: 13px;
-  color: #3f7e55;
+  color: var(--primary-green); /* प्रोग्रेस टेक्स्ट ग्रीन */
 }
 
 .dark .progressBox span {
@@ -222,7 +208,7 @@
 
 .progressBar {
   height: 6px;
-  background: #c1ecd2;
+  background: #e2e8f0;
   border-radius: 6px;
   margin-top: 6px;
   overflow: hidden;
@@ -230,14 +216,13 @@
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: linear-gradient(135deg, var(--primary-green), #16a34a);
   transition: width 0.4s ease;
 }
 
 /* ================================
    READING SECTION
 ================================ */
-
 .readingSection {
   background: white;
   padding: 35px;
@@ -255,7 +240,10 @@
 .readingSection h1 {
   margin-bottom: 20px;
   font-size: 26px;
+  color: var(--text-main);
 }
+
+.dark .readingSection h1 { color: white; }
 
 .readingSection p {
   line-height: 1.7;
@@ -270,12 +258,11 @@
 /* ================================
    COMPLETE BUTTON
 ================================ */
-
 .completeBtn {
   padding: 12px 18px;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, #16a34a, #22c55e);
+  background: linear-gradient(135deg, var(--primary-green), #16a34a);
   color: white;
   font-weight: 500;
   cursor: pointer;
@@ -290,13 +277,15 @@
 /* ================================
    RESPONSIVE
 ================================ */
-
 @media (max-width: 900px) {
   .content {
     padding: 20px;
+    margin-left: 0; /* मोबाइल पर कंटेंट खिसकाने के लिए */
   }
 
   .sidebar {
     width: 260px;
+    transform: translateX(-100%); /* मोबाइल पर छिपाने के लिए */
+    transition: 0.3s;
   }
 }

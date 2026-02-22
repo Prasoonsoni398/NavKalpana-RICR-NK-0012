@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import styles from '@/styles/StudentDashboard.module.css';
+import styles from '@/styles/Sidebar.module.css';
 import { 
   LayoutDashboard, BookOpen, FileText, GraduationCap,
   Flame, BookUser, NotepadText, Settings, LogOut 
@@ -24,7 +24,10 @@ const Sidebar = () => {
 
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.logo}>Quyl.</div>
+      <div className={styles.logoContainer}>
+          <div className={styles.logoIcon}>S</div>
+          <span className={styles.logoText}>Skill<span>verse</span></span>
+        </div>
       <nav className={styles.navMenu}>
         {menuItems.map((item) => (
           <Link key={item.name} href={item.path} 
