@@ -1,69 +1,90 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";  // ✅ ADD THIS
 import styles from "@/styles/Assignment.module.css";
 import AssignmentHeader from "@/components/features/AssignmentHeader";
 import AssignmentDescription from "@/components/features/AssignmentDescription";
 import SubmissionSection from "@/components/features/SubmissionSection";
 import SubmissionDetails from "@/components/features/SubmissionDetails";
 import EvaluationSection from "@/components/features/EvaluationSection";
+import { assignmentService } from "@/services/assignment.services";
+import type {
+  AssignmentWithSubmissionResponse,
+  SubmissionData,
+} from "@/models/assignment-submission.model";
 
 export default function AssignmentPage() {
-    const deadline = new Date("2026-02-28T23:59:00");
 
-    const [submission, setSubmission] = useState<any>(null);
+  const params = useParams();   // ✅ GET PARAMS HERE
+  const assignmentId = Number(params.id);
 
-    const handleSubmit = (type: string, content: any) => {
-        const submissionTime = new Date();
-        const lateFlag = submissionTime > deadline;
+  const [data, setData] =
+    useState<AssignmentWithSubmissionResponse | null>(null);
+  const [loading, setLoading] = useState(true);
 
-        setSubmission({
-            submissionType: type,
-            content,
-            submissionTime,
-            lateFlag,
-            status: lateFlag ? "Late Submitted" : "Submitted",
-            marks: null,
-            feedback: null,
-        });
+  useEffect(() => {
+    if (!assignmentId) return;
+
+    const fetchData = async () => {
+      try {
+        const response =
+          await assignmentService.getAssignmentWithSubmission(
+            assignmentId
+          );
+        setData(response);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const evaluateDummy = () => {
-        if (!submission) return;
+    fetchData();
+  }, [assignmentId]);
 
-        setSubmission({
-            ...submission,
-            marks: Math.floor(Math.random() * 6) + 5,
-            feedback: "Well implemented. Minor improvements required.",
-            status: "Evaluated",
-        });
-    };
+  const handleSubmit = async (formData: FormData) => {
+    try {
+      await assignmentService.submit(assignmentId, formData);
 
-    return (
-        <div className={styles.container}>
-            <AssignmentHeader
-                title="Full Stack Authentication System"
-                deadline={deadline}
-                status={submission?.status || "Not Submitted"}
-            />
+      const updated =
+        await assignmentService.getAssignmentWithSubmission(
+          assignmentId
+        );
 
-            <AssignmentDescription />
+      setData(updated);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-            {!submission && <SubmissionSection onSubmit={handleSubmit} />}
+  if (loading) return <p>Loading...</p>;
+  if (!data) return <p>No assignment found</p>;
 
-            {submission && (
-                <>
-                    <SubmissionDetails submission={submission} />
-                    {submission.status !== "Evaluated" && (
-                        <button className={styles.evaluateBtn} onClick={evaluateDummy}>
-                            Evaluate Assignment
-                        </button>
-                    )}
-                    {submission.status === "Evaluated" && (
-                        <EvaluationSection submission={submission} />
-                    )}
-                </>
-            )}
-        </div>
-    );
+  const { assignment, submission, isSubmitted } = data;
+
+  return (
+    <div className={styles.container}>
+      <AssignmentHeader
+        title={assignment.title}
+        deadline={new Date(assignment.deadline)}
+        status={submission?.status || "Not Submitted"}
+      />
+
+      <AssignmentDescription description={assignment.description} />
+
+      {!isSubmitted && (
+        <SubmissionSection onSubmit={handleSubmit} />
+      )}
+
+      {isSubmitted && submission && (
+        <>
+          <SubmissionDetails submission={submission} />
+          {submission.status === "EVALUATED" && (
+            <EvaluationSection submission={submission} />
+          )}
+        </>
+      )}
+    </div>
+  );
 }

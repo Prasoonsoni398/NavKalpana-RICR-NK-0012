@@ -1,4 +1,7 @@
-/* --- Global Container --- */
+/* =====================================
+   DASHBOARD WRAPPER
+===================================== */
+
 .dashboardWrapper {
   display: flex;
   background-color: var(--bg-light); /* globals.css वाला हल्का बैकग्राउंड */
@@ -7,10 +10,7 @@
 }
 
 .mainContent {
-  flex: 1;
-  padding: 40px;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 30px 60px;
 }
 
 /* --- Breadcrumbs --- */
@@ -29,16 +29,36 @@
   font-weight: 700;
 }
 
-/* --- Layout Grid --- */
+/* =====================================
+   MAIN LAYOUT (2 COLUMN)
+===================================== */
+
 .assignmentLayout {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+/* =====================================
+   LEFT COLUMN
+===================================== */
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
   gap: 30px;
 }
 
 /* --- Hero Section --- */
 .heroSection {
-  margin-bottom: 30px;
+  padding: 20px 0;
+}
+
+.badgeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
 }
 
 .assignmentTag {
@@ -47,8 +67,7 @@
   padding: 6px 14px;
   border-radius: 8px;
   font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-weight: 600;
 }
 
 .heroSection h1 {
@@ -95,9 +114,10 @@
 
 /* --- File Chips (Attachments) --- */
 .attachmentGrid {
+  margin-top: 15px;
   display: flex;
-  gap: 12px;
-  margin-top: 25px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .fileChip {

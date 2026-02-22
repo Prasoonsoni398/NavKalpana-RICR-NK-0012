@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 export default function ProgressRing({ pct, size = 100, stroke = 7 }: { pct: number; size?: number; stroke?: number }) {
   const r = (size - stroke * 2) / 2;
   const circ = 2 * Math.PI * r;
