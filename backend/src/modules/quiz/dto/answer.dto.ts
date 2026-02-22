@@ -1,24 +1,29 @@
 import {
-  IsUUID,
+  IsInt,
   IsOptional,
   IsArray,
   ArrayNotEmpty,
-  IsString,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AnswerDto {
-  @IsUUID()
-  questionId: string;
+  @ApiProperty({
+    example: 5,
+    description: 'Question ID',
+  })
+  @IsInt()
+  questionId: number;
 
-  // For MCQ (single/multiple)
+  // For SINGLE / MULTIPLE questions
+  @ApiProperty({
+    example: [21],
+    description: 'Selected option IDs',
+    type: [Number],
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
-  @IsUUID('4', { each: true })
-  selectedOptionIds?: string[];
-
-  // For TEXT type question
-  @IsOptional()
-  @IsString()
-  textAnswer?: string;
+  @IsInt({ each: true })
+  selectedOptionIds?: number[];
 }

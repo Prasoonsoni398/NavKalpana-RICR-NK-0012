@@ -15,7 +15,7 @@ import { Lesson } from './lesson.entity';
 @Entity({ name: 'quizzes' })
 export class Quiz {
   @PrimaryGeneratedColumn('increment')
-  id: string;
+  id: number;
 
   @Column({ name: 'lesson_id',type:'int' })
   lessonId: number;

@@ -13,11 +13,12 @@ import { User } from './user.entity';
 @Index(['quizId'])
 @Index(['studentId'])
 export class QuizAttempt {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-  @Column({ name: 'quiz_id', type: 'uuid' })
-  quizId: string;
+  // Quiz FK
+  @Column({ name: 'quiz_id', type: 'int' })
+  quizId: number;
 
   @ManyToOne(() => Quiz, (quiz) => quiz.attempts, {
     onDelete: 'CASCADE',
@@ -25,8 +26,9 @@ export class QuizAttempt {
   @JoinColumn({ name: 'quiz_id' })
   quiz: Quiz;
 
-  @Column({ name: 'student_id', type: 'uuid' })
-  studentId: string;
+  // Student FK
+  @Column({ name: 'student_id', type: 'int' })
+  studentId: number;
 
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',

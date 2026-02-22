@@ -1,19 +1,20 @@
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Quiz } from '../../common/entities/quiz.entity';
-import { QuizQuestion, QuestionType } from '../../common/entities/quiz-question.entity';
+import { QuizQuestion } from '../../common/entities/quiz-question.entity';
 import { QuizOption } from '../../common/entities/quiz-option.entity';
 import { QuizAttempt } from '../../common/entities/quiz-attempt.entity';
+import { QuestionType } from '../../common/enums/question_type_enum';
 
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { SubmitQuizAttemptDto } from './dto/submit-quiz-attempt.dto';
 import { StartQuizAttemptDto } from './dto/start-quiz-attempt.dto';
+import { User } from 'src/common/entities/user.entity';
 
 @Injectable()
 export class QuizService {
@@ -29,35 +30,41 @@ export class QuizService {
 
     @InjectRepository(QuizAttempt)
     private readonly attemptRepo: Repository<QuizAttempt>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
   ) {}
 
-  async create(dto: CreateQuizDto): Promise<Quiz> {
-    const quiz = this.quizRepo.create({
-      ...dto,
-      totalQuestions: dto.questions.length,
-    });
+  // // Create Quiz
+  // async create(dto: CreateQuizDto): Promise<Quiz> {
+  //   const quiz = this.quizRepo.create({
+  //     lessonId: dto.lessonId,
+  //     title: dto.title,
+  //     durationMinutes: dto.durationMinutes,
+  //     isPublished: dto.isPublished,
+  //     totalQuestions: dto.questions.length,
+  //   });
 
-    const savedQuiz = await this.quizRepo.save(quiz);
+  //   const savedQuiz = await this.quizRepo.save(quiz);
 
-    for (const q of dto.questions) {
-      const question = await this.questionRepo.save({
-        quizId: savedQuiz.id,
-        question: q.question,
-        questionType: q.questionType,
-        explanation: q.explanation,
-      });
+  //   for (const q of dto.questions) {
+  //     const question = await this.questionRepo.save({
+  //       quizId: savedQuiz.id,
+  //       question: q.question,
+  //       questionType: q.questionType,
+  //       explanation: q.explanation,
+  //     });
 
-      for (const opt of q.options) {
-        await this.optionRepo.save({
-          questionId: question.id,
-          optionText: opt.optionText,
-          isCorrect: opt.isCorrect,
-        });
-      }
-    }
+  //     for (const opt of q.options) {
+  //       await this.optionRepo.save({
+  //         questionId: question.id,
+  //         optionText: opt.optionText,
+  //         isCorrect: opt.isCorrect,
+  //       });
+  //     }
+  //   }
 
-    return savedQuiz;
-  }
+  //   return savedQuiz;
+  // }
 
   async findAll(): Promise<Quiz[]> {
     return this.quizRepo.find({
@@ -65,23 +72,38 @@ export class QuizService {
     });
   }
 
-  async findOne(id: string): Promise<Quiz> {
-    const quiz = await this.quizRepo.findOne({
-      where: { id },
-      relations: ['questions', 'questions.options'],
-    });
+async findOne(id: number): Promise<any> {
+  const quiz = await this.quizRepo.findOne({
+    where: { id },
+    relations: ['questions', 'questions.options'],
+  });
 
-    if (!quiz) throw new NotFoundException('Quiz not found');
-    return quiz;
+  if (!quiz) {
+    throw new NotFoundException('Quiz not found');
   }
 
-  async startAttempt(dto: StartQuizAttemptDto): Promise<QuizAttempt> {
+  // Remove isCorrect from options
+  const sanitizedQuiz = {
+    ...quiz,
+    questions: quiz.questions.map((question) => ({
+      ...question,
+      options: question.options.map(({ isCorrect, ...option }) => option),
+    })),
+  };
+
+  return sanitizedQuiz;
+}
+
+  async startAttempt(dto: StartQuizAttemptDto,studentId:number): Promise<QuizAttempt> {
     const quiz = await this.quizRepo.findOneBy({ id: dto.quizId });
     if (!quiz) throw new NotFoundException('Quiz not found');
 
+    const user = await this.userRepo.findOneBy({ id: studentId ,role:'STUDENT' });
+    if (!user) throw new NotFoundException('Student not found');
+
     return this.attemptRepo.save({
       quizId: dto.quizId,
-      studentId: dto.studentId,
+      studentId: studentId,
       startedAt: new Date(),
     });
   }
@@ -98,18 +120,14 @@ export class QuizService {
       relations: ['questions', 'questions.options'],
     });
 
+    if (!quiz) throw new NotFoundException('Quiz not found');
+
     let correct = 0;
     let incorrect = 0;
 
     for (const answer of dto.answers) {
-      const question = quiz.questions.find(
-        (q) => q.id === answer.questionId,
-      );
+      const question = quiz.questions.find((q) => q.id === Number(answer.questionId));
       if (!question) continue;
-
-      if (question.questionType === QuestionType.TEXT) {
-        continue;
-      }
 
       const correctOptions = question.options
         .filter((o) => o.isCorrect)
@@ -143,36 +161,13 @@ export class QuizService {
     };
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const quiz = await this.quizRepo.findOneBy({ id });
     if (!quiz) throw new NotFoundException('Quiz not found');
+
     await this.quizRepo.remove(quiz);
     return { message: 'Quiz deleted successfully' };
   }
 
-  async seedDummyQuizzes() {
-    const existing = await this.quizRepo.count();
-    if (existing > 0) return;
 
-    for (let i = 1; i <= 5; i++) {
-      await this.create({
-        lessonId: '00000000-0000-0000-0000-000000000000',
-        title: `Sample Quiz ${i}`,
-        durationMinutes: 10,
-        isPublished: true,
-        questions: [
-          {
-            question: 'What is 2 + 2?',
-            questionType: QuestionType.SINGLE,
-            explanation: 'Basic math',
-            options: [
-              { optionText: '3', isCorrect: false },
-              { optionText: '4', isCorrect: true },
-              { optionText: '5', isCorrect: false },
-            ],
-          },
-        ],
-      });
-    }
-  }
 }

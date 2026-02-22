@@ -6,7 +6,8 @@ import {
   Param,
   Delete,
   UseGuards,
-  ParseUUIDPipe,
+  ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 
 import {
@@ -22,7 +23,10 @@ import { QuizService } from './quiz.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { StartQuizAttemptDto } from './dto/start-quiz-attempt.dto';
 import { SubmitQuizAttemptDto } from './dto/submit-quiz-attempt.dto';
-
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Quiz } from '../../common/entities/quiz.entity';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
@@ -33,57 +37,39 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Create new quiz' })
-  @ApiBody({ type: CreateQuizDto })
-  @ApiResponse({ status: 201, description: 'Quiz created', type: Quiz })
-  async create(@Body() dto: CreateQuizDto) {
-    return await this.quizService.create(dto);
-  }
+  // @Post()
+  // @ApiOperation({ summary: 'Create new quiz' })
+  // @ApiBody({ type: CreateQuizDto })
+  // @ApiResponse({ status: 201, type: Quiz })
+  // create(@Body() dto: CreateQuizDto) {
+  //   return this.quizService.create(dto);
+  // }
 
   @Get()
-  @ApiOperation({ summary: 'Get all quizzes' })
-  @ApiResponse({ status: 200, description: 'List of quizzes', type: [Quiz] })
-  async findAll() {
-    return await this.quizService.findAll();
+  findAll() {
+    return this.quizService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get quiz by ID' })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Quiz found', type: Quiz })
-  async findOne(
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return await this.quizService.findOne(id);
+  @ApiParam({ name: 'id', type: Number })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.quizService.findOne(id);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete quiz by ID' })
-  @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'Quiz deleted' })
-  async remove(
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return await this.quizService.remove(id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.quizService.remove(id);
   }
 
   @Post('start')
-  @ApiOperation({ summary: 'Start quiz attempt' })
-  @ApiBody({ type: StartQuizAttemptDto })
-  @ApiResponse({ status: 201, description: 'Attempt started' })
-  async startAttempt(@Body() dto: StartQuizAttemptDto) {
-    return await this.quizService.startAttempt(dto);
+  startAttempt(@Body() dto: StartQuizAttemptDto, @Req() req) {
+    const studentId = req.user.id;
+    if(!studentId) throw new NotFoundException('Student ID not found in request');
+    return this.quizService.startAttempt(dto, studentId);
   }
 
   @Post('submit')
-  @ApiOperation({ summary: 'Submit quiz attempt' })
-  @ApiBody({ type: SubmitQuizAttemptDto })
-  @ApiResponse({
-    status: 200,
-    description: 'Quiz submitted with score result',
-  })
-  async submit(@Body() dto: SubmitQuizAttemptDto) {
-    return await this.quizService.submitAttempt(dto);
+  submit(@Body() dto: SubmitQuizAttemptDto) {
+    return this.quizService.submitAttempt(dto);
   }
 }

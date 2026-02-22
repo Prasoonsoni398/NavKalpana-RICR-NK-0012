@@ -1,9 +1,12 @@
-import { IsUUID } from 'class-validator';
+import { IsInt } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class StartQuizAttemptDto {
-  @IsUUID()
-  quizId: string;
+  @ApiProperty({
+    example: 1,
+    description: 'Quiz ID',
+  })
+  @IsInt()
+  quizId: number;
 
-  @IsUUID()
-  studentId: string;
 }
