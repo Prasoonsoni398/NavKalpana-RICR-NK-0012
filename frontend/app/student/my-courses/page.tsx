@@ -1,3 +1,6 @@
+
+
+
 "use client";
 import CourseCard from "@/components/features/myCourseCards";
 import type{ CourseResponse } from "@/models/course.model";
@@ -102,3 +105,5 @@ const MyCourses = () => {
 };
 
 export default MyCourses;
+
+

@@ -9,8 +9,10 @@ import { MailModule } from './common/config/mail/mail.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CourseModule } from './modules/course/course.module';
+import { AssignmentModule } from './modules/assignment/assignment.module';
 import { CourseDetailModule } from './modules/course-detail/course-detail.module';
 import { QuizModule } from './modules/quiz/quiz.module';
+import { LearningSupportModule } from './modules/learning-support/learning-support.module';
 import mailConfig from './common/config/mail/mail.config'; // ✅ import the mail config
 
 @Module({
@@ -25,8 +27,10 @@ import mailConfig from './common/config/mail/mail.config'; // ✅ import the mai
     UsersModule,
     AuthModule,
     CourseModule,
+    AssignmentModule,
     CourseDetailModule,
     QuizModule,
+    LearningSupportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
