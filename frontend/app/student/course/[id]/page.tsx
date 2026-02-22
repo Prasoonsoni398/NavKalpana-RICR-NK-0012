@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { courseDetailsService } from '@/services/course-detail.services';
 import styles from '@/styles/CourseDetail.module.css';
 import { CourseDetail, Module, Lesson, Resource } from "@/models/course-detail.model"
+
 interface ActiveLesson {
   lesson: Lesson;
   moduleTitle: string;
@@ -64,7 +65,7 @@ function VideoPlayer({ resource }: { resource: Resource }) {
   );
   return (
     <div className={styles.videoWrap}>
-      <video ref={ref} controls autoPlay preload="metadata"
+      <video ref={ref} controls  preload="metadata"
         poster={resource.metadata?.thumbnailUrl ?? undefined}>
         <source src={resource.url} type="video/mp4" />
       </video>
@@ -105,7 +106,7 @@ function NotesViewer({ resource }: { resource: Resource }) {
   );
 }
 
-// ─── Tabbed Lesson Content ────────────────────────────────────────────────────
+// ─── Tabbed Lesson Content ────────────────────────────────────────────────
 function LessonContent({
   active, lessonStates, onComplete,
 }: {
@@ -146,8 +147,16 @@ function LessonContent({
   async function handleComplete() {
     setSaving(true);
     try {
+      // Call the API to mark lesson as complete
+      await courseDetailsService.markLessonComplete(lesson.id);
+      // Update local state after successful API call
       onComplete(lesson.id);
-    } finally { setSaving(false); }
+    } catch (error) {
+      console.error('Failed to mark lesson as complete:', error);
+      // Optionally show error toast/notification here
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -528,53 +537,55 @@ export default function CoursePage() {
   function toggleTheme() {
     setTheme(t => t === 'dark' ? 'light' : 'dark');
   }
-useEffect(() => {
-  if (!courseId) return;
 
-  (async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
+    if (!courseId) return;
 
-      const data = await courseDetailsService.getAll(courseId);
-      const course = Array.isArray(data) ? data[0] : data;
+    (async () => {
+      try {
+        setLoading(true);
 
-      // Map modules -> lessons -> resources to ensure type safety
-      const fixedModules = course.modules.map((mod: Module) => ({
-        ...mod,
-        lessons: mod.lessons.map((lesson: Lesson) => ({
-          ...lesson,
-          resources: lesson.resources.map((res: any) => ({
-            ...res,
-            type: ["video", "notes", "quiz", "codelab"].includes(res.type)
-              ? (res.type as "video" | "notes" | "quiz" | "codelab")
-              : "notes", // fallback default
+        const data = await courseDetailsService.getAll(courseId);
+        const course = Array.isArray(data) ? data[0] : data;
+
+        // Map modules -> lessons -> resources to ensure type safety
+        const fixedModules = course.modules.map((mod: Module) => ({
+          ...mod,
+          lessons: mod.lessons.map((lesson: Lesson) => ({
+            ...lesson,
+            resources: lesson.resources.map((res: any) => ({
+              ...res,
+              type: ["video", "notes", "quiz", "codelab"].includes(res.type)
+                ? (res.type as "video" | "notes" | "quiz" | "codelab")
+                : "notes", // fallback default
+            })),
           })),
-        })),
-      }));
+        }));
 
-      // Set course state with fixed modules
-      setCourse({
-        ...course,
-        modules: fixedModules,
-        thumbnailUrl: course.thumbnailUrl ?? null,
-      });
+        // Set course state with fixed modules
+        setCourse({
+          ...course,
+          modules: fixedModules,
+          thumbnailUrl: course.thumbnailUrl ?? null,
+        });
 
-      // Prepare lesson completion states
-      const states: Record<number, boolean> = {};
-      fixedModules.forEach((mod: Module) =>
-        mod.lessons.forEach((l: Lesson) => {
-          states[l.id] = l.completed;
-        })
-      );
-      setLessonStates(states);
+        // Prepare lesson completion states
+        const states: Record<number, boolean> = {};
+        fixedModules.forEach((mod: Module) =>
+          mod.lessons.forEach((l: Lesson) => {
+            states[l.id] = l.completed;
+          })
+        );
+        setLessonStates(states);
 
-    } catch (err: any) {
-      setError(err.message ?? "Failed to load course.");
-    } finally {
-      setLoading(false);
-    }
-  })();
-}, [courseId]);
+      } catch (err: any) {
+        setError(err.message ?? "Failed to load course.");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [courseId]);
+
   const handleSelect = useCallback((lesson: Lesson, moduleTitle: string, moduleIndex: number) => {
     setActiveLesson({ lesson, moduleTitle, moduleIndex });
   }, []);

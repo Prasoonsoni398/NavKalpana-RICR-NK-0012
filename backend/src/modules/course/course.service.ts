@@ -12,18 +12,18 @@ export class CourseService {
     private readonly courseRepository: Repository<Course>,
   ) {}
 
-  // ✅ Create Course
+  // Create Course
   async create(createCourseDto: CreateCourseDto): Promise<Course> {
     const course = this.courseRepository.create(createCourseDto);
     return await this.courseRepository.save(course);
   }
 
-  // ✅ Get All Courses
+  //Get All Courses
   async findAll(): Promise<Course[]> {
     return await this.courseRepository.find();
   }
 
-  // ✅ Get Course By ID
+  // Get Course By ID
   async findOne(id: number): Promise<Course> {
     const course = await this.courseRepository.findOne({
       where: { id },
