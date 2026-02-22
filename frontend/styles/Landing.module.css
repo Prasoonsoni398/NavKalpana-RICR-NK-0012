@@ -1,0 +1,395 @@
+/* src/styles/Landing.module.css */
+.heroWrapper {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
+              url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+}
+
+.content {
+  max-width: 800px;
+  padding: 20px;
+}
+
+.badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.title {
+  font-size: 4rem;
+  margin: 20px 0;
+  font-weight: 800;
+}
+
+.title span {
+  color: #3B82F6; /* आपका प्राइमरी ब्लू */
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #CBD5E1;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.btnGroup {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.primaryBtn {
+  background: white;
+  color: black;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.secondaryBtn {
+  background: #111827;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: 1px solid #374151;
+  cursor: pointer;
+}
+
+/* Stats Container */
+.statsSection {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 60px;
+  background: rgba(30, 41, 59, 0.5); /* Semi-transparent card feel */
+  padding: 30px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statNumber {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+}
+
+.statLabel {
+  color: #94A3B8;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Typing Effect Placeholder */
+.typingText {
+  font-size: 1.8rem;
+  color: #E2E8F0;
+  font-weight: 600;
+  margin-bottom: 20px;
+  border-right: 3px solid #3B82F6; /* Cursor effect */
+  display: inline-block;
+  padding-right: 5px;
+}
+
+/* Courses Section */
+.coursesSection {
+  background-color: #0F172A;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.sectionDesc {
+  color: #94A3B8;
+  max-width: 800px;
+  margin: 0 auto 50px;
+  line-height: 1.6;
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.courseCard {
+  background: #1E293B;
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: left;
+  border: 1px solid #334155;
+  transition: transform 0.3s ease;
+}
+
+.courseCard:hover {
+  transform: translateY(-10px);
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.cardContent {
+  padding: 20px;
+}
+
+.cardContent h3 {
+  color: white;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+.cardContent p {
+  color: #94A3B8;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Success Metrics Section */
+.successSection {
+  background-color: #0F172A; /* Dark background from your config */
+  padding: 80px 20px;
+  text-align: center;
+  border-top: 1px solid #334155;
+}
+
+.successTitle {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 60px;
+}
+
+.metricsGrid {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.metricItem {
+  flex: 1;
+  min-width: 250px;
+}
+
+.metricLabel {
+  color: #94A3B8;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.metricValue {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: white;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.metricSubText {
+  color: #64748B;
+  font-size: 1rem;
+}
+
+/* Core Offerings Section */
+.offeringsSection {
+  background-color: #0F172A;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.offeringGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  max-width: 1200px;
+  margin: 50px auto 0;
+}
+
+.offeringCard {
+  background: #1E293B;
+  padding: 40px 30px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  text-align: center;
+}
+
+.iconCircle {
+  width: 50px;
+  height: 50px;
+  background: #334155;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: #3B82F6;
+}
+
+/* Testimonials Section */
+.testimonialSection {
+  background-color: #0B0F1A; /* Slightly darker for contrast */
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.testimonialGrid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 50px;
+}
+
+.testiCard {
+  background: #1E293B;
+  padding: 35px;
+  border-radius: 12px;
+  max-width: 450px;
+  text-align: left;
+  position: relative;
+  border-left: 4px solid #3B82F6;
+}
+
+.quoteIcon {
+  font-size: 2rem;
+  color: #334155;
+  margin-bottom: 15px;
+}
+
+.userName {
+  display: block;
+  font-weight: 700;
+  margin-top: 20px;
+  color: white;
+}
+
+.userTitle {
+  color: #94A3B8;
+  font-size: 0.9rem;
+}
+
+/* Final CTA Section */
+.finalCta {
+  padding: 120px 20px;
+  text-align: center;
+  background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)), 
+              url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97');
+  background-size: cover;
+}
+
+.finalCta h2 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.loginButtonGroup {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 35px;
+  flex-wrap: wrap;
+}
+
+/* Student Button (Existing primaryBtn will work, but adding Link reset) */
+.primaryBtn {
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Teacher Button - Light Blue/Teal */
+.teacherBtn {
+  background: #0D9488;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s;
+  border: none;
+}
+
+.teacherBtn:hover {
+  background: #0F766E;
+}
+
+/* Admin Button - Subtle Outline or Grayish */
+.adminBtn {
+  background: #475569;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s;
+  border: 1px solid #64748B;
+}
+
+.adminBtn:hover {
+  background: #334155;
+}
+
+.loginButtonGroup {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 25px;
+  animation: slideDown 0.4s ease-out; /* खुलने का एनीमेशन */
+}
+
+.roleLink {
+  background: rgba(30, 41, 59, 0.8);
+  color: white;
+  padding: 12px 25px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  border: 2px solid #3B82F6; /* Default Student Blue */
+  transition: all 0.3s ease;
+}
+
+.roleLink:hover {
+  background: white;
+  color: black;
+  transform: translateY(-3px);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

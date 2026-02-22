@@ -11,6 +11,7 @@ import { setTokens, } from '@/redux/globalSlice';
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
 
+
 export default function StudentLogin() {
   const router = useRouter(); 
   const [form, setForm] = useState({
@@ -49,7 +50,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       throw new Error("Token not received from server");
     }
 
-    //  1. Save to Redux
+    //   Save to Redux
     dispatch(
       setTokens({
         accessToken: token,
@@ -63,7 +64,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     toast.success("Welcome 🎉 Login completed successfully!", { id: toastId });
 
     setTimeout(() => {
-      router.push("/student/my-courses");
+      router.push("/student/student-dashboard");
     }, 1000);
 
   } catch (err: any) {
