@@ -1,116 +1,134 @@
 .container {
-  background: var(--bg-white);
+  background: var(--bg-light); /* globals.css से लिया गया हल्का बैकग्राउंड */
   color: var(--text-primary);
   min-height: 100vh;
   padding-bottom: 60px;
 }
 
-/* HERO */
-
+/* --- HERO SECTION --- */
 .hero {
   text-align: center;
-  padding: 80px 20px;
+  padding: 100px 20px;
+  /* अब यह आपकी थीम के पीले रंग का प्रीमियम ग्रेडिएंट है */
   background: linear-gradient(
     135deg,
-    var(--primary-green),
-    var(--secondary-green)
+    var(--primary-yellow),
+    #FDE047 /* हल्का पीला */
   );
-  color: white;
+  color: #000000; /* पीले पर डार्क टेक्स्ट साफ़ दिखता है */
+  border-radius: 0 0 40px 40px;
+  margin-bottom: 40px;
 }
 
 .hero h1 {
-  font-size: 40px;
+  font-size: 48px;
+  font-weight: 900;
   margin-bottom: 20px;
+  letter-spacing: -1px;
 }
 
 .hero p {
-  font-size: 18px;
-  max-width: 600px;
+  font-size: 20px;
+  max-width: 650px;
   margin: auto;
+  opacity: 0.9;
+  font-weight: 500;
 }
 
-/* MISSION & VISION */
-
+/* --- MISSION & VISION --- */
 .missionVision {
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 30px;
   padding: 60px 20px;
   flex-wrap: wrap;
 }
 
 .card {
-  background: white;
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  width: 320px;
+  background: var(--bg-white);
+  padding: 40px 30px;
+  border-radius: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+  width: 350px;
   text-align: center;
   border: 1px solid var(--border-light);
+  transition: transform 0.3s ease;
 }
 
-/* FEATURES */
+.card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary-yellow);
+}
 
+/* --- FEATURES GRID --- */
 .features {
-  padding: 60px 20px;
+  padding: 80px 20px;
   text-align: center;
 }
 
 .featureGrid {
-  margin-top: 40px;
+  max-width: 1200px;
+  margin: 40px auto 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
 }
 
 .featureCard {
-  background: white;
-  padding: 25px;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  transition: 0.3s;
+  background: var(--bg-white);
+  padding: 35px 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
   border: 1px solid var(--border-light);
 }
 
 .featureCard:hover {
   transform: translateY(-5px);
-  border-color: var(--primary-green);
+  border-color: var(--primary-yellow);
+  box-shadow: 0 20px 25px -5px rgba(250, 204, 21, 0.1);
 }
 
-/* TEAM */
-
+/* --- TEAM SECTION --- */
 .team {
-  padding: 60px 20px;
+  padding: 80px 20px;
   text-align: center;
 }
 
 .teamGrid {
-  margin-top: 40px;
+  max-width: 1100px;
+  margin: 50px auto 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 25px;
+  gap: 30px;
 }
 
 .teamCard {
-  background: white;
-  padding: 25px;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  background: var(--bg-white);
+  padding: 30px;
+  border-radius: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border-light);
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
-  background: var(--secondary-green);
-  border-radius: 50%;
-  margin: 0 auto 15px;
+  width: 90px;
+  height: 90px;
+  background: #FEF9C3; /* हल्का पीला अवतार बैकग्राउंड */
+  border-radius: 22px; /* मॉडर्न स्क्वेर्कल शेप */
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--primary-yellow);
 }
 
-/* RESPONSIVE */
-
+/* --- RESPONSIVE --- */
 @media (max-width: 768px) {
   .hero h1 {
-    font-size: 30px;
+    font-size: 32px;
+  }
+  .hero {
+    padding: 60px 20px;
   }
 }

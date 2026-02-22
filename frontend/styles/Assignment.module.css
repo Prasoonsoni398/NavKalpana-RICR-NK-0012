@@ -3,30 +3,30 @@
 ===================================== */
 
 .dashboardWrapper {
-  background: var(--bg-white);
+  display: flex;
+  background-color: var(--bg-light); /* globals.css वाला हल्का बैकग्राउंड */
   min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
 
 .mainContent {
   padding: 30px 60px;
 }
 
-/* =====================================
-   BREADCRUMBS
-===================================== */
-
+/* --- Breadcrumbs --- */
 .breadcrumbs {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  margin-bottom: 24px;
   color: var(--text-secondary);
-  margin-bottom: 30px;
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .activeStep {
-  color: var(--primary-green);
-  font-weight: 600;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 /* =====================================
@@ -49,10 +49,7 @@
   gap: 30px;
 }
 
-/* =====================================
-   HERO SECTION
-===================================== */
-
+/* --- Hero Section --- */
 .heroSection {
   padding: 20px 0;
 }
@@ -65,43 +62,57 @@
 }
 
 .assignmentTag {
-  background: rgba(96, 152, 241, 0.1);
-  color: var(--primary-green);
-  padding: 6px 12px;
-  border-radius: 999px;
+  background: #FEF9C3; /* Light Yellow */
+  color: #854d0e; /* Darker Yellow/Gold for readability */
+  padding: 6px 14px;
+  border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
 }
 
-.statusPill {
-  padding: 6px 16px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
+.heroSection h1 {
+  font-size: 34px;
+  color: var(--text-primary);
+  font-weight: 800;
+  margin: 15px 0 5px;
+  letter-spacing: -0.5px;
 }
 
 .courseSubtitle {
-  font-size: 14px;
   color: var(--text-secondary);
+  font-size: 18px;
 }
 
-/* =====================================
-   INSTRUCTION SECTION
-===================================== */
+/* --- Card Perfection --- */
+.card {
+  background: var(--bg-white);
+  border-radius: 24px;
+  padding: 30px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0px 20px 25px -5px rgba(0, 0, 0, 0.03);
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 25px 30px -5px rgba(0, 0, 0, 0.05);
+}
 
 .sectionHeader {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.descText {
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.6;
+.sectionHeader h3 {
+  font-size: 20px;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
+/* --- File Chips (Attachments) --- */
 .attachmentGrid {
   margin-top: 15px;
   display: flex;
@@ -112,609 +123,149 @@
 .fileChip {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: #0F172A;
+  gap: 10px;
+  background: #F8FAFC;
+  padding: 12px 18px;
+  border-radius: 14px;
+  color: var(--text-primary);
   border: 1px solid var(--border-light);
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 13px;
-  transition: var(--transition-speed);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .fileChip:hover {
-  border-color: var(--primary-green);
+  background: #FEF9C3;
+  border-color: var(--primary-yellow);
+  transform: translateY(-2px);
 }
 
-.downloadIcon {
-  margin-left: auto;
-  cursor: pointer;
-}
-
-/* =====================================
-   SAVED SUBMISSIONS
-===================================== */
-
-.showSection {
-  margin-top: 10px;
-}
-
-.sectionTitle {
-  margin-bottom: 15px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.savedCard {
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 18px;
-  margin-bottom: 15px;
-  transition: var(--transition-speed);
-}
-
-.savedCard:hover {
-  border-color: var(--primary-green);
-}
-
-.savedHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.boldTitle {
-  font-weight: 600;
-  flex: 1;
-}
-
-.timeLabel {
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-
-.savedContent {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-}
-
-.typeTag {
-  color: var(--primary-green);
-  font-weight: 600;
-}
-
-.statusDone {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #22c55e;
-}
-
-/* =====================================
-   RIGHT COLUMN
-===================================== */
-
-.rightCol {
-  position: relative;
-}
-
-.stickyContainer {
-  position: sticky;
-  top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-/* =====================================
-   DEADLINE CARD
-===================================== */
-
+/* --- Submission Tool: Deadline Card --- */
 .deadlineCard {
-  background: rgba(96, 152, 241, 0.1);
-  border: 1px solid rgba(96, 152, 241, 0.2);
-  padding: 16px;
-  border-radius: 14px;
-}
-
-.deadlineInfo {
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); /* Navy Gradient */
+  color: white;
+  padding: 24px;
+  border-radius: 20px;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2);
 }
 
-/* =====================================
-   SUBMIT CARD
-===================================== */
-
-.submitCard {
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 20px;
+.deadlineInfo strong {
+  color: var(--primary-yellow); /* पीला टाइम हाइलाइट होगा */
+  font-size: 18px;
+  display: block;
 }
 
-.submissionForm {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-/* =====================================
-   TYPE TABS
-===================================== */
-
+/* --- Submission Switcher (Tabs) --- */
 .typeTabs {
   display: flex;
-  gap: 10px;
+  background: #F1F5F9;
+  padding: 6px;
+  border-radius: 15px;
+  margin-bottom: 25px;
 }
 
 .typeTabs button {
   flex: 1;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
-  background: #0F172A;
+  border: none;
+  background: transparent;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--text-secondary);
-  font-size: 12px;
   cursor: pointer;
-  transition: var(--transition-speed);
-}
-
-.typeTabs button:hover {
-  border-color: var(--primary-green);
+  border-radius: 12px;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .activeTab {
-  background: var(--primary-green) !important;
-  color: white !important;
+  background: var(--bg-white) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--primary-yellow) !important; /* सक्रिय टैब पर पीला बॉर्डर */
 }
 
-/* =====================================
-   DROPZONE
-===================================== */
-
+/* --- Dropzone (File Upload) --- */
 .dropzone {
   border: 2px dashed var(--border-light);
-  border-radius: 14px;
-  padding: 25px;
+  border-radius: 20px;
+  padding: 40px 20px;
+  background: #F8FAFC;
   text-align: center;
-  transition: var(--transition-speed);
+  transition: 0.3s;
   cursor: pointer;
+  position: relative;
 }
 
 .dropzone:hover {
-  border-color: var(--primary-green);
-  background: rgba(96, 152, 241, 0.05);
+  border-color: var(--primary-yellow);
+  background: rgba(250, 204, 21, 0.05);
 }
 
-.dropLabel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.hiddenInput {
-  display: none;
-}
-
-/* =====================================
-   TEXTAREA
-===================================== */
-
-.proTextArea {
-  background: #0F172A;
-  border: 1px solid var(--border-light);
-  border-radius: 10px;
-  padding: 12px;
-  min-height: 120px;
-  color: var(--text-primary);
-  font-size: 14px;
-  resize: none;
-  transition: var(--transition-speed);
-}
-
-.proTextArea:focus {
-  outline: none;
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 2px rgba(96, 152, 241, 0.2);
-}
-
-/* =====================================
-   PROFESSIONAL INPUT STYLE
-===================================== */
-
-.proInput {
+/* --- Input & Textarea Styling --- */
+.proTextArea, .proInput {
   width: 100%;
-  padding: 14px 16px;
-
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid var(--border-light);
+  padding: 16px;
   border-radius: 12px;
-
-  color: var(--text-primary);
-  font-size: 14px;
-  font-weight: 500;
-
-  transition: all 0.3s ease;
-}
-
-.proInput::placeholder {
-  color: var(--text-secondary);
-  opacity: 0.7;
-  letter-spacing: 0.5px;
-}
-
-.proInput:focus {
-  outline: none;
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 3px rgba(96, 152, 241, 0.2);
-  background: rgba(15, 23, 42, 1);
-}
-
-/* =====================================
-   SUBMISSION META
-===================================== */
-
-.submissionMeta {
-  margin-top: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #10B981;
-}
-
-
-/* =====================================
-   PREMIUM SUBMIT BUTTON
-===================================== */
-
-.primaryBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  width: 100%;
-  padding: 14px 18px;
-
-  border-radius: 12px;
-  border: none;
-
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  background: linear-gradient(
-    135deg,
-    var(--primary-green),
-    #3b82f6
-  );
-
-  color: white;
-  box-shadow: 0 10px 25px rgba(96, 152, 241, 0.35);
-}
-
-.primaryBtn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 35px rgba(96, 152, 241, 0.5);
-}
-
-.primaryBtn:active {
-  transform: scale(0.98);
-}
-
-.primaryBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-SUBMISSION DETAILS
-/* ================================
-   PAGE WRAPPER
-================================ */
-
-.container {
-  background: var(--bg-white);
-  min-height: 100vh;
-  padding: 40px 60px;
-  color: var(--text-primary);
-}
-
-/* ================================
-   BASE CARD STYLE
-================================ */
-
-.card {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-radius: 18px;
-  padding: 30px;
-  margin-bottom: 30px;
-  border: 1px solid rgba(96, 152, 241, 0.2);
-  transition: var(--transition-speed);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  border-color: var(--primary-green);
-  box-shadow: 0 20px 50px rgba(96, 152, 241, 0.25);
-}
-
-/* ================================
-   HEADER SECTION
-================================ */
-
-.header {
-  margin-bottom: 30px;
-}
-
-.header h1 {
-  font-size: 28px;
-  margin-bottom: 12px;
-  color: var(--primary-green);
-  font-weight: 600;
-}
-
-.meta {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-/* ================================
-   BADGES
-================================ */
-
-.badge {
-  padding: 6px 14px;
-  border-radius: 30px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-/* Status Variations */
-
-.NotSubmitted {
-  background: #334155;
-  color: #cbd5e1;
-}
-
-.Submitted {
-  background: rgba(34, 197, 94, 0.15);
-  color: #22c55e;
-}
-
-.LateSubmitted {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
-}
-
-.Evaluated {
-  background: rgba(96, 152, 241, 0.15);
-  color: var(--primary-green);
-}
-
-/* ================================
-   FORM SECTION
-================================ */
-
-.formWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.inputGroup label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.formInput {
-  background: #0F172A;
-  border: 1px solid var(--border-light);
-  padding: 12px 14px;
-  border-radius: 10px;
-  font-size: 14px;
-  color: var(--text-primary);
-  transition: var(--transition-speed);
-}
-
-.formInput:focus {
-  outline: none;
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 2px rgba(96, 152, 241, 0.2);
-}
-
-/* ================================
-   BUTTON
-================================ */
-
-.primaryBtn {
-  background: var(--primary-green);
-  color: white;
-  padding: 12px 18px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-speed);
-}
-
-.primaryBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(96, 152, 241, 0.3);
-}
-
-/* ================================
-   SUBMISSION DETAILS
-================================ */
-
-.submissionCard {
-  border-left: 4px solid var(--primary-green);
-}
-
-.headerRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.statusTag {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  background: rgb(59, 191, 59);
-  background: linear-gradient(0deg, rgb(59, 191, 59) 0%, rgb(34, 197, 94) 100%);
-  color: white;
-}
-
-/* Info Grid */
-
-.infoGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 18px;
-}
-
-.infoBox {
-  background: #0F172A;
-  border: 1px solid var(--border-light);
-  padding: 22px;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-  .label {
-  font-size: 13px;
-  color: var(--text-secondary);
-  letter-spacing: 0.5px;
-}
-
-.value {
+  border: 2px solid var(--border-light);
+  background-color: #F8FAFC;
   font-size: 15px;
-  font-weight: 600;
   color: var(--text-primary);
+  transition: all 0.3s ease;
+  outline: none;
 }
 
-  /* Late Badge */
-.lateBadge {
-  display: inline-flex;   
-  align-items: center;
-  justify-content: center;
-  padding: 6px 16px;
-  border-radius: 999px;
+.proTextArea:focus, .proInput:focus {
+  border-color: var(--primary-yellow);
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.1);
+}
+
+/* --- Primary Button --- */
+.primaryBtn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 18px;
+  border-radius: 16px;
+  border: none;
+  background: var(--primary-yellow);
+  color: #000;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0px 10px 20px -5px rgba(250, 204, 21, 0.4);
+  transition: 0.3s;
+}
+
+.primaryBtn:hover {
+  background: var(--primary-yellow-hover);
+  transform: translateY(-3px);
+  box-shadow: 0px 15px 25px -5px rgba(250, 204, 21, 0.5);
+}
+
+/* --- Saved Submission State --- */
+.savedCard {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  border-left: 6px solid var(--primary-yellow);
+  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.statusDone {
+  color: #10B981; /* Green for Success */
   font-size: 13px;
-  font-weight: 600;
-  width: fit-content;    
-}
-
-  .lateYes {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-  }
-
-  .lateNo {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-  }
-
-  /* ================================
-   EVALUATION SECTION
-================================ */
-
-  .evaluationCard {
-    text-align: center;
-    border-top: 3px solid var(--primary-green);
-  }
-
-  .progressWrapper {
-    position: relative;
-    display: inline-block;
-    margin: 30px 0;
-  }
-
-  .progressText {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .score {
-    font-size: 34px;
-    font-weight: 700;
-  }
-
-  .total {
-    font-size: 16px;
-    color: var(--text-secondary);
-  }
-
-  .feedbackCard {
-    margin-top: 20px;
-    background: #0F172A;
-    border: 1px solid var(--border-light);
-    padding: 16px;
-    border-radius: 12px;
-  }
-
-  .feedbackCard h4 {
-    margin-bottom: 8px;
-    color: var(--primary-green);
-  }
-
-  /* ================================
-   DESCRIPTION
-================================ */
-
-  .card h2 {
-    margin-bottom: 14px;
-    font-weight: 600;
-    color: var(--primary-green);
-  }
-
-
-/* =====================================
-   RESPONSIVE
-===================================== */
-
-@media (max-width: 1024px) {
-  .assignmentLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .mainContent {
-    padding: 20px;
-  }
-
-  .stickyContainer {
-    position: static;
-  }
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }

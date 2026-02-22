@@ -4,59 +4,62 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #0F172A; /* Your Dark Background */
+  background-color: var(--bg-light); /* Light Grey-White Background */
   padding: 20px;
 }
 
 .authCard {
-  background-color: #1E293B; /* Card Background */
+  background-color: var(--bg-white); /* Pure White Card */
   padding: 40px;
-  border-radius: 16px;
+  border-radius: 24px;
   width: 100%;
   max-width: 450px;
-  border: 1px solid #334155;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 }
 
 .title {
-  color: #E2E8F0;
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: 30px;
-  font-size: 24px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .toggleContainer {
   display: flex;
-  background: #0F172A;
-  padding: 5px;
-  border-radius: 8px;
+  background: #F1F5F9;
+  padding: 6px;
+  border-radius: 14px;
   position: relative;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
 
 .toggleBtn {
   flex: 1;
   background: transparent;
   border: none;
-  color: #94A3B8;
-  padding: 10px;
+  color: var(--text-secondary);
+  padding: 12px;
   cursor: pointer;
   z-index: 1;
-  font-weight: 600;
+  font-weight: 700;
   transition: 0.3s;
 }
 
 .activeToggle {
-  color: white;
+  color: #000; /* एक्टिव होने पर ब्लैक टेक्स्ट */
 }
 
 .toggleSlider {
   position: absolute;
-  width: calc(50% - 5px);
-  height: calc(100% - 10px);
-  background: #3B82F6; /* Primary Blue */
-  border-radius: 6px;
-  transition: 0.3s ease;
+  width: calc(50% - 6px);
+  height: calc(100% - 12px);
+  background: var(--primary-yellow); /* Blue से बदलकर Yellow कर दिया */
+  border-radius: 10px;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 10px rgba(250, 204, 21, 0.3);
 }
 
 .sliderRight {
@@ -69,67 +72,93 @@
 
 .formGroup label {
   display: block;
-  color: #94A3B8;
+  color: var(--text-primary);
   margin-bottom: 8px;
   font-size: 14px;
+  font-weight: 600;
 }
 
-/* Material UI TextField Customization for Dark Mode */
+/* Material UI Customization for Light Theme */
 .formGroup :global(.MuiOutlinedInput-root) {
-  color: white;
-  background: #0F172A;
+  color: var(--text-primary);
+  background: #F8FAFC;
+  border-radius: 12px;
 }
-.formGroup :global(.MuiInputLabel-root) {
-  color: #94A3B8;
-}
+
 .formGroup :global(.MuiOutlinedInput-notchedOutline) {
-  border-color: #334155;
+  border-color: var(--border-light);
+}
+
+.formGroup :global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
+  border-color: var(--primary-yellow);
 }
 
 .loginBtn {
   width: 100%;
-  background: #3B82F6;
-  color: white;
+  background: var(--primary-yellow);
+  color: #000;
   border: none;
-  padding: 14px;
-  border-radius: 8px;
-  font-weight: bold;
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 16px;
   cursor: pointer;
   margin-top: 10px;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px -5px rgba(250, 204, 21, 0.4);
 }
 
 .loginBtn:hover {
-  background: #2563EB;
+  background: var(--primary-yellow-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px -5px rgba(250, 204, 21, 0.5);
 }
 
 .divider {
   text-align: center;
-  color: #64748B;
-  margin: 20px 0;
-  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 25px 0;
+  font-size: 13px;
+  position: relative;
 }
+
+.divider::before, .divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 30%;
+  height: 1px;
+  background: var(--border-light);
+}
+
+.divider::before { left: 0; }
+.divider::after { right: 0; }
 
 .googleBtn {
   width: 100%;
-  height: 10%;
   background: white;
-  color: #1F2937;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  padding: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.googleBtn:hover {
+  background: #F8FAFC;
+  border-color: var(--text-secondary);
 }
 
 .googleBtn img {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
-.errorMsg { color: #EF4444; text-align: center; font-size: 14px; }
-.successMsg { color: #22C55E; text-align: center; font-size: 14px; }
+.errorMsg { color: #EF4444; text-align: center; font-size: 14px; margin-top: 10px; font-weight: 500; }
+.successMsg { color: #10B981; text-align: center; font-size: 14px; margin-top: 10px; font-weight: 500; }

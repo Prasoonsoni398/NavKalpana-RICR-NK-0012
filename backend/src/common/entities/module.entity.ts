@@ -13,7 +13,7 @@ import { Lesson } from './lesson.entity';
 
 @Entity({ name: 'modules' })
 export class Module {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
   @ManyToOne(() => Course, (course) => course.modules)

@@ -1,0 +1,535 @@
+/* ─────────────────────────────────────────────
+   quiz.module.css
+   Yellow Theme — maps to your global CSS variables
+   ─────────────────────────────────────────────
+
+   Required globals.css variables:
+   --primary-yellow          → e.g. #FACC15
+   --primary-yellow-hover    → e.g. #EAB308
+   --bg-light                → page background
+   --bg-white                → card background
+   --text-primary            → main text colour
+   --text-secondary          → muted text colour
+   --border-light            → border colour
+   --shadow-sm               → card shadow
+───────────────────────────────────────────── */
+
+/* ── Theme variable mapping ─────────────────── */
+.wrapper,
+.centered,
+.card {
+  --color-primary:       var(--primary-yellow);
+  --color-primary-hover: var(--primary-yellow-hover);
+  --color-bg:            var(--bg-light);
+  --color-surface:       var(--bg-white);
+  --color-surface-alt:   #F1F5F9;
+  --color-text:          var(--text-primary);
+  --color-text-muted:    var(--text-secondary);
+  --color-border:        var(--border-light);
+  --color-success:       #22C55E;
+  --color-danger:        #EF4444;
+  --color-warning:       #FACC15;
+  --radius-card:         16px;
+  --radius-btn:          10px;
+  --shadow-card:         var(--shadow-sm);
+}
+
+/* ── Layout ─────────────────────────────────── */
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: var(--color-bg);
+}
+
+.centered {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background-color: var(--color-bg);
+}
+
+/* ── Card ────────────────────────────────────── */
+.card {
+  width: 100%;
+  max-width: 660px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 40px 44px;
+  box-shadow: var(--shadow-card);
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 28px 20px;
+  }
+}
+
+/* ── Badge ───────────────────────────────────── */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  border-radius: 999px;
+  padding: 4px 14px;
+  margin-bottom: 20px;
+}
+
+.gradeGood {
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
+.gradeOk {
+  color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+  border-color: color-mix(in srgb, var(--color-warning) 35%, transparent);
+}
+
+.gradeBad {
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
+}
+
+/* ── Typography ─────────────────────────────── */
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 20px;
+}
+
+.description {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.75;
+  margin: 0 0 32px;
+}
+
+/* ── Meta row (lobby) ───────────────────────── */
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 8px 14px;
+}
+
+.metaIcon {
+  font-size: 15px;
+}
+
+/* ── Buttons ─────────────────────────────────── */
+.btnPrimary {
+  width: 100%;
+  padding: 14px 28px;
+  background: var(--color-primary);
+  color: var(--color-text);           /* dark text on yellow */
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  transition: background 0.18s, transform 0.15s, opacity 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--color-primary) 60%, #000);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--color-primary) 60%, #000);
+}
+
+.btnPrimary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-primary) 60%, #000);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnGhost {
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+
+.btnGhost:hover:not(:disabled) {
+  color: var(--color-text);
+  border-color: color-mix(in srgb, var(--color-border) 40%, var(--color-text));
+  background: var(--color-surface);
+}
+
+.btnGhost:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btnSubmit {
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);           /* dark text on yellow */
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: background 0.18s, opacity 0.15s;
+  white-space: nowrap;
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--color-primary) 60%, #000);
+}
+
+.btnSubmit:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.btnSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Top bar (quiz phase) ────────────────────── */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.counter {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.counterTotal {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.timer {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
+  transition: color 0.3s;
+  /* yellow timer pill */
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border-radius: 8px;
+  padding: 4px 12px;
+}
+
+.timerDanger {
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
+  animation: timerPulse 1s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.answered {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ── Progress bar ────────────────────────────── */
+.progressTrack {
+  height: 6px;
+  background: var(--color-surface-alt);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 32px;
+  border: 1px solid var(--color-border);
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Question ────────────────────────────────── */
+.qLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0 0 10px;
+}
+
+.question {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+
+.typeHint {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin: 0 0 22px;
+}
+
+/* ── Options ─────────────────────────────────── */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 13px 16px;
+  background: var(--color-surface-alt);
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.option:hover {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-alt));
+}
+
+.optionSelected {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  box-shadow:
+    0 0 0 1px var(--color-primary),
+    0 2px 8px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+.optionLetter {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.optionLetterSelected {
+  background: var(--color-primary);
+  color: var(--color-text);           /* dark text on yellow badge */
+}
+
+.optionText {
+  font-size: 14px;
+  color: var(--color-text);
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* ── Navigation ──────────────────────────────── */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 4px;
+  border-top: 1px solid var(--color-border);
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-border);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s, width 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+.dotActive {
+  background: var(--color-primary);
+  width: 22px;
+}
+
+.dotDone {
+  background: color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
+
+/* ── Result ──────────────────────────────────── */
+.scoreRing {
+  width: 148px;
+  height: 148px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 32px;
+}
+
+.scoreInner {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.scoreNum {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.scoreLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.statsRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  flex: 1;
+  padding: 16px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statCorrect   { border-color: color-mix(in srgb, var(--color-success) 35%, transparent); }
+.statIncorrect { border-color: color-mix(in srgb, var(--color-danger)  35%, transparent); }
+.statTotal     { border-color: var(--color-border); }
+
+.statVal {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.statCorrect  .statVal { color: var(--color-success); }
+.statIncorrect .statVal { color: var(--color-danger); }
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ── Loading & Error ─────────────────────────── */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.errorIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
+  color: var(--color-danger);
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorText {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
