@@ -27,7 +27,7 @@ import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { SubmitAssignmentDto } from './dto/update-submit-assignment.dto';
 import { EvaluateAssignmentDto } from './dto/evaluate-assignment.dto';
 import { Assignment } from '../../common/entities/assignment.entity';
-import { Submission } from '../../common/entities/submission.entity';
+import { AssignmentSubmission } from 'src/common/entities/assignment-submission.entity';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('Assignments')
@@ -63,19 +63,7 @@ export class AssignmentController {
     return this.assignmentService.findOne(id);
   }
 
-  // ✅ UPDATE ASSIGNMENT
-  // @Patch(':id')
-  // @ApiOperation({ summary: 'Update assignment by ID' })
-  // @ApiParam({ name: 'id', type: Number })
-  // @ApiBody({ type: UpdateAssignmentDto })
-  // async update(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Body() dto: UpdateAssignmentDto,
-  // ) {
-  //   return this.assignmentService.update(id, dto);
-  // }
-
-  // ✅ DELETE ASSIGNMENT
+  //  DELETE ASSIGNMENT
   @Delete(':id')
   @ApiOperation({ summary: 'Delete assignment by ID' })
   @ApiParam({ name: 'id', type: Number })
@@ -83,11 +71,26 @@ export class AssignmentController {
     return this.assignmentService.remove(id);
   }
 
-  // ✅ SUBMIT ASSIGNMENT
+  @Get('my-assignment/:assignmentId')
+  @ApiOperation({ summary: 'Get assignment with submission details (logged-in user)' })
+  @ApiParam({ name: 'assignmentId', type: Number })
+  async getMyAssignment(
+    @Param('assignmentId', ParseIntPipe) assignmentId: number,
+    @Req() req: any,
+  ) {
+    const userId = req.user?.id || req.user?.userId;
+
+    if (!userId) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+
+    return this.assignmentService.findAssignmentWithSubmission(assignmentId, userId);
+  }
+
+  // SUBMIT ASSIGNMENT
   @Post(':id/submit')
   @ApiOperation({ summary: 'Submit assignment (logged-in user)' })
   @ApiBody({ type: SubmitAssignmentDto })
-  @ApiResponse({ status: 201, type: Submission })
   async submit(
     @Param('id', ParseIntPipe) assignmentId: number,
     @Req() req: any,
@@ -102,7 +105,7 @@ export class AssignmentController {
     return this.assignmentService.submit(assignmentId, userId, dto);
   }
 
-  // ✅ EVALUATE SUBMISSION
+  //  EVALUATE SUBMISSION
   @Patch('evaluate/:submissionId')
   @ApiOperation({ summary: 'Evaluate submission (Instructor only)' })
   @ApiParam({ name: 'submissionId', type: Number })

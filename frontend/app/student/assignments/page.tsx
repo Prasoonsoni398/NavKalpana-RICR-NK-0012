@@ -143,7 +143,7 @@ export default function AssignmentPage() {
                     </div>
                     <p className={styles.savedContent}>
                       <span className={styles.typeTag}>
-                        {(item.type || 'FILE').toUpperCase()}:
+                        {(item.type || 'FILE').toUpperCase()}:  
                       </span>
                     </p>
                     <div className={styles.statusDone}><CheckCircle size={14} /> {item.status}</div>

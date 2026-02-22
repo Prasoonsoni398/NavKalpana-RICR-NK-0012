@@ -12,6 +12,7 @@ import { CourseModule } from './modules/course/course.module';
 import { AssignmentModule } from './modules/assignment/assignment.module';
 import { CourseDetailModule } from './modules/course-detail/course-detail.module';
 import { LearningSupportModule } from './modules/learning-support/learning-support.module';
+import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import mailConfig from './common/config/mail/mail.config'; // ✅ import the mail config
 
 @Module({
@@ -29,6 +30,7 @@ import mailConfig from './common/config/mail/mail.config'; // ✅ import the mai
     AssignmentModule,
     CourseDetailModule,
     LearningSupportModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
