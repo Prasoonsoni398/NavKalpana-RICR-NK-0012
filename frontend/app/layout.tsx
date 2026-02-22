@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EduLeaf | Premium Learning Platform",
+  title: "Skillverse | Premium Learning Platform",
   description: "Master your skills with EduLeaf's premium courses",
 };
 
