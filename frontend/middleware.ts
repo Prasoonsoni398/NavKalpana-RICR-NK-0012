@@ -17,7 +17,7 @@ export function middleware(request: NextRequest) {
   // Prevent logged-in users from accessing login page
   if (pathname.startsWith("/auth/student-login") && token) {
     return NextResponse.redirect(
-      new URL("/student/dashboard", request.url)
+      new URL("/student/student-dashboard", request.url)
     );
   }
 

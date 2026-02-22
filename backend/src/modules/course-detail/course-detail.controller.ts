@@ -1,22 +1,50 @@
-import { Controller, Get, Param, Query, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Query,
+  ParseIntPipe,
+  Body,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { CourseDetailService } from './course-detail.service';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('course-detail')
 export class CourseDetailController {
   constructor(private readonly courseDetailService: CourseDetailService) {}
 
   /**
    * GET /course-detail/:id?studentId=123
-   * Returns full course detail with modules, lessons, resources, and progress
    */
   @Get(':id')
   async getCourseDetail(
     @Param('id', ParseIntPipe) id: number,
-    @Query('studentId') studentId?: string,
+    @Req() req: any,
   ) {
+    const studentId = req.user?.id || req.user?.userId;
     return this.courseDetailService.getCourseDetail(
       id,
-      studentId ? parseInt(studentId, 10) : undefined,
+      studentId
+    );
+  }
+
+  /**
+   * POST /course-detail/lessons/:lessonId/complete
+   * Body: { studentId: number }
+   */
+  @Post('lessons/:lessonId/complete')
+  async markLessonComplete(
+    @Param('lessonId') lessonId: string, 
+     @Req() req: any,
+  ) {
+    const studentId = req.user?.id || req.user?.userId;
+    return this.courseDetailService.markLessonCompleted(
+      lessonId,
+      studentId,
     );
   }
 }
