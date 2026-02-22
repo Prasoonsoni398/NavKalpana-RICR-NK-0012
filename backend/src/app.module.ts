@@ -10,6 +10,7 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CourseModule } from './modules/course/course.module';
 import { CourseDetailModule } from './modules/course-detail/course-detail.module';
+import { QuizModule } from './modules/quiz/quiz.module';
 import mailConfig from './common/config/mail/mail.config'; // ✅ import the mail config
 
 @Module({
@@ -25,6 +26,7 @@ import mailConfig from './common/config/mail/mail.config'; // ✅ import the mai
     AuthModule,
     CourseModule,
     CourseDetailModule,
+    QuizModule,
   ],
   controllers: [AppController],
   providers: [AppService],
