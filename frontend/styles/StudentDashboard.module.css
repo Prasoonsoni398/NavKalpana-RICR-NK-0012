@@ -1,4 +1,4 @@
-/* --- Global Reset & Wrapper --- */
+--- Global Reset & Wrapper ---
 .dashboardWrapper {
   display: flex;
   background-color: #F7F9FC;
@@ -427,4 +427,768 @@
 .viewCourseBtn:hover {
   background-color: #eab308; /* Slightly darker yellow on hover */
   
+}
+
+/* --- Global Reset & Wrapper --- */
+.dashboardWrapper {
+  display: flex;
+  background-color: #F8FAFC; /* हल्का सा सफ़ेद-नीला शेड */
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: #1E293B;
+  overflow: hidden;
+}
+
+/* --- 1. Sidebar Styling --- */
+.sidebar {
+  width: 260px;
+  background: white;
+  padding: 30px 15px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #E2E8F0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 100;
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0F172A;
+  padding: 0 15px 40px;
+  letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo::before {
+  content: '';
+  width: 12px;
+  height: 25px;
+  background: #FACC15;
+  border-radius: 4px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: #64748B;
+  font-weight: 600;
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 8px;
+}
+
+.navItem:hover {
+  background: #FEFCE8;
+  color: #CA8A04; /* थोड़ा डार्क पीला ताकि साफ़ दिखे */
+  transform: translateX(8px);
+}
+
+.navActive {
+  background: #FACC15 !important;
+  color: #000 !important;
+  box-shadow: 0 10px 20px -5px rgba(250, 204, 21, 0.4);
+}
+
+/* --- 2. Main Content & Header --- */
+.mainContent {
+  flex: 1;
+  padding: 30px 40px;
+  overflow-y: auto;
+  animation: fadeInPage 0.8s ease-out;
+}
+
+.greetingText {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+/* --- 3. Bento Grid (Animations Fix) --- */
+.bentoGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 35px;
+}
+
+.bentoCard {
+  background: white;
+  padding: 25px;
+  border-radius: 28px;
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05);
+  transition: all 0.4s ease;
+  animation: slideUp 0.6s ease-out backwards;
+}
+
+/* स्टैगर एनीमेशन: कार्ड्स एक-एक करके आएँगे */
+.bentoCard:nth-child(1) { animation-delay: 0.1s; }
+.bentoCard:nth-child(2) { animation-delay: 0.2s; }
+.bentoCard:nth-child(3) { animation-delay: 0.3s; }
+
+.bentoCard:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 25px 30px -15px rgba(0,0,0,0.1);
+  border-color: #FACC15;
+}
+
+.scoreCard {
+  background: #1E293B;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* कार्ड के पीछे हल्का ग्लो */
+.scoreCard::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  background: rgba(250, 204, 21, 0.1);
+  filter: blur(50px);
+  border-radius: 50%;
+}
+
+/* --- 4. Charts & Progress --- */
+.barFill {
+  width: 100%;
+  background: linear-gradient(180deg, #FDE047 0%, #FACC15 100%);
+  border-radius: 8px 8px 3px 3px;
+  animation: growHeight 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+  transform-origin: bottom;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #FDE047, #FACC15);
+  border-radius: 99px;
+  transition: width 1s ease-in-out;
+}
+
+/* --- 5. Course Cards & Buttons --- */
+.courseCard {
+  background: white;
+  padding: 20px;
+  border-radius: 24px;
+  border: 1px solid #F1F5F9;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.viewCourseBtn {
+  width: 100%;
+  padding: 12px;
+  background: #FACC15;
+  color: #000;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.viewCourseBtn:hover {
+  background: #EAB308;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px -5px rgba(234, 179, 8, 0.4);
+}
+
+/* --- 6. Right Panel & Calendar --- */
+.rightPanel {
+  width: 340px;
+  background: white;
+  padding: 30px 24px;
+  border-left: 1px solid #E2E8F0;
+  animation: slideInRight 0.8s ease-out;
+}
+
+.calActive {
+  background: #FACC15 !important;
+  color: black !important;
+  font-weight: 800;
+  transform: scale(1.1);
+  box-shadow: 0 5px 12px rgba(250, 204, 21, 0.4);
+}
+
+.leaderItem {
+  transition: 0.3s;
+  border: 1px solid transparent;
+}
+
+.leaderItem:hover {
+  background: white;
+  border-color: #FEF08A;
+  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* --- 7. Keyframes (तगड़े एनीमेशन) --- */
+@keyframes fadeInPage {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes growHeight {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+/* Custom Scrollbar for Main Content */
+.mainContent::-webkit-scrollbar {
+  width: 6px;
+}
+.mainContent::-webkit-scrollbar-thumb {
+  background: #E2E8F0;
+  border-radius: 10px;
+}
+
+/* --- Monthly Tracker Styling --- */
+.monthlyTracker {
+  background: #1E293B; /* डार्क थीम ताकि कैलेंडर (वाइट) से अलग दिखे */
+  padding: 20px;
+  border-radius: 24px;
+  color: white;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  animation: slideInRight 0.8s ease-out;
+}
+
+.monthlyTracker h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: #FACC15;
+}
+
+.trackerContent {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Circular Progress Animation */
+.progressCircle {
+  width: 80px;
+  height: 80px;
+}
+
+.circularChart {
+  display: block;
+  margin: 10px auto;
+  max-width: 100%;
+}
+
+.circleBg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke: #FACC15;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  animation: progressAnim 1.5s ease-out forwards;
+}
+
+.percentage {
+  fill: white;
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.trackerStats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.statMini span {
+  display: block;
+  font-size: 11px;
+  color: #94A3B8;
+}
+
+.statMini strong {
+  font-size: 16px;
+  color: white;
+}
+
+.trackerHint {
+  font-size: 12px;
+  color: #4ADE80;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+/* --- Keyframes for Tracker --- */
+@keyframes progressAnim {
+  0% { stroke-dasharray: 0, 100; }
+}
+
+/* पुराने कैलेंडर को थोड़ा क्लीन करना */
+.calendarContainer {
+  background: white;
+  padding: 15px;
+  border-radius: 24px;
+  border: 1px solid #F1F5F9;
+}
+.trackerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 5px;
+}
+
+.filterSelect {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  background: #F8FAFC;
+  cursor: pointer;
+  outline: none;
+}
+
+.filterSelect:hover {
+  border-color: #FACC15;
+}
+
+/* Circular Chart Styling */
+.circularChart {
+  display: block;
+  margin: 10px auto;
+  max-width: 100px;
+}
+
+.circleBg {
+  fill: none;
+  stroke: #F1F5F9;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke: #FACC15; /* Your Theme Yellow */
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.6s ease;
+}
+
+.percentage {
+  fill: #1E293B;
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  font-weight: 800;
+  text-anchor: middle;
+}
+
+.trackerHint {
+  font-size: 12px;
+  color: #64748B;
+  text-align: center;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed #E2E8F0;
+}
+/* src/styles/StudentDashboard.module.css */
+
+/* --- Global Reset & Wrapper --- */
+.dashboardWrapper {
+  display: flex;
+  background-color: var(--bg-light);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* --- Main Content Area --- */
+.mainContent {
+  flex: 1;
+  padding: 30px 40px;
+  overflow-y: auto;
+  animation: fadeInPage 0.8s ease-out;
+}
+
+/* --- Header Section --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 35px;
+}
+
+.greetingText {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.subText {
+  color: var(--text-secondary);
+  margin-top: 5px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: var(--bg-white);
+  padding: 10px 15px;
+  border-radius: 14px;
+  border: 1px solid var(--border-light);
+  gap: 10px;
+  transition: 0.3s;
+}
+
+.searchBox:focus-within {
+  border-color: var(--primary-yellow);
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1);
+}
+
+.searchBox input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  width: 180px;
+  background: transparent;
+}
+
+.notifBadge {
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: 0.3s;
+}
+
+.notifBadge:hover {
+  color: var(--primary-yellow);
+}
+
+.profileImg {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-yellow);
+  padding: 2px;
+  cursor: pointer;
+}
+
+/* --- Bento Grid Stats --- */
+.bentoGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 35px;
+}
+
+.bentoCard {
+  background: var(--bg-white);
+  padding: 25px;
+  border-radius: 28px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.4s ease;
+  animation: slideUp 0.6s ease-out backwards;
+}
+
+.bentoCard:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary-yellow);
+}
+
+.scoreCard {
+  background: var(--text-primary);
+  color: var(--bg-white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scoreInfo h2 {
+  font-size: 42px;
+  color: var(--primary-yellow);
+  margin: 10px 0;
+}
+
+.trendText {
+  font-size: 14px;
+  color: #4ADE80;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* --- Middle Row: Activity & Charts --- */
+.middleRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.activitySection {
+  background: var(--bg-white);
+  padding: 25px;
+  border-radius: 28px;
+  border: 1px solid var(--border-light);
+}
+
+.activitySection h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.activityItem {
+  display: flex;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.activityInfo strong {
+  display: block;
+  font-size: 14px;
+}
+
+.activityInfo span {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* --- Bar Chart --- */
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 150px;
+  padding-top: 20px;
+}
+
+.barContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 30px;
+}
+
+.barFill {
+  width: 100%;
+  background: var(--primary-yellow);
+  border-radius: 6px 6px 2px 2px;
+  animation: growHeight 1s ease-out forwards;
+  transform-origin: bottom;
+}
+
+/* --- Skills & Courses --- */
+.pillsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.skillPill {
+  background: var(--bg-light);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-light);
+  transition: 0.3s;
+}
+
+.skillPill:hover {
+  border-color: var(--primary-yellow);
+  background: var(--bg-white);
+}
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.courseCard {
+  background: var(--bg-white);
+  padding: 24px;
+  border-radius: 24px;
+  border: 1px solid var(--border-light);
+  transition: 0.3s;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--primary-yellow);
+  border-radius: 99px;
+  transition: width 1s ease;
+}
+
+.viewCourseBtn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: var(--primary-yellow);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.viewCourseBtn:hover {
+  background: var(--primary-yellow-hover);
+  transform: translateY(-2px);
+}
+
+/* --- Right Sidebar --- */
+.rightPanel {
+  width: 360px;
+  background: var(--bg-white);
+  padding: 30px 24px;
+  border-left: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.monthlyTracker {
+  background: var(--text-primary);
+  padding: 25px;
+  border-radius: 28px;
+  color: var(--bg-white);
+}
+
+.filterSelect {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.circle {
+  stroke: var(--primary-yellow);
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s ease;
+}
+
+.calActive {
+  background: var(--primary-yellow) !important;
+  color: var(--text-primary) !important;
+  font-weight: 800;
+  border-radius: 8px;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+
+@media (max-width: 1200px) {
+  .bentoGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .rightPanel {
+    width: 300px;
+  }
+}
+
+@media (max-width: 992px) {
+  .dashboardWrapper {
+    flex-direction: column;
+  }
+  .rightPanel {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border-light);
+  }
+  .middleRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .searchBox {
+    width: 100%;
+  }
+  .searchBox input {
+    width: 100%;
+  }
+  .bentoGrid {
+    grid-template-columns: 1fr;
+  }
+  .mainContent {
+    padding: 20px;
+  }
+  .greetingText {
+    font-size: 26px;
+  }
+}
+
+/* --- Animations --- */
+@keyframes fadeInPage {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes growHeight {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
 }

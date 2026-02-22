@@ -1,12 +1,15 @@
-/* Container जो Sidebar के बगल में रहेगा */
+/* MyCourses.module.css */
+
+/* Container: Sidebar के बगल में */
 .container {
   padding: 40px;
-  background-color: var(--bg-white);
+  background-color: var(--bg-light); /* प्रीमियम ग्रे-वाइट */
   min-height: 100vh;
   width: 100%;
+  transition: all var(--transition-speed);
 }
 
-/* Header Section: Title and Add Course Button */
+/* Header Section */
 .header {
   display: flex;
   justify-content: space-between;
@@ -17,12 +20,14 @@
 }
 
 .header h1 {
-  color: #1b5e20; /* Professional Green */
+  color: var(--text-primary);
   font-size: 24px;
   font-weight: 700;
+  border-left: 5px solid var(--primary-yellow); /* Yellow brand accent */
+  padding-left: 15px;
 }
 
-/* Statistics Grid: 3 or 4 Cards in a row */
+/* Statistics Grid */
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -32,107 +37,155 @@
 
 /* Individual Stat Card */
 .statCard {
-  background: #f9fdf9; /* Very Light Green */
+  background: var(--bg-white);
   padding: 30px;
-  border-radius: 12px;
-  border: 1px solid #c8e6c9;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
   text-align: center;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .statCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  border-color: var(--primary-yellow);
 }
 
 .statCard span {
-  color: #4caf50;
-  font-weight: 600;
-  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 13px;
   text-transform: uppercase;
   display: block;
   margin-bottom: 10px;
+  letter-spacing: 1px;
 }
 
 .statCard h2 {
-  color: #2e7d32;
+  color: var(--text-primary);
   font-size: 32px;
   margin: 0;
 }
 
-/* Table Section for Courses */
+/* Table Section */
 .tableSection {
-  background: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e0e0e0;
+  background: var(--bg-white);
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .tableSection h3 {
   padding: 20px;
-  background-color: #f1f8e9;
+  background-color: var(--bg-white);
+  border-bottom: 1px solid var(--border-light);
   margin: 0;
-  color: #1b5e20;
+  color: var(--text-primary);
   font-size: 18px;
+}
+
+/* Responsive Table Wrapper */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto; /* मोबाइल पर टेबल स्क्रॉल होगी */
 }
 
 .courseTable {
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px; /* टेबल को बहुत छोटा होने से बचाएगा */
 }
 
 .courseTable th {
-  background: #f9fdf9;
-  padding: 15px;
+  background: var(--bg-light);
+  padding: 18px 20px;
   text-align: left;
-  color: #2e7d32;
+  color: var(--text-secondary);
   font-weight: 600;
-  border-bottom: 2px solid #e8f5e9;
+  font-size: 14px;
 }
 
 .courseTable td {
-  padding: 15px;
-  border-bottom: 1px solid #f1f1f1;
-  color: #444;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+  font-size: 15px;
 }
 
-/* Status Badge for Table */
+/* Status Badge */
 .statusBadge {
-  background: #e8f5e9;
-  color: #2e7d32;
-  padding: 6px 12px;
+  background: var(--primary-yellow);
+  color: var(--text-primary);
+  padding: 6px 14px;
   border-radius: 20px;
-  font-weight: bold;
-  font-size: 12px;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
 }
 
 /* Buttons */
 .primaryBtn {
-  background: #2e7d32;
-  color: #ffffff;
+  background: var(--primary-yellow);
+  color: var(--text-primary);
   border: none;
   padding: 12px 25px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s;
+  font-weight: 700;
+  transition: all var(--transition-speed);
+  box-shadow: 0 4px 10px rgba(250, 204, 21, 0.2);
 }
 
 .primaryBtn:hover {
-  background: #1b5e20;
+  background: var(--primary-yellow-hover);
+  transform: translateY(-2px);
 }
 
 .editBtn {
   background: transparent;
-  color: #2e7d32;
-  border: 1px solid #2e7d32;
-  padding: 6px 15px;
-  border-radius: 4px;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  padding: 8px 16px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
+  transition: 0.2s;
 }
 
 .editBtn:hover {
-  background: #e8f5e9;
+  border-color: var(--primary-yellow);
+  background: var(--bg-light);
+}
+
+/* ================================
+   RESPONSIVE DESIGN (Media Queries)
+================================ */
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .primaryBtn {
+    width: 100%; /* मोबाइल पर बटन फुल विड्थ */
+    text-align: center;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr; /* मोबाइल पर कार्ड्स एक के नीचे एक */
+  }
+
+  .statCard {
+    padding: 20px;
+  }
 }

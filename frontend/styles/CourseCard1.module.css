@@ -3,97 +3,109 @@
   justify-content: center;
   align-items: center;
   padding: 40px 20px;
+  background: var(--bg-light);
 }
 
 /* Card */
 .card {
-  background: #ffffff;
-  border-radius: 18px;
+  background: var(--bg-white);
+  border-radius: 20px; /* और भी मॉडर्न राउंडेड */
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
-  max-width: 350px;   /* Important for single card */
+  max-width: 350px;
+  border: 1px solid var(--border-light);
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  transform: translateY(-8px);
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-yellow);
 }
 
 .image {
-   width: 100%;
-  height: 180px;
+  width: 100%;
+  height: 190px;
   object-fit: cover;
+  background: #F1F5F9; /* इमेज लोड न होने पर ग्रे बैकग्राउंड */
 }
 
 .content {
-  padding: 20px;
+  padding: 24px;
 }
 
 .title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #14532D;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
   margin-bottom: 8px;
+  letter-spacing: -0.5px;
 }
-.description{
+
+.description {
   height: 40px;
   font-size: 14px;
-  color: #4B5563;
-  margin-bottom: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
 }
 
 .instructor {
   font-size: 14px;
-  color: #444c5c;
+  color: var(--text-primary);
   margin-bottom: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
+/* --- Progress Bar (The Yellow Update) --- */
 .progressContainer {
   width: 100%;
-  height: 8px;
-  background: #e5e7eb;
-  border-radius: 10px;
+  height: 10px;
+  background: #F1F5F9;
+  border-radius: 20px;
   overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.progressBar {
-  width: 100%;
-  height: 8px;
-  background-color: #DCFCE7;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border-light);
 }
 
 .progressFill {
   height: 100%;
-  background-color: #16A34A; ;
-  border-radius: 10px;
-  width: 0; /* Start from 0 */
-  transition: width 1s ease-in-out;
+  background: var(--primary-yellow); /* ग्रीन से बदलकर येलो */
+  border-radius: 20px;
+  width: 0; 
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 2px 0 8px rgba(250, 204, 21, 0.4);
 }
 
 .progressText {
   font-size: 13px;
-  color: #363a44;
-  margin-bottom: 15px;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-align: right; /* प्रोग्रेस % को राइट में कर दिया है */
 }
 
+/* --- Button --- */
 .button {
   width: 100%;
-  padding: 10px;
-  background: linear-gradient(to right, #16A34A, #22C55E);
-  color: white;
+  padding: 14px;
+  background: var(--primary-yellow); /* प्योर येलो ब्रांड कलर */
+  color: #000; /* ब्लैक टेक्स्ट */
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s ease;
+  font-weight: 800;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2);
 }
 
 .button:hover {
-  background: linear-gradient(to right, #15803D, #16A34A);
+  background: var(--primary-yellow-hover);
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(250, 204, 21, 0.4);
 }

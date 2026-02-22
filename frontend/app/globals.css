@@ -1,13 +1,15 @@
 /* src/app/globals.css */
 
 :root {
-  /* Green and White Theme Configuration */
-  --primary-green: #6098f1;
-  --secondary-green: rgba(230, 230, 26, 0);
-  --bg-white: #0F172A;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --border-light: #334155;
+  /* Yellow and White Premium Theme Configuration */
+  --primary-yellow: #FACC15;
+  --primary-yellow-hover: #EAB308;
+  --bg-light: #F8FAFC;         /* हल्का ग्रे-वाइट जो आंखों को सुकून दे */
+  --bg-white: #FFFFFF;        /* प्योर वाइट कार्ड्स के लिए */
+  --text-primary: #0F172A;    /* डार्क नेवी-ब्लैक साफ़ टेक्स्ट के लिए */
+  --text-secondary: #64748B;  /* सब-टेक्स्ट के लिए ग्रे */
+  --border-light: #E2E8F0;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --transition-speed: 0.3s;
 }
 
@@ -18,26 +20,33 @@
 }
 
 body {
-  background-color: var(--bg-white);
+  background-color: var(--bg-light); /* अब डार्क नहीं, वाइटिश दिखेगा */
   color: var(--text-primary);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Common Global Components */
 .btn-primary {
-  background-color: var(--primary-green);
-  color: var(--bg-white);
-  padding: 12px 24px;
+  background-color: var(--primary-yellow);
+  color: #000000; /* पीले बटन पर काला टेक्स्ट बेस्ट दिखता है */
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 10px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background var(--transition-speed) ease;
+  transition: all var(--transition-speed) ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn-primary:hover {
-  background-color: var(--secondary-green);
+  background-color: var(--primary-yellow-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
 }
 
 .container-center {
@@ -46,4 +55,39 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+}
+
+.mainContent {
+  padding-top: 70px; /* Navbar की हाइट के बराबर */
+  min-height: calc(100vh - 70px);
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding-top: 60px; /* मोबाइल हाइट */
+  }
+}
+
+/* Selection Color */
+::selection {
+  background-color: var(--primary-yellow);
+  color: #000;
+}
+
+/* Scrollbar Styling for Modern Look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }

@@ -7,14 +7,22 @@
   justify-content: center;
   text-align: center;
   padding: 80px 20px;
+  /* Updated to your theme background */
   background-color: var(--bg-white);
 }
 
 .title {
   font-size: 3.5rem;
-  color: var(--primary-green);
+  /* Switched from green to your premium navy for better readability on large text */
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Added a highlight class if you want to make a specific word yellow */
+.highlight {
+  color: var(--primary-yellow);
 }
 
 .subtitle {
@@ -31,26 +39,37 @@
 }
 
 .primaryBtn {
-  background-color: var(--primary-green);
-  color: #ffffff;
+  /* Updated to your brand yellow */
+  background-color: var(--primary-yellow);
+  /* Changed text to navy for contrast */
+  color: var(--text-primary);
   padding: 14px 32px;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: opacity 0.3s;
+  transition: all var(--transition-speed);
+  box-shadow: var(--shadow-sm);
 }
 
 .primaryBtn:hover {
-  opacity: 0.9;
+  background-color: var(--primary-yellow-hover);
+  transform: translateY(-2px);
 }
 
 .secondaryBtn {
   background-color: transparent;
-  color: var(--primary-green);
+  /* Border and text now use yellow hover for a refined look */
+  color: var(--text-primary);
   padding: 14px 32px;
   border-radius: 8px;
   font-weight: 600;
-  border: 2px solid var(--primary-green);
+  border: 2px solid var(--primary-yellow);
   cursor: pointer;
+  transition: all var(--transition-speed);
+}
+
+.secondaryBtn:hover {
+  background-color: var(--bg-light);
+  border-color: var(--primary-yellow-hover);
 }
