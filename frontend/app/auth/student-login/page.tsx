@@ -50,7 +50,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       throw new Error("Token not received from server");
     }
 
-    //  1. Save to Redux
+    //   Save to Redux
     dispatch(
       setTokens({
         accessToken: token,

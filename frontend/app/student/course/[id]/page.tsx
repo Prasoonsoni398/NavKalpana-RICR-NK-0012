@@ -4,39 +4,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { courseDetailsService } from '@/services/course-detail.services';
 import styles from '@/styles/CourseDetail.module.css';
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-interface Resource {
-  id: number;
-  type: 'video' | 'notes' | 'quiz' | 'codelab';
-  title: string;
-  url: string | null;
-  metadata: Record<string, any> | null;
-}
-interface Lesson {
-  id: number;
-  title: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  completed: boolean;
-  resources: Resource[];
-}
-interface Module {
-  id: string;
-  title: string;
-  position: number;
-  progress: number;
-  lessons: Lesson[];
-}
-interface CourseDetail {
-  id: number;
-  title: string;
-  description: string;
-  instructorName: string;
-  thumbnailUrl: string | null | undefined;
-  isPublished: boolean;
-  progress: number;
-  modules: Module[];
-}
+import { CourseDetail, Module, Lesson, Resource } from "@/models/course-detail.model"
 interface ActiveLesson {
   lesson: Lesson;
   moduleTitle: string;
@@ -560,26 +528,53 @@ export default function CoursePage() {
   function toggleTheme() {
     setTheme(t => t === 'dark' ? 'light' : 'dark');
   }
+useEffect(() => {
+  if (!courseId) return;
 
-  useEffect(() => {
-    if (!courseId) return;
-    (async () => {
-      try {
-        setLoading(true);
-        const data = await courseDetailsService.getAll(courseId);
-        const course = Array.isArray(data) ? data[0] : data;
-        setCourse({ ...course, thumbnailUrl: course.thumbnailUrl ?? null });
-        const states: Record<number, boolean> = {};
-        course.modules.forEach((mod: Module) => mod.lessons.forEach((l: Lesson) => { states[l.id] = l.completed; }));
-        setLessonStates(states);
-      } catch (err: any) {
-        setError(err.message ?? 'Failed to load course.');
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [courseId]);
+  (async () => {
+    try {
+      setLoading(true);
 
+      const data = await courseDetailsService.getAll(courseId);
+      const course = Array.isArray(data) ? data[0] : data;
+
+      // Map modules -> lessons -> resources to ensure type safety
+      const fixedModules = course.modules.map((mod: Module) => ({
+        ...mod,
+        lessons: mod.lessons.map((lesson: Lesson) => ({
+          ...lesson,
+          resources: lesson.resources.map((res: any) => ({
+            ...res,
+            type: ["video", "notes", "quiz", "codelab"].includes(res.type)
+              ? (res.type as "video" | "notes" | "quiz" | "codelab")
+              : "notes", // fallback default
+          })),
+        })),
+      }));
+
+      // Set course state with fixed modules
+      setCourse({
+        ...course,
+        modules: fixedModules,
+        thumbnailUrl: course.thumbnailUrl ?? null,
+      });
+
+      // Prepare lesson completion states
+      const states: Record<number, boolean> = {};
+      fixedModules.forEach((mod: Module) =>
+        mod.lessons.forEach((l: Lesson) => {
+          states[l.id] = l.completed;
+        })
+      );
+      setLessonStates(states);
+
+    } catch (err: any) {
+      setError(err.message ?? "Failed to load course.");
+    } finally {
+      setLoading(false);
+    }
+  })();
+}, [courseId]);
   const handleSelect = useCallback((lesson: Lesson, moduleTitle: string, moduleIndex: number) => {
     setActiveLesson({ lesson, moduleTitle, moduleIndex });
   }, []);
@@ -625,7 +620,7 @@ export default function CoursePage() {
         {/* ── TOP BAR ─────────────────────────────────────────────────────── */}
         <div className={styles.topbar}>
           <div className={styles.topbarBreadcrumb}>
-            <a href="/courses" className={styles.topbarLink}>My Courses</a>
+            <a href="/student/my-courses" className={styles.topbarLink}>My Courses</a>
             <span className={styles.topbarSep}>›</span>
             <span className={styles.topbarCurrent}>{course.title}</span>
           </div>

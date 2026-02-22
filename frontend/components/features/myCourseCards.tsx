@@ -68,7 +68,7 @@ const CourseCard = ({ course }: { course: CourseResponse }) => {
 
                     <button
                         className={styles.button}
-                        onClick={() => router.push(`/student/my-courses/course/${course.id}`)}
+                        onClick={() => router.push(`/student/course/${course.id}`)}
                     >
                         Continue Learning
                     </button>
