@@ -1,23 +1,23 @@
 /* ─── CourseDetail.module.css ─────────────────────────────────────────────── */
 
-/* ─── Dark mode (default) ────────────────────────────────────────────────────*/
+/* ─── Light mode (default) - Unified with globals.css ─────────────────────── */
 :root {
-  --primary:      #6098f1;
-  --primary-lit:  #7aaeff;
-  --primary-pale: rgba(96,152,241,0.10);
-  --primary-rule: rgba(96,152,241,0.22);
-  --bg:           #0F172A;
-  --bg-2:         #1E293B;
-  --bg-3:         #334155;
-  --text:         #F8FAFC;
-  --text-2:       #E2E8F0;
-  --text-3:       #94A3B8;
-  --text-4:       #64748B;
-  --border:       #334155;
+  --primary:      #FACC15;      /* Yellow from globals.css */
+  --primary-lit:  #EAB308;      /* Yellow hover state */
+  --primary-pale: rgba(250, 204, 21, 0.10);
+  --primary-rule: rgba(250, 204, 21, 0.22);
+  --bg:           #F8FAFC;      /* Light gray-white from globals.css */
+  --bg-2:         #FFFFFF;      /* Pure white from globals.css */
+  --bg-3:         #E2E8F0;      /* Light border color */
+  --text:         #0F172A;      /* Dark navy-black from globals.css */
+  --text-2:       #1E293B;      /* Darker text variant */
+  --text-3:       #64748B;      /* Secondary text from globals.css */
+  --text-4:       #94A3B8;      /* Light gray text */
+  --border:       #E2E8F0;      /* Light border from globals.css */
   --green:        #22c55e;
-  --green-pale:   rgba(34,197,94,0.08);
-  --green-rule:   rgba(34,197,94,0.25);
-  --shadow:       0 4px 24px rgba(0,0,0,0.40);
+  --green-pale:   rgba(34, 197, 94, 0.08);
+  --green-rule:   rgba(34, 197, 94, 0.25);
+  --shadow:       0 4px 24px rgba(0, 0, 0, 0.08);
   --r:            8px;
   --r-sm:         5px;
   --speed:        0.2s;
@@ -25,26 +25,6 @@
   /* Panel widths */
   --left-w:  260px;
   --right-w: 280px;
-}
-
-/* ─── Light mode ─────────────────────────────────────────────────────────────*/
-:root[data-theme="light"] {
-  --primary:      #2563eb;
-  --primary-lit:  #3b82f6;
-  --primary-pale: rgba(37,99,235,0.08);
-  --primary-rule: rgba(37,99,235,0.20);
-  --bg:           #f1f5f9;
-  --bg-2:         #ffffff;
-  --bg-3:         #e2e8f0;
-  --text:         #0f172a;
-  --text-2:       #1e293b;
-  --text-3:       #475569;
-  --text-4:       #94a3b8;
-  --border:       #cbd5e1;
-  --green:        #16a34a;
-  --green-pale:   rgba(22,163,74,0.08);
-  --green-rule:   rgba(22,163,74,0.25);
-  --shadow:       0 4px 24px rgba(0,0,0,0.10);
 }
 
 /* ─── Theme toggle button ────────────────────────────────────────────────────*/
@@ -63,19 +43,28 @@
   cursor: pointer;
   flex-shrink: 0;
   letter-spacing: 0.03em;
-  transition: background var(--speed), border-color var(--speed), color var(--speed), transform var(--speed);
+  transition: background var(--speed), border-color var(--speed), color var(--speed), transform var(--speed), box-shadow 0.3s ease;
+  animation: slideInRight 0.4s ease;
 }
 .themeToggle:hover {
   background: var(--primary-pale);
   border-color: var(--primary-rule);
   color: var(--primary);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.2);
+}
+.themeToggle:active {
+  transform: translateY(0);
 }
 .themeToggleIcon {
   font-size: 14px;
   line-height: 1;
   display: flex;
   align-items: center;
+  animation: spin 0.6s ease;
+}
+.themeToggle:hover .themeToggleIcon {
+  animation: spin 0.6s ease;
 }
 
 /* ─── Keyframes ──────────────────────────────────────────────────────────────*/
@@ -87,10 +76,55 @@
   from { opacity:0; }
   to   { opacity:1; }
 }
-@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes slideInLeft {
+  from { opacity:0; transform:translateX(-12px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity:0; transform:translateX(12px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+@keyframes slideDown {
+  from { opacity:0; transform:translateY(-8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity:0; transform:scale(0.95); }
+  to   { opacity:1; transform:scale(1); }
+}
+@keyframes bounce {
+  0%, 100% { transform:translateY(0); }
+  50% { transform:translateY(-4px); }
+}
+@keyframes pulse {
+  0%, 100% { opacity:1; }
+  50% { opacity:0.6; }
+}
+@keyframes glow {
+  0%, 100% { box-shadow:0 0 0 0 rgba(250, 204, 21, 0.4); }
+  50% { box-shadow:0 0 0 8px rgba(250, 204, 21, 0); }
+}
 @keyframes shimmer {
   0%   { background-position:200% 0; }
   100% { background-position:-200% 0; }
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes swingIn {
+  0% { opacity:0; transform:rotateY(90deg); }
+  100% { opacity:1; transform:rotateY(0deg); }
+}
+@keyframes popIn {
+  0% { opacity:0; transform:scale(0.8) rotateZ(-10deg); }
+  70% { transform:scale(1.05) rotateZ(2deg); }
+  100% { opacity:1; transform:scale(1) rotateZ(0deg); }
+}
+@keyframes shimmerLoad {
+  0% { background-position:1000% 0; }
+  100% { background-position:-1000% 0; }
+}
+@keyframes slideInUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
 }
 
 /* ─── Shell ──────────────────────────────────────────────────────────────────*/
@@ -126,6 +160,7 @@
   flex-shrink: 0;
   position: relative;
   z-index: 10;
+  box-shadow: var(--shadow-sm);
 }
 .topbarBreadcrumb {
   display: flex;
@@ -160,7 +195,7 @@
   border-radius: 3px;
   border: 1px solid var(--primary-rule);
   background: var(--primary-pale);
-  color: var(--primary);
+  color: #000;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -232,15 +267,22 @@
   border-radius: var(--r-sm);
   cursor: pointer;
   user-select: none;
-  transition: background var(--speed);
+  transition: background var(--speed), transform 0.2s ease;
+  animation: slideInLeft 0.3s ease;
 }
-.moduleGroupHeader:hover { background: var(--bg-3); }
-.moduleGroupOpen { background: var(--primary-pale); }
+.moduleGroupHeader:hover { 
+  background: var(--bg-3); 
+  transform: translateX(2px);
+}
+.moduleGroupOpen { 
+  background: var(--primary-pale);
+  animation: popIn 0.3s ease;
+}
 
 .moduleGroupBadge {
   font-size: 9px;
   font-weight: 800;
-  color: var(--primary);
+  color: #000;
   background: var(--primary-pale);
   border: 1px solid var(--primary-rule);
   border-radius: 3px;
@@ -288,15 +330,23 @@
   border-radius: var(--r-sm);
   cursor: pointer;
   user-select: none;
-  transition: background var(--speed);
+  transition: background var(--speed), border-color var(--speed), transform 0.2s ease;
   border-left: 2px solid transparent;
+  animation: slideInLeft 0.25s ease-out;
 }
-.lessonTreeItem:hover { background: var(--bg-3); }
+.lessonTreeItem:hover { 
+  background: var(--bg-3);
+  transform: translateX(3px);
+}
 .lessonTreeItemActive {
   background: var(--primary-pale) !important;
   border-left-color: var(--primary);
+  animation: glow 1.5s ease-in-out infinite;
 }
-.lessonTreeItemDone { opacity: 0.6; }
+.lessonTreeItemDone { 
+  opacity: 0.6;
+  animation: fadeIn 0.3s ease;
+}
 
 .lessonTreeCheck {
   width: 16px; height: 16px;
@@ -360,6 +410,7 @@
   border-radius: var(--r);
   overflow: hidden;
   animation: fadeIn 0.3s ease;
+  box-shadow: var(--shadow);
 }
 .welcomeThumb {
   width: 100%;
@@ -411,7 +462,7 @@
 .lessonModuleBadge {
   font-size: 10px; font-weight: 700;
   letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--primary); background: var(--primary-pale);
+  color: #000; background: var(--primary-pale);
   border: 1px solid var(--primary-rule);
   padding: 2px 8px; border-radius: 3px;
 }
@@ -436,6 +487,7 @@
   border-radius: var(--r);
   padding: 5px;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .tabBtn {
@@ -456,20 +508,38 @@
   justify-content: center;
   white-space: nowrap;
   letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+}
+.tabBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
 }
 .tabBtn:hover {
   background: var(--bg-3);
   color: var(--text-2);
+  transform: translateY(-1px);
+}
+.tabBtn:hover::before {
+  left: 100%;
 }
 .tabBtnActive {
   background: var(--primary-pale);
-  color: var(--primary);
+  color: #000;
   border: 1px solid var(--primary-rule);
-  box-shadow: 0 1px 4px rgba(96,152,241,0.12);
+  box-shadow: 0 1px 4px rgba(250, 204, 21, 0.15), 0 0 12px rgba(250, 204, 21, 0.08);
+  animation: slideDown 0.3s ease;
 }
 .tabBtnActive:hover {
   background: var(--primary-pale);
-  color: var(--primary);
+  color: #000;
+  transform: translateY(-2px);
 }
 .tabBtnIcon {
   font-size: 13px;
@@ -507,7 +577,7 @@
 /* Notes viewer */
 .notesBox {
   background: var(--bg-2); border: 1px solid var(--border);
-  border-radius: var(--r); overflow: hidden;
+  border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow-sm);
 }
 .notesBoxHeader {
   display: flex; align-items: center; justify-content: space-between;
@@ -518,15 +588,15 @@
   display: flex; align-items: center; gap: 7px;
 }
 .notesBoxLink {
-  font-size: 11px; font-weight: 600; color: var(--primary);
+  font-size: 11px; font-weight: 600; color: #000;
   text-decoration: none; padding: 4px 10px;
   border-radius: var(--r-sm); border: 1px solid var(--primary-rule);
   background: var(--primary-pale); transition: background var(--speed);
   white-space: nowrap;
 }
-.notesBoxLink:hover { background: rgba(96,152,241,0.18); }
+.notesBoxLink:hover { background: rgba(250, 204, 21, 0.18); }
 .notesEmbed { width:100%; height:500px; border:none; display:block; background:#fff; }
-.notesImage { width:100%; max-height:520px; object-fit:contain; display:block; background:#111; }
+.notesImage { width:100%; max-height:520px; object-fit:contain; display:block; background:#f1f5f9; }
 .notesNA    { padding:24px; text-align:center; color:var(--text-4); font-size:13px; }
 
 /* Quiz card */
@@ -534,7 +604,7 @@
   background: var(--bg-2); border: 1px solid var(--border);
   border-radius: var(--r); padding: 28px;
   display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; flex-wrap: wrap;
+  gap: 16px; flex-wrap: wrap; box-shadow: var(--shadow-sm);
 }
 .quizCardLeft  { display:flex; align-items:center; gap:14px; }
 .quizCardIcon  { font-size:36px; }
@@ -544,47 +614,103 @@
   padding:11px 24px; border-radius:var(--r); border:none;
   background:#7c3aed; color:#fff; font-weight:700; font-size:13px;
   cursor:pointer; font-family:inherit; white-space:nowrap;
-  transition:background var(--speed), transform var(--speed);
+  transition:all var(--speed);
+  position: relative;
+  overflow: hidden;
+  animation: slideInLeft 0.4s ease;
 }
-.quizBtn:hover { background:#6d28d9; transform:translateY(-1px); }
+.quizBtn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+.quizBtn:hover { 
+  background:#6d28d9; 
+  transform:translateY(-2px);
+  box-shadow: 0 8px 16px rgba(124, 58, 237, 0.3);
+}
+.quizBtn:active {
+  transform:translateY(0);
+}
+.quizBtn:hover::before {
+  width: 300px;
+  height: 300px;
+}
 
-/* CodeLab card */
-.codelabCard {
-  background: var(--bg-2); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 28px;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; flex-wrap: wrap;
-}
-.codelabCardLeft  { display:flex; align-items:center; gap:14px; }
-.codelabCardIcon  { font-size:36px; }
-.codelabCardTitle { font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px; }
-.codelabCardLang  {
-  font-size:11px; font-weight:700; text-transform:uppercase;
-  letter-spacing:0.07em; color:#10b981;
-}
 .codelabBtn {
   padding:11px 24px; border-radius:var(--r); border:none;
   background:#059669; color:#fff; font-weight:700; font-size:13px;
   cursor:pointer; font-family:inherit; text-decoration:none;
   display:inline-block; white-space:nowrap;
-  transition:background var(--speed), transform var(--speed);
+  transition:all var(--speed);
+  position: relative;
+  overflow: hidden;
+  animation: slideInLeft 0.4s ease;
 }
-.codelabBtn:hover { background:#047857; transform:translateY(-1px); }
+.codelabBtn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+.codelabBtn:hover { 
+  background:#047857; 
+  transform:translateY(-2px);
+  box-shadow: 0 8px 16px rgba(5, 150, 105, 0.3);
+}
+.codelabBtn:active {
+  transform:translateY(0);
+}
+.codelabBtn:hover::before {
+  width: 300px;
+  height: 300px;
+}
 
-/* Complete button */
 .completeBtn {
   width:100%; padding:12px; border-radius:var(--r); border:none;
   background:var(--green); color:#fff; font-weight:700; font-size:13px;
   cursor:pointer; font-family:inherit; letter-spacing:0.02em;
-  box-shadow:0 3px 14px rgba(34,197,94,0.22);
+  box-shadow:0 3px 14px rgba(41,227,3,0.25);
   transition:all var(--speed);
   display:flex; align-items:center; justify-content:center; gap:8px;
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  animation: popIn 0.4s ease;
 }
-.completeBtn:hover { background:#16a34a; transform:translateY(-1px); }
-.completeBtnSaving {
-  background:var(--green-pale); color:var(--text-4);
-  cursor:not-allowed; box-shadow:none; transform:none !important;
+.completeBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.6s ease;
+}
+.completeBtn:hover { 
+  background:#16a34a; 
+  transform:translateY(-3px);
+  box-shadow: 0 12px 24px rgba(41,227,3,0.3);
+}
+.completeBtn:hover::before {
+  left: 100%;
+}
+.completeBtn:active {
+  transform:translateY(-1px);
 }
 .spinner {
   width:13px; height:13px;
@@ -640,7 +766,8 @@
 /* Progress card */
 .progressCard {
   background: var(--bg); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 16px;
+  border-radius: var(--r); padding: 16px; box-shadow: var(--shadow-sm);
+  animation: slideInRight 0.4s ease-out;
 }
 .progressCardTitle {
   font-size: 12px; font-weight: 600; color: var(--text);
@@ -660,6 +787,7 @@
 .progressInfoNum {
   font-family: 'DM Serif Display', serif;
   font-size: 30px; color: var(--primary); line-height: 1;
+  animation: popIn 0.4s ease-out;
 }
 .progressInfoSub { font-size: 10px; color: var(--text-4); margin-top: 4px; }
 .progressBarTrack {
@@ -671,14 +799,29 @@
   background: linear-gradient(90deg, var(--primary), var(--primary-lit));
   border-radius: 99px;
   transition: width 0.7s cubic-bezier(.4,0,.2,1);
+  animation: slideInLeft 0.8s ease-out;
 }
 
 /* Stats grid */
-.statsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.statsGrid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 8px;
+  animation: fadeUp 0.5s ease-out;
+}
+
 .statBox {
   background: var(--bg); border: 1px solid var(--border);
-  border-radius: var(--r-sm); padding: 12px; text-align: center;
+  border-radius: var(--r-sm); padding: 12px; text-align: center; box-shadow: var(--shadow-sm);
+  animation: popIn 0.3s ease-out;
+  transition: all var(--speed);
 }
+
+.statBox:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
 .statNum {
   font-family: 'DM Serif Display', serif;
   font-size: 22px; color: var(--primary); line-height: 1; margin-bottom: 4px;
@@ -692,7 +835,7 @@
 .courseDetailCard {
   background: var(--bg); border: 1px solid var(--border);
   border-radius: var(--r); padding: 16px;
-  display: flex; flex-direction: column; gap: 12px;
+  display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow-sm);
 }
 .courseDetailTitle {
   font-family: 'DM Serif Display', serif;
@@ -720,7 +863,8 @@
   background: var(--bg); border: 1px solid var(--border);
   border-radius: var(--r); padding: 16px;
   display: flex; flex-direction: column; gap: 10px;
-  animation: fadeUp 0.25s ease;
+  animation: slideInRight 0.35s ease-out; 
+  box-shadow: var(--shadow-sm);
 }
 .lessonDetailTitle {
   font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4;
@@ -757,7 +901,7 @@
 .skeletonPanel { padding:16px; display:flex; flex-direction:column; gap:10px; }
 .skeletonBar {
   border-radius:4px;
-  background:linear-gradient(90deg,#1e293b 25%,#334155 50%,#1e293b 75%);
+  background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);
   background-size:200% 100%;
   animation:shimmer 1.4s infinite;
   flex-shrink:0;
