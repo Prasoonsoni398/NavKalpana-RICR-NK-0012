@@ -5,7 +5,11 @@ import { useParams } from 'next/navigation';
 import { courseDetailsService } from '@/services/course-detail.services';
 import styles from '@/styles/CourseDetail.module.css';
 import { CourseDetail, Module, Lesson, Resource } from "@/models/course-detail.model"
-
+import { FaPlay } from "react-icons/fa";
+import { FaFileAlt } from "react-icons/fa";
+import { FaBolt } from "react-icons/fa";
+import { FaCode } from "react-icons/fa";
+import { FaChalkboardTeacher, FaLayerGroup, FaBookOpen, FaCheckCircle } from "react-icons/fa";
 interface ActiveLesson {
   lesson: Lesson;
   moduleTitle: string;
@@ -127,11 +131,31 @@ function LessonContent({
 
   // Build ordered tab list from available resources
   const tabs = [
-    video   && { key: 'video',   label: 'Video',   icon: '▶' },
-    notes   && { key: 'notes',   label: 'Notes',   icon: '📄' },
-    quiz    && { key: 'quiz',    label: 'Quiz',    icon: '⚡' },
-    codelab && { key: 'codelab', label: 'CodeLab', icon: '⌨️' },
-  ].filter(Boolean) as { key: string; label: string; icon: string }[];
+  video && {
+    key: "video",
+    label: "Video",
+    icon: FaPlay,
+  },
+  notes && {
+    key: "notes",
+    label: "Notes",
+    icon: FaFileAlt,
+  },
+  quiz && {
+    key: "quiz",
+    label: "Quiz",
+    icon: FaBolt,
+  },
+  codelab && {
+    key: "codelab",
+    label: "CodeLab",
+    icon: FaCode,
+  },
+].filter(Boolean) as {
+  key: string;
+  label: string;
+  icon: React.ElementType;
+}[];
 
   // Set default tab when lesson changes
   useEffect(() => {
@@ -165,7 +189,7 @@ function LessonContent({
       <div className={styles.lessonHeader}>
         <div className={styles.lessonHeaderMeta}>
           <span className={styles.lessonModuleBadge}>
-            M{String(moduleIndex + 1).padStart(2, '0')} · {moduleTitle}
+            Module{String(moduleIndex + 1).padStart(2, '0')} · {moduleTitle}
           </span>
           <span className={styles.difficultyBadge} style={{ background: diff.bg, color: diff.color }}>
             {diff.label}
@@ -183,7 +207,7 @@ function LessonContent({
               className={`${styles.tabBtn} ${currentTab === tab.key ? styles.tabBtnActive : ''}`}
               onClick={() => setActiveTab(tab.key)}
             >
-              <span className={styles.tabBtnIcon}>{tab.icon}</span>
+              <tab.icon style={{ marginRight: 6 }} />
               {tab.label}
             </button>
           ))}
@@ -198,7 +222,7 @@ function LessonContent({
           {currentTab === 'quiz'   && quiz    && (
             <div className={styles.quizCard}>
               <div className={styles.quizCardLeft}>
-                <span className={styles.quizCardIcon}>⚡</span>
+                <span className={styles.quizCardIcon}><FaBolt /></span>
                 <div>
                   <p className={styles.quizCardTitle}>{quiz.title}</p>
                   <p className={styles.quizCardMeta}>
@@ -213,7 +237,7 @@ function LessonContent({
           {currentTab === 'codelab' && codelab && (
             <div className={styles.codelabCard}>
               <div className={styles.codelabCardLeft}>
-                <span className={styles.codelabCardIcon}>⌨️</span>
+                <span className={styles.codelabCardIcon}><FaCode /></span>
                 <div>
                   <p className={styles.codelabCardTitle}>{codelab.title}</p>
                   {codelab.metadata?.language && (
@@ -267,10 +291,10 @@ function CourseWelcome({ course, totalLessons, doneLessons }: {
         <p className={styles.welcomeDesc}>{course.description}</p>
         <div className={styles.welcomeMeta}>
           {[
-            { icon: '👨‍🏫', label: course.instructorName },
-            { icon: '📚',  label: `${course.modules.length} modules` },
-            { icon: '🎯',  label: `${totalLessons} lessons` },
-            { icon: '✅',  label: `${doneLessons} completed` },
+            { icon: <FaChalkboardTeacher />, label: course.instructorName },
+  { icon: <FaLayerGroup />, label: `${course.modules.length} modules` },
+  { icon: <FaBookOpen />, label: `${totalLessons} lessons` },
+  { icon: <FaCheckCircle />, label: `${doneLessons} completed` },
           ].map(({ icon, label }) => (
             <div key={label} className={styles.welcomeMetaChip}>
               <span>{icon}</span>{label}
@@ -624,8 +648,6 @@ export default function CoursePage() {
 
   return (
     <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700;800&display=swap');`}</style>
-
       <div className={styles.shell}>
 
         {/* ── TOP BAR ─────────────────────────────────────────────────────── */}
@@ -636,14 +658,6 @@ export default function CoursePage() {
             <span className={styles.topbarCurrent}>{course.title}</span>
           </div>
           <div className={styles.topbarSpacer} />
-          <button className={styles.themeToggle} onClick={toggleTheme} aria-label="Toggle theme">
-            <span className={styles.themeToggleIcon}>{theme === 'dark' ? '☀️' : '🌙'}</span>
-            {theme === 'dark' ? 'Light' : 'Dark'}
-          </button>
-          <div className={styles.topbarPill}>
-            <span className={styles.topbarPillDot}>●</span>
-            {course.isPublished ? 'Published' : 'Draft'}
-          </div>
         </div>
 
         {/* ── 3-PANEL BODY ────────────────────────────────────────────────── */}
