@@ -155,7 +155,7 @@
 }
 
 .deadlineInfo strong {
-  color: var(--primary-yellow); /* पीला टाइम हाइलाइट होगा */
+  color: var(--primary-yellow); 
   font-size: 18px;
   display: block;
 }
@@ -268,4 +268,549 @@
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+
+
+
+/* ================================
+   ASSIGNMENT HEADER
+================================ */
+
+/* ================================
+   FEATURED HEADER SECTION
+================================ */
+
+.header {
+  margin: 20px;
+  padding: 45px 50px;
+
+  border-radius: 26px;
+
+  background: linear-gradient(
+    135deg,
+    var(--primary-yellow),
+    var(--primary-yellow-hover)
+  );
+
+  color: #1e293b;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  box-shadow: 0 15px 45px rgba(250, 204, 21, 0.25);
+
+  transition: all 0.3s ease;
+}
+
+.header:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 55px rgba(250, 204, 21, 0.35);
+}
+
+.header h1 {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* Meta text inside yellow background */
+.meta {
+  color: rgba(30, 41, 59, 0.8);
+  font-weight: 500;
+}
+
+/* Title */
+
+.header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--primary-yellow-hover);
+}
+
+/* Meta row */
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Status badge inside header */
+
+.header .badge,
+.header .statusTag {
+  position: absolute;
+  top: 24px;
+  right: 30px;
+
+  padding: 8px 18px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+
+  background: linear-gradient(
+    135deg,
+    var(--primary-yellow),
+    var(--primary-yellow-hover)
+  );
+
+  color: #1e293b;
+
+  border: none;
+
+  box-shadow: 0 6px 16px rgba(250, 204, 21, 0.35);
+
+  transition: all 0.3s ease;
+}
+
+.header .badge:hover,
+.header .statusTag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(250, 204, 21, 0.45);
+}
+.header {
+  margin: 20px;
+  padding: 30px 45px;
+  background: var(--bg-white);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  border-left: 6px solid var(--primary-yellow);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  transition: all var(--transition-speed) ease;
+  position: relative;
+}
+
+/* Smooth hover effect */
+
+.header:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.12);
+}
+
+/* Title */
+
+.header h1 {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+/* Meta section */
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* ================================
+   DESCRIPTION CARD
+================================ */
+
+.card {
+  margin: 20px;
+  padding: 28px 40px;
+
+  background: var(--bg-white);
+  border-radius: 20px;
+
+  border: 1px solid var(--border-light);
+  border-left: 5px solid var(--primary-yellow);
+
+  box-shadow: var(--shadow-sm);
+
+  transition: all var(--transition-speed) ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.card h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+}
+
+.card p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* ================================
+   SUBMISSION DETAILS CARD
+================================ */
+
+.submissionCard {
+  margin: 20px;
+  padding: 30px 40px;
+  background: var(--bg-white);
+  border-radius: 20px;
+  border: 1px solid var(--border-light);
+  border-left: 5px solid var(--primary-yellow);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-speed) ease;
+}
+
+.submissionCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+}
+
+/* Title */
+
+.submissionCard h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Info Grid Modern Layout */
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+}
+
+/* Info Box */
+
+.infoBox {
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  padding: 20px;
+  border-radius: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  transition: all 0.3s ease;
+}
+
+.infoBox:hover {
+  border-color: var(--primary-yellow);
+  transform: translateY(-2px);
+}
+
+/* Labels */
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* Values */
+
+.value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Late Badge */
+
+.lateBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 16px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lateYes {
+  background: #FEE2E2;
+  color: #991B1B;
+  width: 60px;
+}
+
+.lateNo {
+  background: #DCFCE7;
+  color: #166534;
+  width: 60px;
+}
+
+.card .header {
+  margin: 16px 0;
+  padding: 18px 22px;
+  background: var(--bg-white);
+  border-radius: 12px;
+  border-left: 6px solid var(--primary-yellow);
+  color: var(--text-primary);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  transition: all 0.25s ease;
+}
+.card .header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+
+.submissionCard .header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.header .statusTag {
+  background: white;
+  color: var(--text-primary);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+/* ================================
+   Submission Status Tag (HeaderRow)
+================================ */
+
+.statusTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border-radius: 999px;
+
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+
+  margin-left: auto; /* pushes to right properly */
+}
+
+/* =====================================
+   EVALUATION SECTION
+===================================== */
+
+/* =====================================
+   PROFESSIONAL EVALUATE BUTTON
+===================================== */
+
+.evaluateBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 28px;
+  border-radius: 12px;
+  border: none;
+
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+
+  background: linear-gradient(
+    135deg,
+    var(--primary-yellow),
+    var(--primary-yellow-hover)
+  );
+   min-width: 260px;
+  color: #0F172A;
+
+  box-shadow: 0 8px 22px rgba(250, 204, 21, 0.35);
+}
+
+/* Hover */
+.evaluateBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(250, 204, 21, 0.45);
+}
+
+/* Click */
+.evaluateBtn:active {
+  transform: scale(0.97);
+}
+
+/* Center Evaluate Button Properly */
+.evaluateWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;   /* horizontal center */
+  align-items: center;
+  margin: 35px 0;
+}
+
+/* Focus (Accessibility) */
+.evaluateBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.4);
+}
+
+.evaluationCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 40px;
+  background: linear-gradient(
+    145deg,
+    #ffffff,
+    #f8fafc
+  );
+
+  border: 1px solid var(--border-light);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+
+  transition: all 0.4s ease;
+}
+
+.evaluationCard:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.08),
+    0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+/* Gradient Accent Line */
+.evaluationCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+
+  background: linear-gradient(
+    to bottom,
+    var(--primary-yellow),
+    var(--primary-yellow-hover)
+  );
+
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.progressWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0;
+}
+
+.secondaryRing {
+  position: absolute;
+  z-index: 0;
+}
+
+.progressWrapper svg {
+  position: relative;
+  z-index: 1;
+}
+
+.progressText {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+
+}
+
+/* Glow Behind Ring */
+.progressWrapper::after {
+  content: "";
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(250, 204, 21, 0.15),
+    transparent 70%
+  );
+
+  /* z-index: 0; */
+}
+
+/* Center Score */
+.progressText {
+  position: absolute;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  z-index: 1;
+}
+
+.score {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.total {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* =====================================
+   PREMIUM FEEDBACK
+===================================== */
+
+.feedbackCard {
+  margin-top: 30px;
+  padding: 22px 26px;
+
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+
+  background: linear-gradient(
+    145deg,
+    #ffffff,
+    #f1f5f9
+  );
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+
+  transition: all 0.3s ease;
+}
+
+.feedbackCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.feedbackCard h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.feedbackCard p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
