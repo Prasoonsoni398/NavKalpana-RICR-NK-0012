@@ -1,11 +1,10 @@
 /* src/app/globals.css */
 
 :root {
-  /* Yellow and White Premium Theme Configuration */
   --primary-yellow: #FACC15;
   --primary-yellow-hover: #EAB308;
-  --bg-light: #F8FAFC;        
-  --bg-white: #FFFFFF;        
+  --bg-light: #F8FAFC;         
+  --bg-white: #FFFFFF;       
   --text-primary: #0F172A;    
   --text-secondary: #64748B;  
   --border-light: #E2E8F0;

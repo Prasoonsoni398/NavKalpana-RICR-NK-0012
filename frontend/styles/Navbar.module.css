@@ -1,21 +1,16 @@
-/* src/components/Navbar/Navbar.module.css */
-
 .navbar {
-  position: fixed; /* हमेशा टॉप पर रहेगा */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 70px; /* फिक्स हाइट */
+  height: 72px;
   background: var(--bg-white);
   border-bottom: 1px solid var(--border-light);
   display: flex;
-  justify-content: center; /* कंटेनर को बीच में रखने के लिए */
+  justify-content: center;
   align-items: center;
-  z-index: 1000;
-  padding: 0 2rem;
+  z-index: 2000;
   box-shadow: var(--shadow-sm);
-  /* Navbar load animation */
-  animation: slideFromTop 0.6s ease-out;
 }
 
 .navContainer {
@@ -24,32 +19,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 20px;
 }
 
-/* Logo */
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: var(--text-primary);
   text-decoration: none;
-  letter-spacing: -1px;
-  transition: transform 0.3s ease;
-  cursor: pointer;
 }
 
-.logo:hover {
-  transform: scale(1.05);
-}
+.logo span { color: var(--primary-yellow); }
 
-.logo span {
-  color: var(--primary-yellow);
-}
-
-/* Nav Links */
 .navLinks {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 2.5rem;
   list-style: none;
 }
 
@@ -57,85 +42,159 @@
   text-decoration: none;
   color: var(--text-secondary);
   font-weight: 600;
-  position: relative;
-  padding: 5px 0;
-  transition: color 0.3s ease;
+  transition: 0.3s;
+  font-size: 0.95rem;
 }
 
-/* Animated Underline */
-.navLinks a::after {
+.navLinks a:hover, .activeLink {
+  color: var(--text-primary);
+}
+
+.activeLink {
+  color: var(--text-primary) !important;
+  position: relative;
+}
+
+.activeLink::after {
   content: '';
   position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
+  bottom: -24px;
   left: 0;
-  background-color: var(--primary-yellow);
-  transition: width 0.3s ease;
-}
-
-.navLinks a:hover::after, 
-.activeLink::after {
   width: 100%;
-}
-
-.navLinks a:hover {
-  color: var(--primary-yellow);
-}
-
-/* Login Button */
-.loginBtn {
+  height: 3px;
   background: var(--primary-yellow);
-  color: var(--text-primary);
-  padding: 0.6rem 1.4rem;
+}
+
+/* Dropdown Wrapper */
+.dropdownWrapper { position: relative; }
+
+.dropdownContent {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  background: white;
+  min-width: 220px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  z-index: 2100;
+}
+
+.dropdownContent a {
+  padding: 12px;
   border-radius: 8px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-size: 0.9rem;
 }
 
-.loginBtn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(250, 204, 21, 0.4);
-  background: var(--primary-yellow-hover);
-}
-
-/* Avatar & User Profile */
-.avatar {
-  width: 40px;
-  height: 40px;
+.dropdownContent a:hover {
   background: var(--bg-light);
+}
+
+.dropdownLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 800;
+  padding: 8px 12px;
+}
+
+/* User Avatar */
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  background: var(--primary-yellow);
   color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-weight: bold;
-  border: 2px solid var(--primary-yellow);
-  transition: all 0.3s ease;
+  font-weight: 800;
+}
+
+/* Buttons */
+.loginBtn {
+  background: var(--primary-yellow);
+  color: var(--text-primary);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logoutBtn {
+  background: #fff5f5;
+  color: #f56565;
+  border: none;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.avatar:hover {
-  background: var(--primary-yellow);
-  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+/* Hamburger Icon Animation */
+.hamburger {
+  width: 25px;
+  height: 20px;
+  position: relative;
+  cursor: pointer;
 }
 
-/* Animations */
-@keyframes slideFromTop {
-  from { transform: translateY(-100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.hamburger span {
+  display: block;
+  position: absolute;
+  height: 3px;
+  width: 100%;
+  background: var(--text-primary);
+  border-radius: 10px;
+  transition: 0.3s;
 }
 
-/* Mobile Responsive */
+.hamburger span:nth-child(1) { top: 0; }
+.hamburger span:nth-child(2) { top: 8px; }
+.hamburger span:nth-child(3) { top: 16px; }
+
+.open span:nth-child(1) { top: 8px; transform: rotate(45deg); }
+.open span:nth-child(2) { opacity: 0; }
+.open span:nth-child(3) { top: 8px; transform: rotate(-45deg); }
+
+.menuToggle {
+  display: none;
+  background: none;
+  border: none;
+}
+
+/* --- Mobile Menu --- */
 @media (max-width: 768px) {
-  .navbar {
-    height: 60px;
-    padding: 0 1rem;
-  }
-  
+  .menuToggle { display: block; }
+  .desktopOnly { display: none; }
+
   .navLinks {
-    display: none; /* मोबाइल पर हम बाद में Hamburger Menu डालेंगे */
+    position: fixed;
+    top: 72px;
+    left: -100%;
+    flex-direction: column;
+    background: var(--bg-white);
+    width: 100%;
+    height: calc(100vh - 72px);
+    padding: 40px;
+    transition: 0.4s;
+    gap: 2rem;
   }
+
+  .mobileActive { left: 0; }
+
+  .activeLink::after { display: none; }
 }

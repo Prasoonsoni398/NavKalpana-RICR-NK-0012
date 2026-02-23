@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation"; // useRouter जोड़ा गया
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "@/styles/Navbar.module.css";
 
@@ -10,33 +10,42 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
-  // Mock state: In a real app, use your Auth Context here
+  // Mock state: बाद में इसे Redux या Auth Context से बदलें
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  const [userRole, setUserRole] = useState("student"); // 'student' or 'teacher'
+  const [userRole, setUserRole] = useState("student"); 
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => { setMenuOpen(false); setDropdownOpen(false); };
 
+  useEffect(() => {
+    closeMenu();
+  }, [pathname]);
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.navContainer}>
-        {/* Logo */}
-        <Link href="/" className={styles.logo} onClick={closeMenu}>
+        {/* --- Logo --- */}
+        <Link href="/" className={styles.logo}>
           Edu<span>Leaf</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <ul className={`${styles.navLinks} ${menuOpen ? styles.active : ""}`}>
+        {/* --- Navigation Links --- */}
+        <ul className={`${styles.navLinks} ${menuOpen ? styles.mobileActive : ""}`}>
           <li><Link href="/" className={pathname === "/" ? styles.activeLink : ""}>Home</Link></li>
           <li><Link href="/courses" className={pathname === "/courses" ? styles.activeLink : ""}>Courses</Link></li>
           
-          {isLoggedIn && userRole === "student" && (
-            <li><Link href="/dashboard/student">My Learning</Link></li>
+          {isLoggedIn && (
+            <li>
+              <Link href={userRole === "student" ? "/dashboard/student" : "/dashboard/teacher-dashboard"}>
+                Dashboard
+              </Link>
+            </li>
           )}
 
-          {/* Dynamic Action Button / Dropdown */}
-          <li className={styles.dropdown}>
+          {/* --- Dropdown / Portal Selector --- */}
+          <li className={styles.dropdownWrapper}>
             {isLoggedIn ? (
               <div className={styles.userProfile} onClick={() => setDropdownOpen(!dropdownOpen)}>
                 <div className={styles.avatar}>{userRole[0].toUpperCase()}</div>
@@ -51,19 +60,28 @@ export default function Navbar() {
             <AnimatePresence>
               {dropdownOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 15, scale: 0.95 }}
                   className={styles.dropdownContent}
                 >
                   {!isLoggedIn ? (
                     <>
-                      <Link href="/auth/student-login" onClick={closeMenu}>Student Portal</Link>
-                      <Link href="/auth/teacher-login" onClick={closeMenu}>Teacher Portal</Link>
+                      <div className={styles.dropdownLabel}>Select Portal</div>
+                      <div className={styles.dropdownOptions}>
+                        {/* ✅ यहाँ बटन के बजाय Link इस्तेमाल किया है जो Login Page पर ले जाएगा */}
+                        <Link href="/auth/student-login" className={styles.portalLink}>
+                          Student Login
+                        </Link>
+                        <Link href="/auth/teacher-login" className={styles.portalLink}>
+                          Teacher Login
+                        </Link>
+                      </div>
                     </>
                   ) : (
                     <>
-                      <Link href="/profile" onClick={closeMenu}>Settings</Link>
+                      <div className={styles.userInfo}><p>Welcome, {userRole}</p></div>
+                      <Link href="/profile">My Settings</Link>
                       <button className={styles.logoutBtn} onClick={() => setIsLoggedIn(false)}>
                         Logout
                       </button>
@@ -75,9 +93,11 @@ export default function Navbar() {
           </li>
         </ul>
 
-        {/* Mobile Toggle */}
+        {/* --- Mobile Toggle --- */}
         <button className={styles.menuToggle} onClick={toggleMenu} aria-label="Toggle Menu">
-          <div className={`${styles.hamburger} ${menuOpen ? styles.open : ""}`}></div>
+          <div className={`${styles.hamburger} ${menuOpen ? styles.open : ""}`}>
+            <span></span><span></span><span></span>
+          </div>
         </button>
       </div>
     </nav>

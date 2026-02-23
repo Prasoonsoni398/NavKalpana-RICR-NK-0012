@@ -28,4 +28,12 @@ export interface StudentLoginResponse {
   };
 }
 
+export interface StudentSignupResponse {
+  message: string;
+  success: boolean;
+  // अगर आपका API टोकन या यूजर डेटा भेजता है, तो वो भी यहाँ जोड़ें
+  token?: string;
+  student?: any; 
+}
+
 

@@ -1,69 +1,40 @@
 /* src/styles/Auth.module.css */
+
 .authWrapper {
-  min-height: 100vh;
+  min-height: calc(100vh - 70px);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-light); /* Light Grey-White Background */
+  background-color: var(--bg-light);
   padding: 20px;
 }
 
 .authCard {
-  background-color: var(--bg-white); /* Pure White Card */
+  background-color: var(--bg-white);
   padding: 40px;
   border-radius: 24px;
   width: 100%;
   max-width: 450px;
   border: 1px solid var(--border-light);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  animation: slideUp 0.5s ease-out;
+}
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .title {
   color: var(--text-primary);
-  text-align: center;
-  margin-bottom: 30px;
   font-size: 28px;
   font-weight: 800;
-  letter-spacing: -0.5px;
+  margin-bottom: 8px;
 }
 
-.toggleContainer {
-  display: flex;
-  background: #F1F5F9;
-  padding: 6px;
-  border-radius: 14px;
-  position: relative;
-  margin-bottom: 30px;
-}
-
-.toggleBtn {
-  flex: 1;
-  background: transparent;
-  border: none;
+.subtitle {
   color: var(--text-secondary);
-  padding: 12px;
-  cursor: pointer;
-  z-index: 1;
-  font-weight: 700;
-  transition: 0.3s;
-}
-
-.activeToggle {
-  color: #000; /* एक्टिव होने पर ब्लैक टेक्स्ट */
-}
-
-.toggleSlider {
-  position: absolute;
-  width: calc(50% - 6px);
-  height: calc(100% - 12px);
-  background: var(--primary-yellow); /* Blue से बदलकर Yellow कर दिया */
-  border-radius: 10px;
-  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 10px rgba(250, 204, 21, 0.3);
-}
-
-.sliderRight {
-  transform: translateX(100%);
+  font-size: 14px;
 }
 
 .formGroup {
@@ -78,40 +49,46 @@
   font-weight: 600;
 }
 
-/* Material UI Customization for Light Theme */
-.formGroup :global(.MuiOutlinedInput-root) {
-  color: var(--text-primary);
-  background: #F8FAFC;
-  border-radius: 12px;
+.forgotPass {
+  text-align: right;
+  margin-top: 8px;
 }
 
-.formGroup :global(.MuiOutlinedInput-notchedOutline) {
-  border-color: var(--border-light);
+.forgotPass a {
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 500;
 }
 
-.formGroup :global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
-  border-color: var(--primary-yellow);
+.forgotPass a:hover {
+  color: var(--primary-yellow-hover);
 }
 
 .loginBtn {
   width: 100%;
   background: var(--primary-yellow);
-  color: #000;
+  color: var(--text-primary);
   border: none;
-  padding: 16px;
+  padding: 14px;
   border-radius: 12px;
   font-weight: 800;
   font-size: 16px;
   cursor: pointer;
   margin-top: 10px;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 20px -5px rgba(250, 204, 21, 0.4);
+  box-shadow: 0 10px 20px -5px rgba(250, 204, 21, 0.3);
 }
 
-.loginBtn:hover {
+.loginBtn:hover:not(:disabled) {
   background: var(--primary-yellow-hover);
   transform: translateY(-2px);
-  box-shadow: 0 15px 25px -5px rgba(250, 204, 21, 0.5);
+  box-shadow: 0 15px 25px -5px rgba(250, 204, 21, 0.4);
+}
+
+.loginBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .divider {
@@ -120,26 +97,24 @@
   margin: 25px 0;
   font-size: 13px;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .divider::before, .divider::after {
   content: "";
-  position: absolute;
-  top: 50%;
-  width: 30%;
+  flex: 1;
   height: 1px;
   background: var(--border-light);
 }
-
-.divider::before { left: 0; }
-.divider::after { right: 0; }
 
 .googleBtn {
   width: 100%;
   background: white;
   color: var(--text-primary);
   border: 1px solid var(--border-light);
-  padding: 14px;
+  padding: 12px;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -151,14 +126,31 @@
 }
 
 .googleBtn:hover {
-  background: #F8FAFC;
-  border-color: var(--text-secondary);
+  background: var(--bg-light);
 }
 
-.googleBtn img {
-  width: 22px;
-  height: 22px;
+.googleIcon {
+  width: 20px;
+  height: 20px;
 }
 
-.errorMsg { color: #EF4444; text-align: center; font-size: 14px; margin-top: 10px; font-weight: 500; }
-.successMsg { color: #10B981; text-align: center; font-size: 14px; margin-top: 10px; font-weight: 500; }
+.footerText {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.footerText a {
+  color: var(--text-primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.footerText a:hover {
+  color: var(--primary-yellow-hover);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
