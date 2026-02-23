@@ -6,8 +6,7 @@ import toast from 'react-hot-toast';
 import {
   Search, Bell, Trophy, Flame, Target,
   Star, CheckCircle2, TrendingUp, Clock,
-  PlayCircle, Calendar, ChevronRight, AlertCircle, Layout, Briefcase, Building,
-  CheckCircle, Users, ExternalLink
+  PlayCircle, Calendar, ChevronRight, Layout, Briefcase, Building, Users, ExternalLink,ChevronLeft,
 } from 'lucide-react';
 
 export default function StudentDashboard() {
@@ -84,6 +83,13 @@ export default function StudentDashboard() {
   ];
 
   const years = [2024, 2025, 2026];
+
+  const monthName = [
+    "Jan", "Feb", "Mar", "April", "May", "June",
+    "July", "Aug", "Sept", "Oct", "Nov", "Dec"
+  ];
+
+  const year = [2024, 2025, 2026];
 
   const prevMonth = () => {
     if (selectedMonth === 0) {
@@ -178,12 +184,28 @@ export default function StudentDashboard() {
     { id: 1, title: "Advanced React Patterns", progress: 75, instructor: "Sarah Drasner" },
     { id: 2, title: "Node.js Backend Architecture", progress: 40, instructor: "Maximilian S." },
     { id: 3, title: "UI/UX Fundamentals", progress: 90, instructor: "Gary Simon" },
+    { id: 4, title: "Python for Data Science", progress: 60, instructor: "John Doe" },
   ];
+
+  const jobs = [
+    { id: 1, role: "Frontend Developer", company: "Google", loc: "Bangalore", type: "Full-time", pay: "₹18-24 LPA" },
+    { id: 2, role: "React Intern", company: "Meta", loc: "Remote", type: "Internship", pay: "₹45k/mo" },
+    { id: 3, role: "SDE Intern", company: "Amazon", loc: "Hyderabad", type: "Internship", pay: "₹60k/mo" },
+    { id: 4, role: "Backend Developer", company: "Microsoft", loc: "Pune", type: "Full-time", pay: "₹25-30 LPA" },
+  ];
+
+  const alumniList = [
+    { id: 1, name: "Sandeep Maheshwari", role: "SDE-2 @ Microsoft", batch: "Batch 2022", img: "https://i.pravatar.cc/150?u=1" },
+    { id: 2, name: "Priya Sharma", role: "Product Manager @ Amazon", batch: "Batch 2021", img: "https://i.pravatar.cc/150?u=2" },
+    { id: 3, name: "Aman Gupta", role: "Full Stack @ Uber", batch: "Batch 2023", img: "https://i.pravatar.cc/150?u=3" },
+    { id: 4, name: "Rahul Verma", role: "Data Scientist @ Tesla", batch: "Batch 2020", img: "https://i.pravatar.cc/150?u=4" }
+  ];
+
 
   return (
     <div className={styles.dashboardWrapper}>
       <main className={styles.mainContent}>
-        {/* --- Header Section (Original) --- */}
+        {/* ---1. Header Section (Original) --- */}
         <header className={styles.header}>
           <div className={styles.welcomeInfo}>
             <h1 className={styles.greetingText}>{greeting}, {displayName}! 👋</h1>
@@ -204,26 +226,25 @@ export default function StudentDashboard() {
           </div>
         </header>
 
+        {/* --- 2. Continue Learning Hero --- */}
+        <div className={styles.continueSection}>
+          <div className={styles.continueCard}>
+            <div className={styles.continueCardContent}>
+              <span className={styles.resumeTag}>RESUME</span>
+              <h2>{myCourses?.[0]?.title || "No Active Course"}</h2>
+              <p className={styles.instructorText}>By {myCourses?.[0]?.instructor || "Unknown"}</p>
 
-
-        {/* --- 2. NEW: Continue Learning Hero --- */}
-        <div className={styles.continueSection} style={{ marginBottom: '30px' }}>
-          <div className={styles.continueCard} style={{ background: '#1E293B', color: '#fff', borderRadius: '20px', padding: '25px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', overflow: 'hidden', position: 'relative' }}>
-            <div style={{ zIndex: 2 }}>
-              <span style={{ background: '#FACC15', color: '#000', padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>RESUME</span>
-              <h2 style={{ margin: '15px 0 5px 0' }}>{myCourses[0].title}</h2>
-              <p style={{ color: '#94A3B8', marginBottom: '20px' }}>By {myCourses[0].instructor}</p>
-              <button className={styles.viewCourseBtn} style={{ background: '#FACC15', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}>
+              <button className={styles.viewCourseBtn} onClick={() => console.log("Resuming...")}>
                 <PlayCircle size={18} /> Resume Lesson
               </button>
             </div>
-            <div style={{ opacity: 0.2, position: 'absolute', right: '-20px' }}>
+            <div className={styles.bgDecoration}>
               <PlayCircle size={150} color="#FACC15" />
             </div>
           </div>
         </div>
 
-        {/* --- Bento Grid Stats (Original) --- */}
+        {/* ---3. Bento Grid Stats (Original) --- */}
         <div className={styles.bentoGrid}>
           <div className={`${styles.bentoCard} ${styles.scoreCard}`}>
             <div className={styles.scoreInfo}>
@@ -247,24 +268,28 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* --- 3. NEW: Activity Heatmap Section --- */}
-        <div className={styles.heatmapSection} style={{ background: '#fff', padding: '20px', borderRadius: '15px', marginBottom: '30px' }}>
-          <div className={styles.sectionHeader} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-            <h3 style={{ margin: 0 }}>Learning Activity</h3>
-            <span style={{ fontSize: '12px', color: '#64748B' }}>Total: 412 hours this year</span>
+        {/* --- 4. NEW: Activity Heatmap Section --- */}
+        <div className={styles.heatmapSection}>
+          <div className={styles.heatmapHeader}>
+            <h3>Learning Activity</h3>
+            <span className={styles.totalStats}>Total: 412 hours this year</span>
           </div>
-          <div style={{ display: 'flex', gap: '3px', overflowX: 'auto', paddingBottom: '10px' }}>
+          <div className={styles.heatmapContainer}>
             {heatmapData.map((week, i) => (
-              <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <div key={i} className={styles.heatmapColumn}>
                 {week.map((day, j) => (
-                  <div key={j} style={{ width: '10px', height: '10px', borderRadius: '2px', backgroundColor: day === 0 ? '#F1F5F9' : day === 1 ? '#FEF9C3' : day === 2 ? '#FDE047' : '#FACC15' }} />
+                  <div
+                    key={j}
+                    className={`${styles.heatmapCell} level-${day}`}
+                    title={`Activity Level: ${day}`}
+                  />
                 ))}
               </div>
             ))}
           </div>
         </div>
 
-        {/* --- Original Middle Row --- */}
+        {/* ---5. Original Middle Row --- */}
         <div className={styles.middleRow}>
           <div className={styles.activitySection}>
             <h3><Clock size={18} color="#FACC15" /> Recent Submissions</h3>
@@ -297,31 +322,27 @@ export default function StudentDashboard() {
             </div>
           </div>
         </div>
-        {/* --- 1. NEW: Stats Overview Section --- */}
-        <div className={styles.statsRow} style={{ display: 'flex', gap: '20px', marginBottom: '25px', flexWrap: 'wrap' }}>
+
+        {/* ---6. Original Stats Row --- */}
+        <div className={styles.statsRow}>
           {statsOverview.map((stat, i) => (
-            <div key={i} className={styles.statMiniCard} style={{ background: '#fff', padding: '15px', borderRadius: '12px', flex: '1', minWidth: '150px', display: 'flex', alignItems: 'center', gap: '15px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-              <div style={{ background: '#FACC1520', color: '#FACC15', padding: '10px', borderRadius: '10px' }}>{stat.icon}</div>
-              <div>
-                <p style={{ fontSize: '12px', color: '#64748B', margin: 0 }}>{stat.label}</p>
-                <h3 style={{ fontSize: '18px', margin: 0 }}>{stat.value}</h3>
+            <div
+              key={i}
+              className={styles.statMiniCard}
+              style={{ animationDelay: `${i * 0.1}s` }}
+            >
+              <div className={styles.iconWrapper}>
+                {stat.icon}
+              </div>
+              <div className={styles.content}>
+                <p>{stat.label}</p>
+                <h3>{stat.value}</h3>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Skills & Courses (Original) */}
-        <div className={styles.skillsSection} style={{ marginBottom: '30px' }}>
-          <h3><Star size={18} color="#FACC15" /> Skills Acquired</h3>
-          <div className={styles.pillsContainer}>
-            {profile?.skills?.length > 0 ? profile.skills.map((skill: any, i: number) => (
-              <div key={i} className={styles.skillPill}><CheckCircle2 size={14} /> {skill}</div>
-            )) : ["React JS", "Node.js", "UI Design", "Next.js", "Python"].map((skill, i) => (
-              <div key={i} className={styles.skillPill}><CheckCircle2 size={14} /> {skill}</div>
-            ))}
-          </div>
-        </div>
-
+        {/* ---7. Skills & Courses (Original) --- */}
         <div className={styles.coursesSection}>
           <div className={styles.sectionHeader}>
             <h3>My Courses</h3>
@@ -348,54 +369,65 @@ export default function StudentDashboard() {
             ))}
           </div>
         </div>
-        {/* Job & Internship Section */}
-        <div style={{ marginBottom: '35px', background: '#fff', padding: '24px', borderRadius: '18px', border: '1px solid #f1f5f9' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: 0, fontSize: '20px', fontWeight: '700' }}>
+
+        {/* ---8. Jobs & Internships (Original) ---  */}
+        <div className={styles.jobSection}>
+          <div className={styles.header}>
+            <h3 className={styles.title}>
               <Briefcase size={22} color="#FACC15" /> Jobs & Internships
             </h3>
-            <button style={{ background: 'none', border: 'none', color: '#FACC15', fontWeight: '600', cursor: 'pointer' }}>View All →</button>
+            <button className={styles.viewAll}>View All →</button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-            {[
-              { id: 1, role: "Frontend Developer", company: "Google", loc: "Bangalore", type: "Full-time", pay: "₹18-24 LPA" },
-              { id: 2, role: "React Intern", company: "Meta", loc: "Remote", type: "Internship", pay: "₹45k/mo" },
-              { id: 3, role: "SDE Intern", company: "Amazon", loc: "Hyderabad", type: "Internship", pay: "₹60k/mo" }
-            ].map(job => (
-              <div key={job.id} style={{ padding: '16px', borderRadius: '14px', border: '1px solid #F1F5F9', background: '#F8FAFC', transition: 'transform 0.2s' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+          <div className={styles.jobGrid}>
+            {jobs.map((job, index) => (
+              <div
+                key={job.id}
+                className={styles.jobCard}
+                style={{ animationDelay: `${index * 0.1}s` }} // Staggered Animation
+              >
+                <div className={styles.cardHeader}>
                   <Building size={20} color="#94A3B8" />
-                  <span style={{ fontSize: '10px', fontWeight: '700', background: '#FEF9C3', color: '#854D0E', padding: '3px 10px', borderRadius: '20px' }}>{job.type.toUpperCase()}</span>
+                  <span className={styles.badge}>{job.type.toUpperCase()}</span>
                 </div>
-                <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', color: '#1E293B' }}>{job.role}</h4>
-                <p style={{ margin: '0 0 12px 0', fontSize: '13px', color: '#64748B' }}>{job.company} • {job.loc}</p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: '700', color: '#FACC15', fontSize: '15px' }}>{job.pay}</span>
-                  <button style={{ background: '#000', color: '#fff', border: 'none', padding: '7px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Apply</button>
+
+                <h4 className={styles.jobRole}>{job.role}</h4>
+                <p className={styles.companyInfo}>{job.company} • {job.loc}</p>
+
+                <div className={styles.cardFooter}>
+                  <span className={styles.pay}>{job.pay}</span>
+                  <button className={styles.applyBtn}>Apply</button>
                 </div>
               </div>
             ))}
           </div>
         </div>
-        {/* Alumni Network Section */}
-        <div style={{ marginBottom: '35px' }}>
-          <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px', fontSize: '20px', fontWeight: '700' }}>
-            <Users size={22} color="#FACC15" /> Notable Alumni
-          </h3>
-          <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '15px', scrollbarWidth: 'none' }}>
-            {[
-              { id: 1, name: "Sandeep Maheshwari", role: "SDE-2 @ Microsoft", batch: "Batch 2022", img: "https://i.pravatar.cc/150?u=1" },
-              { id: 2, name: "Priya Sharma", role: "Product Manager @ Amazon", batch: "Batch 2021", img: "https://i.pravatar.cc/150?u=2" },
-              { id: 3, name: "Aman Gupta", role: "Full Stack @ Uber", batch: "Batch 2023", img: "https://i.pravatar.cc/150?u=3" },
-              { id: 4, name: "Rahul Verma", role: "Data Scientist @ Tesla", batch: "Batch 2020", img: "https://i.pravatar.cc/150?u=4" }
-            ].map(al => (
-              <div key={al.id} style={{ minWidth: '200px', background: '#fff', padding: '20px', borderRadius: '18px', textAlign: 'center', border: '1px solid #f1f5f9' }}>
-                <img src={al.img} style={{ width: '70px', height: '70px', borderRadius: '50%', marginBottom: '12px', border: '3px solid #FACC15', objectFit: 'cover' }} alt={al.name} />
-                <h4 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#1E293B' }}>{al.name}</h4>
-                <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#FACC15', fontWeight: '600' }}>{al.role}</p>
-                <p style={{ margin: '0 0 15px 0', fontSize: '11px', color: '#94A3B8' }}>{al.batch}</p>
-                <button style={{ width: '100%', background: 'none', border: '1px solid #E2E8F0', padding: '7px', borderRadius: '8px', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', fontWeight: '500' }}>
+
+
+        {/* ---9. Alumni Network Section --- */}
+        <div className={styles.alumniSection}>
+          <div className={styles.headerAlumni}>
+            <Users size={22} color="#FACC15" />
+            <h3>Notable Alumni</h3>
+          </div>
+
+          <div className={styles.alumniContainer}>
+            {alumniList.map((al, index) => (
+              <div
+                key={al.id}
+                className={styles.alumniCard}
+                style={{ animationDelay: `${index * 0.15}s` }} // लहर की तरह कार्ड्स आएंगे
+              >
+                <img
+                  src={al.img}
+                  className={styles.avatar}
+                  alt={al.name}
+                />
+                <h4>{al.name}</h4>
+                <p className={styles.role}>{al.role}</p>
+                <p className={styles.batch}>{al.batch}</p>
+
+                <button className={styles.connectBtn}>
                   Connect <ExternalLink size={12} />
                 </button>
               </div>
@@ -403,22 +435,21 @@ export default function StudentDashboard() {
           </div>
         </div>
       </main>
-
-      {/* --- RIGHT SIDEBAR (Enhanced) --- */}
+      {/* ---10. Right Sidebar */}
       <aside className={styles.rightPanel}>
 
+        {/* 10.1. Event Calendar */}
         <div className={styles.eventCalendarCard}>
           <div className={styles.calendarHeader}>
             <h3 className={styles.sidebarTitle}>
               <Calendar size={18} className={styles.calendarIcon} /> Event Calendar
             </h3>
             <div className={styles.navActions}>
-              <button onClick={prevMonth} className={styles.navBtn}>&lt;</button>
-              {/* यहाँ variable के नाम आपके कोड के हिसाब से होने चाहिए */}
+              <button onClick={prevMonth} className={styles.navBtn}><ChevronLeft size={16} /></button>
               <span className={styles.currentMonth}>
                 {monthNames[selectedMonth]} {selectedYear}
               </span>
-              <button onClick={nextMonth} className={styles.navBtn}>&gt;</button>
+              <button onClick={nextMonth} className={styles.navBtn}><ChevronRight size={16} /></button>
             </div>
           </div>
 
@@ -427,17 +458,15 @@ export default function StudentDashboard() {
               <div key={day} className={styles.weekdayLabel}>{day}</div>
             ))}
 
-            {/* महीने की शुरुआत के खाली स्लॉट्स */}
             {Array.from({ length: firstDayOfMonth }).map((_, i) => (
               <div key={`empty-${i}`} className={styles.emptySlot}></div>
             ))}
 
-            {/* महीने के दिन */}
             {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(date => {
-              const monthStr = (currentMonth + 1).toString().padStart(2, '0');
-              const dateStr = `${currentYear}-${monthStr}-${date.toString().padStart(2, '0')}`;
+              const monthStr = (selectedMonth + 1).toString().padStart(2, '0');
+              const dateStr = `${selectedYear}-${monthStr}-${date.toString().padStart(2, '0')}`;
               const hasEvent = !!events[dateStr];
-              const isToday = new Date().toDateString() === new Date(currentYear, currentMonth, date).toDateString();
+              const isToday = new Date().toDateString() === new Date(selectedYear, selectedMonth, date).toDateString();
 
               return (
                 <div
@@ -454,17 +483,18 @@ export default function StudentDashboard() {
               );
             })}
           </div>
-          {/* TypeScript Friendly Event Modal */}
+
+          {/* Event Modal */}
           {showModal && (
             <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
-              <div className={styles.eventModal} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+              <div className={styles.eventModal} onClick={(e) => e.stopPropagation()}>
                 <h4 className={styles.modalTitle}>Set Event: {selectedDate}</h4>
                 <input
                   type="text"
                   autoFocus
                   value={newEventName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewEventName(e.target.value)}
-                  onKeyDown={(e: React.KeyboardEvent) => e.key === 'Enter' && saveEvent()}
+                  onChange={(e) => setNewEventName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && saveEvent()}
                   placeholder="What's happening?"
                   className={styles.modalInput}
                 />
@@ -475,8 +505,9 @@ export default function StudentDashboard() {
               </div>
             </div>
           )}
-
         </div>
+
+        {/* 10.2. Performance Tracker */}
         <div className={styles.monthlyTracker}>
           <div className={styles.trackerHeader}>
             <h3>Performance</h3>
@@ -486,22 +517,14 @@ export default function StudentDashboard() {
                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
                 className={styles.filterSelect}
               >
-                {/* यहाँ months की जगह monthNames कर दें */}
-                {monthNames.map((m, i) => (
-                  <option key={i} value={i}>{m.substring(0, 3)}</option>
-                ))}
+                {monthName.map((m, i) => <option key={i} value={i}>{m.substring(0, 3)}</option>)}
               </select>
-
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                 className={styles.filterSelect}
               >
-                {/* सुनिश्चित करें कि years भी ऊपर डिफाइन है, नहीं तो [2024, 2025, 2026] लिख दें */}
-                {[2024, 2025, 2026].map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </select>
+                {year.map((y) => <option key={y} value={y}>{y}</option>)}</select>
             </div>
           </div>
           <div className={styles.trackerContent}>
@@ -519,26 +542,33 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* --- 4. NEW: Upcoming Deadlines --- */}
-        <div className={styles.activitySection} style={{ marginBottom: '25px' }}>
-          <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Calendar size={18} color="#FACC15" /> Upcoming Quizzes</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '15px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', background: '#F8FAFC', borderRadius: '10px' }}>
-              <div style={{ background: '#FACC15', color: '#000', padding: '5px', borderRadius: '8px', textAlign: 'center', minWidth: '40px' }}>
-                <span style={{ fontSize: '10px', display: 'block' }}>FEB</span>
-                <strong style={{ fontSize: '14px' }}>24</strong>
-              </div>
-              <div style={{ flex: 1 }}>
-                <h4 style={{ fontSize: '13px', margin: 0 }}>React Final Quiz</h4>
-                <p style={{ fontSize: '11px', color: '#64748B', margin: 0 }}>10:00 AM • 45 Mins</p>
-              </div>
-              <ChevronRight size={14} color="#94A3B8" />
+        {/* 3. Upcoming Quizzes */}
+        <div className={styles.activitySection}>
+          <h3 className={styles.sectionHeader}><Calendar size={18} color="#FACC15" /> Upcoming Quizzes</h3>
+          <div className={styles.quizCard}>
+            <div className={styles.dateBadge}>
+              <span>FEB</span>
+              <strong>24</strong>
             </div>
+            <div className={styles.quizInfo}>
+              <h4>React Final Quiz</h4>
+              <p>10:00 AM • 45 Mins</p>
+            </div>
+            <ChevronRight size={14} color="#94A3B8" />
           </div>
         </div>
 
+        {/* 4. Skills */}
+        <div className={styles.skillsSection}>
+          <h3 className={styles.sectionHeader}><Star size={18} color="#FACC15" /> Skills Acquired</h3>
+          <div className={styles.pillsContainer}>
+            {["React JS", "Node.js", "UI Design", "Next.js", "Python"].map((skill, i) => (
+              <div key={i} className={styles.skillPill}><CheckCircle2 size={14} /> {skill}</div>
+            ))}
+          </div>
+        </div>
 
-
+        {/* 5. Leaderboard */}
         <div className={styles.leaderboardCard}>
           <h3>Top Performers</h3>
           <div className={styles.leaderList}>
@@ -552,7 +582,7 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-      </aside >
+      </aside>
 
     </div >
   );

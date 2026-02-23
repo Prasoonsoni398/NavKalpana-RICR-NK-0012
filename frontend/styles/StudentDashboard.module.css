@@ -1,965 +1,577 @@
---- Global Reset & Wrapper ---
+/* --- Global Dashboard Variables --- */
+:root {
+  --primary-yellow: #FACC15;
+  --primary-yellow-hover: #EAB308;
+  --bg-light: #F8FAFC;
+  --bg-white: #FFFFFF;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --border-light: #E2E8F0;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+  
+}
+
+
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
 .dashboardWrapper {
   display: flex;
-  background-color: #F7F9FC;
+  background-color: var(--bg-light);
   min-height: 100vh;
+  /* gap: 24px; */
   font-family: 'Inter', sans-serif;
-  color: #1E293B;
+  overflow-x: hidden; 
 }
 
-/* --- 1. Sidebar Styling --- */
-.sidebar {
-  width: 260px;
-  background: white;
-  padding: 30px 10px;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #E2E8F0;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-
-.logo {
-  font-size: 28px;
-  font-weight: 800;
-  color: #1E293B;
-  padding: 0 20px 40px;
-  letter-spacing: -1.5px;
-}
-
-.navMenu {
-  flex: 1;
-}
-
-.navItem {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: #64748B;
-  font-weight: 500;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  margin-bottom: 5px;
-}
-
-.navItem:hover {
-  background: #FEFCE8;
-  color: #EAB308;
-  transform: translateX(5px);
-}
-
-.navActive {
-  background: #FACC15 !important;
-  color: #000 !important;
-  font-weight: 600;
-  box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.3);
-}
-
-.logoutWrapper {
-  padding-top: 20px;
-  border-top: 1px solid #F1F5F9;
-}
-
-.logoutBtn {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 12px 20px;
-  color: #EF4444;
-  text-decoration: none;
-  font-weight: 600;
-  border-radius: 12px;
-  transition: 0.3s;
-}
-
-/* --- 2. Main Content & Header --- */
 .mainContent {
   flex: 1;
-  padding: 30px 40px;
-  animation: fadeIn 0.6s ease-out;
+  padding: 30px;
+  max-width: calc(100vw - 400px);
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-start; 
   margin-bottom: 35px;
+  gap: 20px;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.welcomeInfo {
+  flex: 1;
 }
 
 .greetingText {
-  font-size: 30px;
+  font-size: clamp(22px, 4vw, 28px); 
   font-weight: 800;
-  margin: 0;
-  color: #0F172A;
+  color: var(--text-primary);
+  margin: 0 0 5px 0;
+  letter-spacing: -0.5px;
 }
 
 .subText {
-  color: #64748B;
-  margin-top: 5px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 2px 0;
+  line-height: 1.4;
 }
 
+/* --- Header Actions (Search & Profile) --- */
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 16px;
 }
 
 .searchBox {
   display: flex;
   align-items: center;
-  background: white;
-  padding: 10px 15px;
+  background: var(--bg-white);
+  padding: 10px 16px;
   border-radius: 14px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--border-light);
   gap: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.searchBox:focus-within {
+  border-color: var(--primary-yellow);
+  width: 250px; 
+  box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.15);
 }
 
 .searchBox input {
   border: none;
   outline: none;
   font-size: 14px;
-  width: 180px;
+  width: 150px;
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.notifBadge {
+  position: relative;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.notifBadge:hover {
+  background: var(--bg-light);
+  transform: scale(1.05);
 }
 
 .profileImg {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  border: 2px solid #FACC15;
-  padding: 2px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px; 
+  border: 2.5px solid var(--primary-yellow);
+  object-fit: cover;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-/* --- 3. Bento Grid (Stats) --- */
+.profileImg:hover {
+  transform: rotate(5deg) scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 25px;
+  }
+
+  .headerActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .searchBox {
+    flex: 1;
+  }
+
+  .searchBox:focus-within {
+    width: 100%;
+  }
+}
+
+/* --- Bento Grid Layout --- */
+
 .bentoGrid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   gap: 20px;
   margin-bottom: 30px;
+  perspective: 1000px; 
 }
 
 .bentoCard {
-  background: white;
-  padding: 25px;
+  background: var(--bg-white);
+  padding: 24px;
   border-radius: 24px;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-  transition: transform 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--border-light);
+  animation: bentoFadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .bentoCard:hover {
   transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.bentoCard h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 12px 0 4px 0;
+  color: var(--text-primary);
+}
+
+.bentoCard p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .scoreCard {
   background: #1E293B;
-  color: white;
-  display: flex;
+  color: #FFFFFF;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  border: none;
 }
 
-.scoreInfo h2 {
-  font-size: 42px;
-  color: #FACC15;
-  margin: 10px 0;
+.scoreInfo p {
+  color: #94A3B8; 
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.scoreValue {
+  color: var(--primary-yellow);
+  font-size: 32px;
+  font-weight: 800;
+  margin: 5px 0;
 }
 
 .trendText {
-  font-size: 12px;
-  color: #4ADE80;
   display: flex;
   align-items: center;
-  gap: 5px;
-}
-
-/* --- 4. Middle Row (Skills & Activity) --- */
-.middleRow {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.skillsSection, .activitySection, .leaderboardCard {
-  background: white;
-  padding: 25px;
-  border-radius: 24px;
-}
-
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.pillsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.skillPill {
-  background: #FEFCE8;
-  color: #854D0E;
-  padding: 8px 14px;
-  border-radius: 50px;
-  font-size: 12px;
+  gap: 4px;
+  font-size: 13px;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border: 1px solid #FEF08A;
+  color: #10B981; 
+  background: rgba(16, 185, 129, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
 }
 
-/* --- 5. Bar Chart Styling --- */
-.barChart {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  height: 150px;
-  padding-top: 20px;
+.streakCard, .assignmentCard {
+  align-items: flex-start;
 }
 
-.barContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  height: 100%;
-  justify-content: flex-end;
-  width: 30px;
+@media (max-width: 1024px) {
+  .bentoGrid {
+    grid-template-columns: 1fr 1fr; 
+  }
+  .scoreCard {
+    grid-column: span 2; 
+  }
 }
 
-.barFill {
-  width: 100%;
-  background: #FACC15;
-  border-radius: 6px 6px 2px 2px;
-  animation: growUp 1s ease-out;
+@media (max-width: 768px) {
+  .bentoGrid {
+    grid-template-columns: 1fr;
+  }
+  .scoreCard {
+    grid-column: span 1;
+  }
 }
 
-.barLabel {
-  font-size: 11px;
-  color: #94A3B8;
-  font-weight: 700;
+@keyframes bentoFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-/* --- 6. Leaderboard --- */
-.leaderItem {
-  display: flex;
-  align-items: center;
-  padding: 12px 15px;
-  background: #F8FAFC;
-  border-radius: 14px;
-  margin-bottom: 10px;
-}
 
-.rank { font-weight: 800; width: 40px; color: #94A3B8; }
-.userName { flex: 1; font-weight: 600; }
-.userScore { color: #EAB308; font-weight: 700; }
 
-/* --- 7. Right Panel & Calendar --- */
-.rightPanel {
-  width: 320px;
-  background: white;
-  padding: 30px 20px;
-  border-left: 1px solid #E2E8F0;
-}
-
-.calendarGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-  margin-top: 15px;
-  text-align: center;
-}
-
-.dayHead { font-size: 11px; font-weight: 700; color: #94A3B8; margin-bottom: 5px;}
-
-.calDate {
-  font-size: 12px;
-  padding: 8px 0;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.calActive {
-  background: #FACC15;
-  font-weight: 800;
-  box-shadow: 0 4px 10px rgba(250, 204, 21, 0.4);
-}
-
-.eventBox {
-  display: flex;
-  gap: 12px;
-  margin-top: 15px;
-  padding: 12px;
-  background: #F8FAFC;
-  border-radius: 12px;
-}
-
-.eventMarker { width: 4px; border-radius: 4px; }
-
-/* --- Animations --- */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes growUp {
-  from { height: 0; }
-}
-
-/* Courses Section Styles */
-.coursesSection {
-  margin-bottom: 2rem;
-}
-
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.viewAllBtn {
-  background: transparent;
-  border: none;
-  color: #854d0e; /* Dark yellow/brown for contrast */
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.coursesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.courseCard {
-  background: #ffffff;
-  padding: 1.25rem;
-  border-radius: 16px;
-  border: 1px solid #f1f5f9;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.courseCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-}
-
-.courseInfo h4 {
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
-  color: #0f172a;
-}
-
-.courseInfo p {
-  font-size: 0.85rem;
-  color: #64748b;
-  margin-bottom: 1.5rem;
-}
-
-/* Progress Bar */
-.progressContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.progressLabel {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #475569;
-}
-
-.progressBar {
-  width: 100%;
-  height: 8px;
-  background: #f1f5f9;
-  border-radius: 99px;
-  overflow: hidden;
-}
-
-.progressFill {
-  height: 100%;
-  background: #FACC15; /* Your preferred Yellow */
-  border-radius: 99px;
-}
-
-.courseCard {
-  background: #ffffff;
-  padding: 1.25rem;
-  border-radius: 16px;
-  border: 1px solid #f1f5f9;
-  display: flex; /* Added flex to align button at bottom */
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-height: 200px; /* Ensures all cards are uniform height */
-}
-
-/* Progress bar margin to separate from button */
-.progressContainer {
-  margin-bottom: 1.25rem;
-}
-
-/* The View Button */
-.viewCourseBtn {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #FACC15; /* Your Theme Yellow */
-  color: #000000;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.viewCourseBtn:hover {
-  background-color: #eab308; /* Slightly darker yellow on hover */
-  
-}
-
-/* --- Global Reset & Wrapper --- */
-.dashboardWrapper {
-  display: flex;
-  background-color: #F8FAFC; /* हल्का सा सफ़ेद-नीला शेड */
-  min-height: 100vh;
-  font-family: 'Inter', sans-serif;
-  color: #1E293B;
-  overflow: hidden;
-}
-
-/* --- 1. Sidebar Styling --- */
-.sidebar {
-  width: 260px;
-  background: white;
-  padding: 30px 15px;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #E2E8F0;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  z-index: 100;
-}
-
-.logo {
-  font-size: 26px;
-  font-weight: 800;
-  color: #0F172A;
-  padding: 0 15px 40px;
-  letter-spacing: -1px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo::before {
-  content: '';
-  width: 12px;
-  height: 25px;
-  background: #FACC15;
-  border-radius: 4px;
-}
-
-.navItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  text-decoration: none;
-  color: #64748B;
-  font-weight: 600;
-  border-radius: 14px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-bottom: 8px;
-}
-
-.navItem:hover {
-  background: #FEFCE8;
-  color: #CA8A04; /* थोड़ा डार्क पीला ताकि साफ़ दिखे */
-  transform: translateX(8px);
-}
-
-.navActive {
-  background: #FACC15 !important;
-  color: #000 !important;
-  box-shadow: 0 10px 20px -5px rgba(250, 204, 21, 0.4);
-}
-
-/* --- 2. Main Content & Header --- */
-.mainContent {
-  flex: 1;
-  padding: 30px 40px;
-  overflow-y: auto;
-  animation: fadeInPage 0.8s ease-out;
-}
-
-.greetingText {
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-}
-
-/* --- 3. Bento Grid (Animations Fix) --- */
-.bentoGrid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 35px;
-}
-
-.bentoCard {
-  background: white;
-  padding: 25px;
-  border-radius: 28px;
-  border: 1px solid rgba(226, 232, 240, 0.7);
-  box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05);
-  transition: all 0.4s ease;
-  animation: slideUp 0.6s ease-out backwards;
-}
-
-/* स्टैगर एनीमेशन: कार्ड्स एक-एक करके आएँगे */
 .bentoCard:nth-child(1) { animation-delay: 0.1s; }
 .bentoCard:nth-child(2) { animation-delay: 0.2s; }
 .bentoCard:nth-child(3) { animation-delay: 0.3s; }
 
 .bentoCard:hover {
-  transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 25px 30px -15px rgba(0,0,0,0.1);
-  border-color: #FACC15;
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: var(--primary-yellow);
 }
+
 
 .scoreCard {
   background: #1E293B;
-  color: white;
+  color: #FFFFFF;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
   position: relative;
   overflow: hidden;
 }
 
-/* कार्ड के पीछे हल्का ग्लो */
-.scoreCard::after {
+.scoreCard::before {
   content: '';
   position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 200px;
-  height: 200px;
-  background: rgba(250, 204, 21, 0.1);
-  filter: blur(50px);
-  border-radius: 50%;
+  top: 0; right: 0;
+  width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.15) 0%, transparent 70%);
+  pointer-events: none;
 }
 
-/* --- 4. Charts & Progress --- */
-.barFill {
-  width: 100%;
-  background: linear-gradient(180deg, #FDE047 0%, #FACC15 100%);
-  border-radius: 8px 8px 3px 3px;
-  animation: growHeight 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
-  transform-origin: bottom;
+.scoreValue {
+  color: var(--primary-yellow);
+  font-size: clamp(24px, 4vw, 36px); 
+  font-weight: 800;
+  margin: 5px 0;
 }
 
-.progressFill {
-  height: 100%;
-  background: linear-gradient(90deg, #FDE047, #FACC15);
-  border-radius: 99px;
-  transition: width 1s ease-in-out;
-}
-
-/* --- 5. Course Cards & Buttons --- */
-.courseCard {
-  background: white;
-  padding: 20px;
-  border-radius: 24px;
-  border: 1px solid #F1F5F9;
+.trendText {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 6px 12px;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+@media (max-width: 1100px) {
+  .bentoGrid {
+    grid-template-columns: 1.5fr 1fr;
+  }
+  .scoreCard {
+    grid-column: span 2; 
+  }
+}
+
+@media (max-width: 768px) {
+  .bentoGrid {
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px;
+  }
+  .scoreCard {
+    grid-column: span 2;
+    padding: 20px;
+  }
+  .bentoCard h3 { font-size: 18px; }
+}
+
+@media (max-width: 480px) {
+  .bentoGrid {
+    grid-template-columns: 1fr;
+  }
+  .scoreCard {
+    grid-column: span 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .scoreCard svg {
+    align-self: flex-end; 
+  }
+}
+
+
+.continueSection {
+  margin-bottom: 30px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.continueCard {
+  background: #1E293B;
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
   justify-content: space-between;
-  min-height: 220px;
-  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.continueCard:hover {
+  transform: translateY(-5px);
+}
+
+.continueCardContent {
+  z-index: 2;
+}
+
+.resumeTag {
+  background: var(--primary-yellow);
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.continueCard h2 {
+  margin: 15px 0 5px 0;
+  font-size: 24px;
+}
+
+.instructorText {
+  color: #94A3B8;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .viewCourseBtn {
-  width: 100%;
-  padding: 12px;
-  background: #FACC15;
+  background: var(--primary-yellow);
   color: #000;
   border: none;
-  border-radius: 14px;
-  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
-  position: relative;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
 
 .viewCourseBtn:hover {
-  background: #EAB308;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px -5px rgba(234, 179, 8, 0.4);
+  background: var(--primary-yellow-hover);
+  transform: scale(1.05);
 }
 
-/* --- 6. Right Panel & Calendar --- */
-.rightPanel {
-  width: 340px;
-  background: white;
-  padding: 30px 24px;
-  border-left: 1px solid #E2E8F0;
-  animation: slideInRight 0.8s ease-out;
+.bgDecoration {
+  opacity: 0.15;
+  position: absolute;
+  right: -20px;
+  pointer-events: none;
+  animation: pulseRotate 10s infinite linear;
 }
 
-.calActive {
-  background: #FACC15 !important;
-  color: black !important;
-  font-weight: 800;
-  transform: scale(1.1);
-  box-shadow: 0 5px 12px rgba(250, 204, 21, 0.4);
+@keyframes pulseRotate {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(10deg) scale(1.1); }
+  100% { transform: rotate(0deg) scale(1); }
 }
 
-.leaderItem {
-  transition: 0.3s;
-  border: 1px solid transparent;
+@media (max-width: 768px) {
+  .continueCard {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 20px;
+  }
+  .viewCourseBtn {
+    justify-content: center;
+    width: 100%;
+  }
+  .bgDecoration {
+    display: none; 
+  }
 }
 
-.leaderItem:hover {
-  background: white;
-  border-color: #FEF08A;
-  transform: scale(1.03);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-/* --- 7. Keyframes (तगड़े एनीमेशन) --- */
-@keyframes fadeInPage {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(40px); }
+/* --- 1. Global Animations --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(50px); }
-  to { opacity: 1; transform: translateX(0); }
+@keyframes cellPop {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes growHeight {
-  from { transform: scaleY(0); }
-  to { transform: scaleY(1); }
+/* --- 2. Heatmap Layout --- */
+.heatmapSection {
+  background: var(--bg-white);
+  padding: 24px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  animation: fadeInUp 0.6s ease-out;
 }
 
-/* Custom Scrollbar for Main Content */
-.mainContent::-webkit-scrollbar {
-  width: 6px;
-}
-.mainContent::-webkit-scrollbar-thumb {
-  background: #E2E8F0;
-  border-radius: 10px;
-}
-
-/* --- Monthly Tracker Styling --- */
-.monthlyTracker {
-  background: #1E293B; /* डार्क थीम ताकि कैलेंडर (वाइट) से अलग दिखे */
-  padding: 20px;
-  border-radius: 24px;
-  color: white;
-  margin-bottom: 25px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  animation: slideInRight 0.8s ease-out;
-}
-
-.monthlyTracker h3 {
-  font-size: 16px;
-  margin-bottom: 15px;
-  color: #FACC15;
-}
-
-.trackerContent {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-/* Circular Progress Animation */
-.progressCircle {
-  width: 80px;
-  height: 80px;
-}
-
-.circularChart {
-  display: block;
-  margin: 10px auto;
-  max-width: 100%;
-}
-
-.circleBg {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.1);
-  stroke-width: 3.8;
-}
-
-.circle {
-  fill: none;
-  stroke: #FACC15;
-  stroke-width: 2.8;
-  stroke-linecap: round;
-  animation: progressAnim 1.5s ease-out forwards;
-}
-
-.percentage {
-  fill: white;
-  font-size: 0.5rem;
-  font-weight: 700;
-  text-anchor: middle;
-}
-
-.trackerStats {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.statMini span {
-  display: block;
-  font-size: 11px;
-  color: #94A3B8;
-}
-
-.statMini strong {
-  font-size: 16px;
-  color: white;
-}
-
-.trackerHint {
-  font-size: 12px;
-  color: #4ADE80;
-  margin-top: 15px;
-  font-weight: 500;
-}
-
-/* --- Keyframes for Tracker --- */
-@keyframes progressAnim {
-  0% { stroke-dasharray: 0, 100; }
-}
-
-/* पुराने कैलेंडर को थोड़ा क्लीन करना */
-.calendarContainer {
-  background: white;
-  padding: 15px;
-  border-radius: 24px;
-  border: 1px solid #F1F5F9;
-}
-.trackerHeader {
+.heatmapHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.filterGroup {
-  display: flex;
-  gap: 5px;
+.heatmapHeader h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
 }
 
-.filterSelect {
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: 1px solid #E2E8F0;
+.totalStats {
   font-size: 12px;
   font-weight: 600;
-  color: #000000;
-  background: #F1F5F9;
-  cursor: pointer;
-  outline: none;
-}
-
-.filterSelect:hover {
-  border-color: #FACC15;
-}
-
-/* Circular Chart Styling */
-.circularChart {
-  display: block;
-  margin: 10px auto;
-  max-width: 100px;
-}
-
-.circleBg {
-  fill: none;
-  stroke: #F1F5F9;
-  stroke-width: 3.8;
-}
-
-.circle {
-  fill: none;
-  stroke: #FACC15; /* Your Theme Yellow */
-  stroke-width: 3.8;
-  stroke-linecap: round;
-  transition: stroke-dasharray 0.6s ease;
-}
-
-.percentage {
-  fill: #1E293B;
-  font-family: 'Inter', sans-serif;
-  font-size: 8px;
-  font-weight: 800;
-  text-anchor: middle;
-}
-
-.trackerHint {
-  font-size: 12px;
-  color: #64748B;
-  text-align: center;
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px dashed #E2E8F0;
-}
-/* src/styles/StudentDashboard.module.css */
-
-/* --- Global Reset & Wrapper --- */
-.dashboardWrapper {
-  display: flex;
-  background-color: var(--bg-light);
-  min-height: 100vh;
-  font-family: 'Inter', sans-serif;
-  color: var(--text-primary);
-  overflow-x: hidden;
-}
-
-/* --- Main Content Area --- */
-.mainContent {
-  flex: 1;
-  padding: 30px 40px;
-  overflow-y: auto;
-  animation: fadeInPage 0.8s ease-out;
-}
-
-/* --- Header Section --- */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 35px;
-}
-
-.greetingText {
-  font-size: 32px;
-  font-weight: 800;
-  margin: 0;
-  letter-spacing: -1px;
-}
-
-.subText {
   color: var(--text-secondary);
-  margin-top: 5px;
+  background: var(--bg-light);
+  padding: 4px 12px;
+  border-radius: 20px;
 }
 
-.headerActions {
+/* --- 3. Heatmap Grid & Cells --- */
+.heatmapContainer {
   display: flex;
-  align-items: center;
-  gap: 15px;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 10px 0 15px 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-yellow) transparent;
+  -webkit-overflow-scrolling: touch;
 }
 
-.searchBox {
+/* Webkit Scrollbar */
+.heatmapContainer::-webkit-scrollbar { height: 4px; }
+.heatmapContainer::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 10px;
+}
+
+.heatmapColumn {
   display: flex;
-  align-items: center;
-  background: var(--bg-white);
-  padding: 10px 15px;
-  border-radius: 14px;
-  border: 1px solid var(--border-light);
-  gap: 10px;
-  transition: 0.3s;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.searchBox:focus-within {
-  border-color: var(--primary-yellow);
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1);
+.heatmapCell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
 }
 
-.searchBox input {
-  border: none;
-  outline: none;
-  font-size: 14px;
-  width: 180px;
-  background: transparent;
+/* Staggered Delay Logic */
+.heatmapColumn:nth-child(1) .heatmapCell { animation-delay: 0.05s; }
+.heatmapColumn:nth-child(2) .heatmapCell { animation-delay: 0.10s; }
+.heatmapColumn:nth-child(3) .heatmapCell { animation-delay: 0.15s; }
+.heatmapColumn:nth-child(4) .heatmapCell { animation-delay: 0.20s; }
+.heatmapColumn:nth-child(n+5) .heatmapCell { animation-delay: 0.25s; }
+
+.heatmapCell:hover {
+  transform: scale(1.4);
+  filter: brightness(1.1);
+  z-index: 20;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
 }
 
-.notifBadge {
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: 0.3s;
+/* Color Levels */
+:global(.level-0) { background-color: #F1F5F9; }
+:global(.level-1) { background-color: #FEF9C3; }
+:global(.level-2) { background-color: #FDE047; }
+:global(.level-3) { background-color: #FACC15; }
+
+/* --- 4. Final Responsiveness --- */
+@media (max-width: 1024px) {
+  .heatmapCell { width: 10px; height: 10px; }
 }
 
-.notifBadge:hover {
-  color: var(--primary-yellow);
+@media (max-width: 768px) {
+  .heatmapSection { padding: 16px; margin-bottom: 20px; }
+  .heatmapHeader { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .totalStats { width: 100%; text-align: center; font-size: 11px; }
+  .heatmapContainer { gap: 3px; }
+  .heatmapColumn { gap: 3px; }
 }
 
-.profileImg {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  border: 2px solid var(--primary-yellow);
-  padding: 2px;
-  cursor: pointer;
-}
-
-/* --- Bento Grid Stats --- */
-.bentoGrid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 35px;
-}
-
-.bentoCard {
-  background: var(--bg-white);
-  padding: 25px;
-  border-radius: 28px;
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
-  transition: all 0.4s ease;
-  animation: slideUp 0.6s ease-out backwards;
-}
-
-.bentoCard:hover {
-  transform: translateY(-8px);
-  border-color: var(--primary-yellow);
-}
-
-.scoreCard {
-  background: var(--text-primary);
-  color: var(--bg-white);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.scoreInfo h2 {
-  font-size: 42px;
-  color: var(--primary-yellow);
-  margin: 10px 0;
-}
-
-.trendText {
-  font-size: 14px;
-  color: #4ADE80;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-/* --- Middle Row: Activity & Charts --- */
+/* --- Middle Row Layout --- */
 .middleRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -969,28 +581,54 @@
 
 .activitySection {
   background: var(--bg-white);
-  padding: 25px;
-  border-radius: 28px;
+  padding: 24px;
+  border-radius: 24px;
+  box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-light);
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .activitySection h3 {
   display: flex;
   align-items: center;
   gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
   margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+/* --- Recent Submissions List --- */
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .activityItem {
   display: flex;
+  align-items: center;
   gap: 15px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border-light);
+  padding: 12px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.activityItem:hover {
+  background: var(--bg-light);
+  transform: translateX(5px);
+  border-color: var(--border-light);
+}
+
+.activityInfo {
+  display: flex;
+  flex-direction: column;
 }
 
 .activityInfo strong {
-  display: block;
   font-size: 14px;
+  color: var(--text-primary);
 }
 
 .activityInfo span {
@@ -998,210 +636,637 @@
   color: var(--text-secondary);
 }
 
-/* --- Bar Chart --- */
+/* --- Bar Chart Styling --- */
 .barChart {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  height: 150px;
-  padding-top: 20px;
+  height: 180px;
+  padding: 10px 5px;
+  gap: 8px;
 }
 
 .barContainer {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  width: 30px;
+  height: 100%;
+  justify-content: flex-end;
 }
 
 .barFill {
   width: 100%;
-  background: var(--primary-yellow);
-  border-radius: 6px 6px 2px 2px;
-  animation: growHeight 1s ease-out forwards;
+  max-width: 35px;
+  border-radius: 6px 6px 4px 4px;
+  transition: all 0.4s ease;
   transform-origin: bottom;
+  animation: growBar 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
-/* --- Skills & Courses --- */
-.pillsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.skillPill {
-  background: var(--bg-light);
-  color: var(--text-primary);
-  padding: 8px 16px;
-  border-radius: 50px;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid var(--border-light);
-  transition: 0.3s;
-}
-
-.skillPill:hover {
-  border-color: var(--primary-yellow);
-  background: var(--bg-white);
-}
-
-.coursesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.courseCard {
-  background: var(--bg-white);
-  padding: 24px;
-  border-radius: 24px;
-  border: 1px solid var(--border-light);
-  transition: 0.3s;
-}
-
-.progressFill {
-  height: 100%;
-  background: var(--primary-yellow);
-  border-radius: 99px;
-  transition: width 1s ease;
-}
-
-.viewCourseBtn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 20px;
-  background: var(--primary-yellow);
-  color: var(--text-primary);
-  border: none;
-  border-radius: 12px;
-  font-weight: 700;
+.barFill:hover {
+  filter: brightness(1.1);
   cursor: pointer;
-  transition: 0.3s;
 }
 
-.viewCourseBtn:hover {
-  background: var(--primary-yellow-hover);
-  transform: translateY(-2px);
-}
-
-/* --- Right Sidebar --- */
-.rightPanel {
-  width: 360px;
-  background: var(--bg-white);
-  padding: 30px 24px;
-  border-left: 1px solid var(--border-light);
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.monthlyTracker {
-  background: var(--text-primary);
-  padding: 25px;
-  border-radius: 28px;
-  color: var(--bg-white);
-}
-
-
-
-.circle {
-  stroke: var(--primary-yellow);
-  stroke-linecap: round;
-  transition: stroke-dasharray 1s ease;
-}
-
-.calActive {
-  background: var(--primary-yellow) !important;
-  color: var(--text-primary) !important;
-  font-weight: 800;
-  border-radius: 8px;
-}
-
-/* --- RESPONSIVE DESIGN --- */
-
-@media (max-width: 1200px) {
-  .bentoGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .rightPanel {
-    width: 300px;
-  }
-}
-
-@media (max-width: 992px) {
-  .dashboardWrapper {
-    flex-direction: column;
-  }
-  .rightPanel {
-    width: 100%;
-    border-left: none;
-    border-top: 1px solid var(--border-light);
-  }
-  .middleRow {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    gap: 20px;
-  }
-  .searchBox {
-    width: 100%;
-  }
-  .searchBox input {
-    width: 100%;
-  }
-  .bentoGrid {
-    grid-template-columns: 1fr;
-  }
-  .mainContent {
-    padding: 20px;
-  }
-  .greetingText {
-    font-size: 26px;
-  }
+.barLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 /* --- Animations --- */
-@keyframes fadeInPage {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes growBar {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+/* --- Responsiveness --- */
+@media (max-width: 1100px) {
+  .middleRow {
+    grid-template-columns: 1fr; /* Stack on small screens */
+  }
 }
 
-@keyframes growHeight {
-  from { transform: scaleY(0); }
-  to { transform: scaleY(1); }
+@media (max-width: 480px) {
+  .activitySection {
+    padding: 16px;
+  }
+  .barChart {
+    height: 150px;
+    gap: 4px;
+  }
+  .barLabel {
+    font-size: 10px;
+  }
 }
 
+/* --- Animation: कार्ड्स एक-एक करके पॉप होंगे --- */
+@keyframes cardPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
-/* --- Event Calendar Card --- */
-.eventCalendarCard {
-  background: var(--white, #ffffff);
-  padding: 20px;
-  border-radius: 18px;
-  border: 1px solid var(--border-color, #f1f5f9);
+.statsRow {
+  display: flex;
+  gap: 20px;
   margin-bottom: 25px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
+  width: 100%;
 }
 
-.calendarHeader {
+.statMiniCard {
+  background: #ffffff;
+  padding: 15px 20px;
+  border-radius: 16px; /* थोड़ा और मॉडर्न कर्व */
+  flex: 1;
+  min-width: 200px; /* मोबाइल पर बेहतर दिखने के लिए */
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* एनीमेशन अप्लाई */
+  animation: cardPopIn 0.5s ease forwards;
+}
+
+.statMiniCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  border-color: #FACC15; /* आपकी प्रोजेक्ट थीम का पीला रंग */
+}
+
+.iconWrapper {
+  background: rgba(250, 204, 21, 0.15); /* FACC15 के साथ हल्का ग्लो */
+  color: #FACC15;
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.statMiniCard:hover .iconWrapper {
+  transform: rotate(-10deg) scale(1.1);
+}
+
+.content h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.content p {
+  font-size: 13px;
+  color: #64748B;
+  margin: 0;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .statsRow {
+    gap: 12px;
+  }
+  
+  .statMiniCard {
+    min-width: calc(50% - 12px); 
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statMiniCard {
+    min-width: 100%; 
+  }
+}
+
+.coursesSection {
+  margin-top: 20px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.sectionHeader h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.viewAllBtn {
+  background: transparent;
+  color: #FACC15;
+  border: 1px solid #FACC15;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.viewAllBtn:hover {
+  background: #FACC15;
+  color: #000;
+}
+
+/* Grid Layout */
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Course Card */
+.courseCard {
+  background: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.courseCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
+  border-color: #FACC15;
+}
+
+.courseInfo h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #1e293b;
+}
+
+.courseInfo p {
+  margin: 5px 0 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Progress Bar */
+.progressContainer {
+  margin: 10px 0;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #475569;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 10px;
+  /* Animation for progress fill */
+  animation: fillProgress 1.5s ease-in-out forwards;
+  transform-origin: left;
+}
+
+.viewCourseBtn {
+  width: 100%;
+  padding: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  color: #1e293b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewCourseBtn:hover {
+  background: #1e293b;
+  color: #fff;
+}
+
+/* Keyframes */
+@keyframes fillProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsiveness */
+@media (max-width: 640px) {
+  .coursesGrid {
+    grid-template-columns: 1fr;
+  }
+  .sectionHeader h3 {
+    font-size: 18px;
+  }
+}
+
+/* --- Animation: कार्ड्स नीचे से ऊपर स्मूथली आएंगे --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.jobSection {
+  margin-bottom: 35px;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.viewAll {
+  background: none;
+  border: none;
+  color: #FACC15;
+  font-weight: 600;
+  cursor: pointer;
+  transition: gap 0.2s;
+}
+
+.viewAll:hover {
+  text-decoration: underline;
+}
+
+/* --- Grid Layout --- */
+.jobGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* --- Job Card --- */
+.jobCard {
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #F1F5F9;
+  background: #F8FAFC;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.5s ease-out both;
+}
+
+.jobCard:hover {
+  transform: translateY(-5px);
+  background: #ffffff;
+  border-color: #FACC15;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: #FEF9C3;
+  color: #854D0E;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.jobRole {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.companyInfo {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pay {
+  font-weight: 700;
+  color: #FACC15;
+  font-size: 15px;
+}
+
+.applyBtn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.applyBtn:hover {
+  background: #1e293b;
+  transform: scale(1.05);
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 640px) {
+  .jobSection {
+    padding: 16px;
+  }
+  .jobGrid {
+    grid-template-columns: 1fr; /* मोबाइल पर सिंगल कॉलम */
+  }
+}
+
+/* --- Animation: कार्ड्स दाईं तरफ से स्लाइड होंगे --- */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.alumniSection {
+  margin-bottom: 35px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.headerAlumni {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.headerAlumni h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+/* --- Scrollable Container --- */
+.alumniContainer {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 10px 5px 20px 5px;
+  /* Hide scrollbar for Chrome/Safari */
+  scrollbar-width: none; 
+}
+
+.alumniContainer::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for IE/Edge */
+}
+
+/* --- Alumni Card --- */
+.alumniCard {
+  min-width: 210px;
+  background: #ffffff;
+  padding: 24px 20px;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  animation: slideInRight 0.5s ease-out both;
+}
+
+.alumniCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1);
+  border-color: #FACC15;
+}
+
+.avatar {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  border: 3px solid #FACC15;
+  object-fit: cover;
+  padding: 2px;
+  background: #fff;
+}
+
+.alumniCard h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.role {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  color: #FACC15;
+  font-weight: 600;
+}
+
+.batch {
+  margin: 0 0 15px 0;
+  font-size: 12px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.connectBtn {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #475569;
+  transition: all 0.2s ease;
+}
+
+.connectBtn:hover {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* Responsiveness */
+@media (max-width: 640px) {
+  .alumniCard {
+    min-width: 180px;
+    padding: 15px;
+  }
+}
+
+
+/* --- Base Animations --- */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* --- Main Sidebar Container --- */
+.rightPanel {
+  width: 340px;
+  position: sticky;
+  top: 20px;
+  overflow-y: auto;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-right: 8px; /* स्क्रॉलबार के लिए जगह */
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* कस्टम स्क्रॉलबार (ताकि पैनल क्लीन दिखे) */
+.rightPanel::-webkit-scrollbar {
+  width: 4px;
+}
+.rightPanel::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+/* --- Common Card Styling --- */
+.cardBase, 
+.eventCalendarCard, 
+.monthlyTracker, 
+.leaderboardCard, 
+.activitySection, 
+.skillsSection {
+  background: #ffffff;
+  padding: 22px;
+  border-radius: 24px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cardBase:hover, 
+.eventCalendarCard:hover, 
+.monthlyTracker:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* --- Event Calendar Details --- */
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
 .sidebarTitle {
@@ -1210,37 +1275,48 @@
   gap: 10px;
   font-size: 16px;
   font-weight: 700;
-  color: var(--text-main, #1e293b);
-  margin: 0;
+  color: #1e293b;
 }
 
-.calendarIcon {
-  color: var(--primary-color, #facc15); /* रूट से पीला कलर */
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  padding: 5px 10px;
+  border-radius: 12px;
 }
+
+.navBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 16px;
+  transition: color 0.2s;
+}
+
+.navBtn:hover { color: #FACC15; }
 
 .currentMonth {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--text-muted, #64748b);
-  background: var(--bg-light, #f8fafc);
-  padding: 4px 10px;
-  border-radius: 8px;
-}
-
-/* --- Calendar Grid --- */
-.calendarGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  min-width: 85px;
   text-align: center;
 }
 
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
 .weekdayLabel {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  color: var(--text-muted, #94a3b8);
+  color: #cbd5e1;
+  text-align: center;
   padding-bottom: 8px;
-  text-transform: uppercase;
 }
 
 .calendarDay {
@@ -1248,123 +1324,275 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
   border-radius: 10px;
   cursor: pointer;
   position: relative;
-  color: var(--text-main, #475569);
-  transition: all 0.2s ease;
-  background: transparent;
+  transition: 0.2s;
 }
 
 .calendarDay:hover {
-  background: var(--primary-light, #fefce8);
-  color: var(--primary-dark, #854d0e);
-  transform: translateY(-2px);
+  background: #FEF9C3;
+  color: #000;
 }
 
 .today {
-  background: var(--text-main, #1e293b) !important;
-  color: var(--white, #ffffff) !important;
-  font-weight: 700;
+  background: #FACC15 !important;
+  color: #000 !important;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(250, 204, 21, 0.4);
 }
 
 .eventDot {
-  width: 5px;
-  height: 5px;
-  background: var(--primary-color, #facc15);
+  width: 4px;
+  height: 4px;
+  background: #FACC15;
   border-radius: 50%;
   position: absolute;
-  bottom: 6px;
+  bottom: 5px;
 }
 
-/* --- Tooltip --- */
-.eventTooltip {
-  position: absolute;
-  bottom: 110%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--text-main, #1e293b);
-  color: var(--white, #ffffff);
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  white-space: nowrap;
-  z-index: 50;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  pointer-events: none;
+/* --- Performance Tracker Circle --- */
+.trackerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 15px;
 }
 
-/* --- Modal Styles --- */
+.circularChart {
+  width: 85px;
+  height: 85px;
+  transform: rotate(-90deg);
+}
+
+.circleBg { fill: none; stroke: #f1f5f9; stroke-width: 3; }
+.circle {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s ease;
+}
+
+.percentage {
+  fill: #1e293b;
+  font-size: 8px;
+  font-weight: 800;
+  text-anchor: middle;
+  transform: rotate(90deg);
+  transform-origin: center;
+}
+
+/* --- Skills Pills --- */
+.pillsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.skillPill {
+  background: #f8fafc;
+  padding: 8px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #e2e8f0;
+  transition: 0.3s;
+}
+
+.skillPill:hover {
+  background: #FEF9C3;
+  border-color: #FACC15;
+  transform: scale(1.05);
+}
+
+/* --- Modal & Tooltip --- */
 .modalOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: var(--overlay-bg, rgba(15, 23, 42, 0.4));
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(4px);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 9999;
+  justify-content: center;
+  z-index: 1000;
+  animation: popIn 0.3s ease;
 }
 
 .eventModal {
-  background: var(--white, #ffffff);
-  padding: 24px;
-  border-radius: 20px;
-  width: 320px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-}
-
-.modalTitle {
-  margin: 0 0 16px 0;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-main, #1e293b);
+  background: white;
+  padding: 25px;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 340px;
+  text-align: center;
 }
 
 .modalInput {
   width: 100%;
-  padding: 12px 14px;
-  border: 2px solid var(--border-color, #f1f5f9);
-  border-radius: 10px;
-  font-size: 14px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin: 15px 0;
   outline: none;
-  background: var(--white, #ffffff);
-  color: var(--text-main, #1e293b);
 }
 
-.modalInput:focus {
-  border-color: var(--primary-color, #facc15);
+/* --- Responsiveness (Tablet & Mobile) --- */
+@media (max-width: 1200px) {
+  .rightPanel {
+    width: 300px;
+    min-width: 300px;
+  }
 }
 
-.modalActions {
+@media (max-width: 1100px) {
+  .rightPanel {
+    position: static;
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .rightPanel {
+    grid-template-columns: 1fr;
+    padding: 0 10px;
+  }
+}
+
+/* --- Tracker Card Container --- */
+.monthlyTracker {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 24px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.monthlyTracker:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Header & Select Styling --- */
+.trackerHeader {
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.saveBtn {
-  flex: 2;
-  background: var(--primary-color, #facc15);
-  color: var(--black, #000);
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
+.trackerHeader h3 {
+  font-size: 18px;
   font-weight: 700;
-  cursor: pointer;
+  color: #1e293b;
+  margin: 0;
 }
 
-.cancelBtn {
-  flex: 1;
-  background: var(--bg-light, #f1f5f9);
-  color: var(--text-muted, #64748b);
-  border: none;
-  padding: 10px;
+.filterSelect {
+  padding: 6px 12px;
   border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 13px;
   font-weight: 600;
+  color: #64748b;
   cursor: pointer;
+  outline: none;
+  transition: 0.2s;
+}
+
+.filterSelect:focus {
+  border-color: #FACC15;
+}
+
+/* --- Content Layout --- */
+.trackerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* --- Circular Progress Animation --- */
+.progressCircle {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+
+.circularChart {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.circleBg {
+  fill: none;
+  stroke: #f1f5f9;
+  stroke-width: 2.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  /* एनीमेशन यहाँ से शुरू होता है */
+  animation: progress 1.5s ease-out forwards;
+}
+
+@keyframes progress {
+  0% { stroke-dasharray: 0 100; }
+}
+
+.percentage {
+  fill: #1e293b;
+  font-size: 8px;
+  font-weight: 800;
+  text-anchor: middle;
+  font-family: inherit;
+}
+
+/* --- Stats on the Right --- */
+.trackerStats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.statMini {
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  padding: 10px 15px;
+  border-radius: 14px;
+  transition: 0.2s;
+}
+
+.statMini:hover {
+  background: #FEFCE8; /* Light Yellow on Hover */
+}
+
+.statMini span {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.statMini strong {
+  font-size: 16px;
+  color: #1e293b;
+  font-weight: 700;
 }

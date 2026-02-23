@@ -1,15 +1,20 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from '@/styles/Sidebar.module.css';
 import { 
   LayoutDashboard, BookOpen, FileText, GraduationCap,
-  Flame, BookUser, NotepadText, Settings, LogOut 
+  Flame, BookUser, NotepadText, Settings, LogOut,
+  ChevronLeft, ChevronRight 
 } from 'lucide-react';
 
 const Sidebar = () => {
   const pathname = usePathname();
+  // साइडबार के खुलने या बंद होने के लिए स्टेट
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20}/>, path: '/student/student-dashboard' },
@@ -21,26 +26,34 @@ const Sidebar = () => {
     { name: 'Notes', icon: <NotepadText size={20}/>, path: '/notes' },  
     { name: 'Quizzes', icon: <Flame size={20}/>, path: '/student/quiz-model' },
     { name: 'Settings', icon: <Settings size={20}/>, path: '/settings' },
-    
   ];
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
+      {/* Collapse Button */}
+      <button className={styles.toggleBtn} onClick={toggleSidebar}>
+        {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+      </button>
+
       <div className={styles.logoContainer}>
           <div className={styles.logoIcon}>S</div>
-          <span className={styles.logoText}>Skill<span>verse</span></span>
-        </div>
+          {!isCollapsed && <span className={styles.logoText}>Skill<span>verse</span></span>}
+      </div>
+
       <nav className={styles.navMenu}>
         {menuItems.map((item) => (
           <Link key={item.name} href={item.path} 
             className={`${styles.navItem} ${pathname === item.path ? styles.navActive : ''}`}>
-            {item.icon} <span>{item.name}</span>
+            {item.icon} 
+            {!isCollapsed && <span>{item.name}</span>}
           </Link>
         ))}
       </nav>
+
       <div className={styles.logoutWrapper}>
         <Link href="/logout" className={styles.logoutBtn}>
-          <LogOut size={20}/> <span>Logout</span>
+          <LogOut size={20}/> 
+          {!isCollapsed && <span>Logout</span>}
         </Link>
       </div>
     </aside>
