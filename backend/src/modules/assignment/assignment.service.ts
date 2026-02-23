@@ -7,11 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Assignment } from '../../common/entities/assignment.entity';
 import { AssignmentSubmission } from '../../common/entities/assignment-submission.entity';
-import { SubmissionStatus } from '../../common/enums/submission-status.enum';  
+import { SubmissionStatus } from '../../common/enums/submission-status.enum';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { SubmitAssignmentDto } from './dto/update-submit-assignment.dto';
 import { EvaluateAssignmentDto } from './dto/evaluate-assignment.dto';
 import { User } from 'src/common/entities/user.entity';
+import { StudentActivityLog } from 'src/common/entities/student-activity-log.entity';
+import { StudentActivityType } from '../../common/enums/student-activity-type.enum';
+import { ActivityEntityType } from '../../common/enums/activity-entity-type.enum';
 
 @Injectable()
 export class AssignmentService {
@@ -23,7 +26,9 @@ export class AssignmentService {
     private readonly submissionRepository: Repository<AssignmentSubmission>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+    @InjectRepository(StudentActivityLog)
+    private readonly studentActivityLogRepo: Repository<StudentActivityLog>,
+  ) { }
 
   // ✅ Create Assignment
   async create(dto: CreateAssignmentDto): Promise<Assignment> {
@@ -50,44 +55,44 @@ export class AssignmentService {
   }
 
   async findAssignmentWithSubmission(
-  assignmentId: number,
-  studentId: number,
-): Promise<any> {
+    assignmentId: number,
+    studentId: number,
+  ): Promise<any> {
 
-  
-  const user = await this.userRepository.findOne({
-    where: { id: studentId },
-  });
 
-  if (!user || user.role !== 'STUDENT') {
-    throw new BadRequestException('User is not a student');
+    const user = await this.userRepository.findOne({
+      where: { id: studentId },
+    });
+
+    if (!user || user.role !== 'STUDENT') {
+      throw new BadRequestException('User is not a student');
+    }
+
+
+    const assignment = await this.assignmentRepository.findOne({
+      where: { id: assignmentId },
+    });
+
+    if (!assignment) {
+      throw new NotFoundException(
+        `Assignment with ID ${assignmentId} not found`,
+      );
+    }
+
+
+    const submission = await this.submissionRepository.findOne({
+      where: {
+        assignmentId,
+        studentId,
+      },
+    });
+
+    return {
+      assignment,
+      submission: submission || null,
+      isSubmitted: !!submission,
+    };
   }
-
-  
-  const assignment = await this.assignmentRepository.findOne({
-    where: { id: assignmentId },
-  });
-
-  if (!assignment) {
-    throw new NotFoundException(
-      `Assignment with ID ${assignmentId} not found`,
-    );
-  }
-
-
-  const submission = await this.submissionRepository.findOne({
-    where: {
-      assignmentId,
-      studentId,
-    },
-  });
-
-  return {
-    assignment,
-    submission: submission || null,
-    isSubmitted: !!submission,
-  };
-}
 
   // ✅ Delete
   async remove(id: number): Promise<{ deleted: boolean }> {
@@ -96,7 +101,6 @@ export class AssignmentService {
     return { deleted: true };
   }
 
-  // ✅ Submit Assignment
   async submit(
     assignmentId: number,
     studentId: number,
@@ -105,7 +109,6 @@ export class AssignmentService {
 
     const assignment = await this.findOne(assignmentId);
 
-    // 🔥 Validation (Only one allowed)
     const filledFields = [
       dto.fileUrl,
       dto.textAnswer,
@@ -118,20 +121,15 @@ export class AssignmentService {
       );
     }
 
-  const existingSubmission = await this.submissionRepository.findOne({
+    const existingSubmission = await this.submissionRepository.findOne({
       where: { assignmentId, studentId },
     });
+
     if (existingSubmission) {
       throw new BadRequestException(
         'You have already submitted this assignment',
       );
     }
-
-    // if (filledFields > 1) {
-    //   throw new BadRequestException(
-    //     'Only one submission type is allowed',
-    //   );
-    // }
 
     const now = new Date();
     const isLate = now > assignment.deadline;
@@ -148,7 +146,22 @@ export class AssignmentService {
         : SubmissionStatus.SUBMITTED,
     });
 
-    return await this.submissionRepository.save(submission);
+    const savedSubmission = await this.submissionRepository.save(submission);
+
+    // ✅ LOG ASSIGNMENT SUBMISSION
+    await this.studentActivityLogRepo.save({
+      student: { id: studentId },
+      activityType: StudentActivityType.SUBMITTED,
+      entityType: ActivityEntityType.ASSIGNMENT,
+      entityId: assignmentId,
+      metadataJson: {
+        submissionId: savedSubmission.id,
+        lateFlag: isLate,
+        status: savedSubmission.status,
+      },
+    });
+
+    return savedSubmission;
   }
 
   // ✅ Evaluate Submission

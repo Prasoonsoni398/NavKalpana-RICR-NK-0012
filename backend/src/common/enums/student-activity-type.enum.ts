@@ -1,0 +1,7 @@
+export enum StudentActivityType {
+  OPENED = 'OPENED',
+  COMPLETED = 'COMPLETED',
+  SUBMITTED = 'SUBMITTED',
+  ATTEMPTED = 'ATTEMPTED',
+  GRADED = 'GRADED',
+}
