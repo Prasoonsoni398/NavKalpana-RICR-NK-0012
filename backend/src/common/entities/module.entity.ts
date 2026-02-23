@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Course } from './course.entity';
 import { Lesson } from './lesson.entity';
-
+import { ModuleSkill } from './module-skill.entity';
 @Entity({ name: 'modules' })
 export class Module {
   @PrimaryGeneratedColumn('increment')
@@ -34,4 +34,7 @@ export class Module {
 
   @OneToMany(() => Lesson, (lesson) => lesson.module)
   lessons: Lesson[];
+  
+  @OneToMany(() => ModuleSkill, (ms) => ms.module)
+moduleSkills: ModuleSkill[];
 }
