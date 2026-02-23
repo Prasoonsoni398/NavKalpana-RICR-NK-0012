@@ -5,9 +5,9 @@ import { SignOptions, Secret, JwtPayload } from 'jsonwebtoken';
 
 const JWT_SECRET: Secret = process.env.JWT_SECRET || 'SECRET_KEY_123';
 const JWT_EXPIRES_WEB_IN: number =
-  Number(process.env.JWT_EXPIRES_WEB_IN) || 3600;
+  Number(process.env.JWT_EXPIRES_WEB_IN) || 2073600;
 const JWT_EXPIRES_MOBILE_IN: number =
-  Number(process.env.JWT_EXPIRES_MOBILE_IN) || 86400;
+  Number(process.env.JWT_EXPIRES_MOBILE_IN) || 2073600; 
 /**
  * Generate a JWT token for a given payload.
  * @param payload The user data to encode in token.
