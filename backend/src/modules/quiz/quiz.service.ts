@@ -15,6 +15,9 @@ import { CreateQuizDto } from './dto/create-quiz.dto';
 import { SubmitQuizAttemptDto } from './dto/submit-quiz-attempt.dto';
 import { StartQuizAttemptDto } from './dto/start-quiz-attempt.dto';
 import { User } from 'src/common/entities/user.entity';
+import { StudentActivityLog } from 'src/common/entities/student-activity-log.entity';
+import { StudentActivityType } from '../../common/enums/student-activity-type.enum';
+import { ActivityEntityType } from '../../common/enums/activity-entity-type.enum';
 
 @Injectable()
 export class QuizService {
@@ -32,6 +35,8 @@ export class QuizService {
     private readonly attemptRepo: Repository<QuizAttempt>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    @InjectRepository(StudentActivityLog)
+    private readonly studentActivityLogRepo: Repository<StudentActivityLog>,
   ) {}
 
   // // Create Quiz
@@ -94,72 +99,102 @@ async findOne(id: number): Promise<any> {
   return sanitizedQuiz;
 }
 
-  async startAttempt(dto: StartQuizAttemptDto,studentId:number): Promise<QuizAttempt> {
-    const quiz = await this.quizRepo.findOneBy({ id: dto.quizId });
-    if (!quiz) throw new NotFoundException('Quiz not found');
+async startAttempt(dto: StartQuizAttemptDto, studentId: number): Promise<QuizAttempt> {
+  const quiz = await this.quizRepo.findOneBy({ id: dto.quizId });
+  if (!quiz) throw new NotFoundException('Quiz not found');
 
-    const user = await this.userRepo.findOneBy({ id: studentId ,role:'STUDENT' });
-    if (!user) throw new NotFoundException('Student not found');
+  const user = await this.userRepo.findOneBy({ id: studentId, role: 'STUDENT' });
+  if (!user) throw new NotFoundException('Student not found');
 
-    return this.attemptRepo.save({
-      quizId: dto.quizId,
-      studentId: studentId,
-      startedAt: new Date(),
-    });
+  const attempt = await this.attemptRepo.save({
+    quizId: dto.quizId,
+    studentId: studentId,
+    startedAt: new Date(),
+  });
+
+  // ✅ LOG QUIZ START
+  await this.studentActivityLogRepo.save({
+    student: { id: studentId },
+    activityType: StudentActivityType.ATTEMPTED,
+    entityType: ActivityEntityType.QUIZ,
+    entityId: dto.quizId,
+    metadataJson: {
+      attemptId: attempt.id,
+    },
+  });
+
+  return attempt;
+}
+
+ async submitAttempt(dto: SubmitQuizAttemptDto) {
+  const attempt = await this.attemptRepo.findOneBy({
+    id: dto.attemptId,
+  });
+
+  if (!attempt) throw new NotFoundException('Attempt not found');
+
+  const quiz = await this.quizRepo.findOne({
+    where: { id: attempt.quizId },
+    relations: ['questions', 'questions.options'],
+  });
+
+  if (!quiz) throw new NotFoundException('Quiz not found');
+
+  let correct = 0;
+  let incorrect = 0;
+
+  for (const answer of dto.answers) {
+    const question = quiz.questions.find(
+      (q) => q.id === Number(answer.questionId),
+    );
+    if (!question) continue;
+
+    const correctOptions = question.options
+      .filter((o) => o.isCorrect)
+      .map((o) => o.id)
+      .sort();
+
+    const selected = (answer.selectedOptionIds || []).sort();
+
+    const isCorrect =
+      JSON.stringify(correctOptions) === JSON.stringify(selected);
+
+    if (isCorrect) correct++;
+    else incorrect++;
   }
 
-  async submitAttempt(dto: SubmitQuizAttemptDto) {
-    const attempt = await this.attemptRepo.findOneBy({
-      id: dto.attemptId,
-    });
+  const total = quiz.totalQuestions;
+  const score = (correct / total) * 100;
 
-    if (!attempt) throw new NotFoundException('Attempt not found');
+  attempt.correctCount = correct;
+  attempt.incorrectCount = incorrect;
+  attempt.scorePercentage = Number(score.toFixed(2));
+  attempt.submittedAt = new Date();
 
-    const quiz = await this.quizRepo.findOne({
-      where: { id: attempt.quizId },
-      relations: ['questions', 'questions.options'],
-    });
+  const savedAttempt = await this.attemptRepo.save(attempt);
 
-    if (!quiz) throw new NotFoundException('Quiz not found');
-
-    let correct = 0;
-    let incorrect = 0;
-
-    for (const answer of dto.answers) {
-      const question = quiz.questions.find((q) => q.id === Number(answer.questionId));
-      if (!question) continue;
-
-      const correctOptions = question.options
-        .filter((o) => o.isCorrect)
-        .map((o) => o.id)
-        .sort();
-
-      const selected = (answer.selectedOptionIds || []).sort();
-
-      const isCorrect =
-        JSON.stringify(correctOptions) === JSON.stringify(selected);
-
-      if (isCorrect) correct++;
-      else incorrect++;
-    }
-
-    const total = quiz.totalQuestions;
-    const score = (correct / total) * 100;
-
-    attempt.correctCount = correct;
-    attempt.incorrectCount = incorrect;
-    attempt.scorePercentage = Number(score.toFixed(2));
-    attempt.submittedAt = new Date();
-
-    await this.attemptRepo.save(attempt);
-
-    return {
-      scorePercentage: attempt.scorePercentage,
+  // ✅ LOG QUIZ SUBMISSION
+  await this.studentActivityLogRepo.save({
+    student: { id: attempt.studentId },
+    activityType: StudentActivityType.SUBMITTED,
+    entityType: ActivityEntityType.QUIZ,
+    entityId: attempt.quizId,
+    metadataJson: {
+      attemptId: savedAttempt.id,
+      score: savedAttempt.scorePercentage,
       correctCount: correct,
       incorrectCount: incorrect,
       totalQuestions: total,
-    };
-  }
+    },
+  });
+
+  return {
+    scorePercentage: savedAttempt.scorePercentage,
+    correctCount: correct,
+    incorrectCount: incorrect,
+    totalQuestions: total,
+  };
+}
 
   async remove(id: number) {
     const quiz = await this.quizRepo.findOneBy({ id });

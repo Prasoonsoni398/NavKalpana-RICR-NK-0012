@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   OneToMany,
 } from 'typeorm';
+
 import { Module } from './module.entity';
 import { CourseProgress } from './course_progress.entity';
+import { Enrollment } from './enrollment.entity';   
 
 @Entity({ name: 'courses' })
 export class Course {
@@ -36,10 +38,14 @@ export class Course {
   createdAt: Date;
 
   // ─── RELATIONS ──────────────────────────────
-  @OneToMany(() => Module, (module) => module.course, {
-  })
+
+  @OneToMany(() => Module, (module) => module.course)
   modules: Module[];
 
   @OneToMany(() => CourseProgress, (cp) => cp.course)
-  progress: CourseProgress[];
+  progress: Course[];
+
+  
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
+  enrollments: Enrollment[];
 }
