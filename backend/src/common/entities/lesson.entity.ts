@@ -6,11 +6,14 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   JoinColumn,
 } from 'typeorm';
+
 import { Module } from './module.entity';
 import { LessonResource } from './lesson_resources.entity';
 import { LessonProgress } from './lesson_progress.entity';
+import { Assignment } from './assignment.entity';
 import { DifficultyLevel } from '../enums/difficulty-level.enum';
 
 @Entity({ name: 'lessons' })
@@ -46,4 +49,8 @@ export class Lesson {
 
   @OneToMany(() => LessonProgress, (lp) => lp.lesson)
   progress: LessonProgress[];
+
+  // ✅ Assignment Relation
+  @OneToOne(() => Assignment, (assignment) => assignment.lesson)
+  assignment: Assignment;
 }

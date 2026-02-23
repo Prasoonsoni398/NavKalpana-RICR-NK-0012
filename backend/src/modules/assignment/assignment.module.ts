@@ -5,10 +5,11 @@ import { AssignmentSubmission } from 'src/common/entities/assignment-submission.
 import { AssignmentService } from './assignment.service';
 import { AssignmentController } from './assignment.controller';
 import { User } from 'src/common/entities/user.entity';
+import { StudentActivityLog } from 'src/common/entities/student-activity-log.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Assignment, AssignmentSubmission, User]), // VERY IMPORTANT
+    TypeOrmModule.forFeature([Assignment, AssignmentSubmission, User,StudentActivityLog]), // VERY IMPORTANT
   ],
   controllers: [AssignmentController],
   providers: [AssignmentService], // MUST BE HERE

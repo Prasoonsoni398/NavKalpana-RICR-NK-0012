@@ -4,13 +4,21 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Lesson } from './lesson.entity';
 
 @Entity({ name: 'assignments' })
 export class Assignment {
-
   @PrimaryGeneratedColumn()
   id: number;
+
+  @OneToOne(() => Lesson, (lesson) => lesson.assignment, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'lesson_id' }) // FK lives here
+  lesson: Lesson;
 
   @Column({ nullable: false })
   title: string;

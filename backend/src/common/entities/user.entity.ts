@@ -5,11 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  OneToMany
 } from 'typeorm';
 import { Otp } from './otps.entity';
 import { CourseProgress } from './course_progress.entity';
 import { LessonProgress } from './lesson_progress.entity';
-
+import { Enrollment } from './enrollment.entity';
+import { AssignmentSubmission } from './assignment-submission.entity';
 @Entity({ name: 'users' })
 @Index(['email', 'role'], { unique: true })
 
@@ -57,5 +59,8 @@ export class User {
   courseProgress: CourseProgress[]
   lessonProgress: LessonProgress[]
   otps: Otp[]
-
+   @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
+  enrollments: Enrollment[];
+ @OneToMany(() => AssignmentSubmission, (submission) => submission.student)
+  submissions: AssignmentSubmission[];
 }

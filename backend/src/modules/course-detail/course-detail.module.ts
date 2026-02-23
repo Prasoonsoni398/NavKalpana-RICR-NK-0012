@@ -11,6 +11,7 @@ import { LessonResource } from '../../common/entities/lesson_resources.entity';
 import { User } from '../../common/entities/user.entity';
 import { LessonProgress } from '../../common/entities/lesson_progress.entity';
 import { CourseProgress } from '../../common/entities/course_progress.entity';
+import { StudentActivityLog } from 'src/common/entities/student-activity-log.entity';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CourseProgress } from '../../common/entities/course_progress.entity';
       LessonResource,
       LessonProgress,
       CourseProgress,
+      StudentActivityLog
     ]),
   ],
   controllers: [CourseDetailController],

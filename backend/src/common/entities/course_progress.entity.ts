@@ -13,7 +13,7 @@ import { Course } from './course.entity';
 @Entity({ name: 'course_progress' })
 @Index(['student', 'course'], { unique: true })
 export class CourseProgress {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
   @ManyToOne(() => User, (user) => user.courseProgress)

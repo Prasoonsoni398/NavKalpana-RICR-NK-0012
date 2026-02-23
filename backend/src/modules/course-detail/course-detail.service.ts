@@ -8,6 +8,9 @@ import { LessonResource } from '../../common/entities/lesson_resources.entity';
 import { LessonProgress } from '../../common/entities/lesson_progress.entity';
 import { CourseProgress } from '../../common/entities/course_progress.entity';
 import { User } from 'src/common/entities/user.entity';
+import { StudentActivityType } from '../../common/enums/student-activity-type.enum';
+import { ActivityEntityType } from '../../common/enums/activity-entity-type.enum';
+import { StudentActivityLog } from 'src/common/entities/student-activity-log.entity';
 
 @Injectable()
 export class CourseDetailService {
@@ -26,9 +29,12 @@ export class CourseDetailService {
     private readonly courseProgressRepo: Repository<CourseProgress>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    @InjectRepository(StudentActivityLog)
+    private readonly studentActivityLogRepo: Repository<StudentActivityLog>,
   ) {}
 
-async getCourseDetail(courseId: number, studentId?: number) {
+  async getCourseDetail(courseId: number, studentId?: number) {
+
   const student = await this.userRepo.findOne({
     where: { id: studentId, role: 'STUDENT' },
   });
@@ -48,30 +54,36 @@ async getCourseDetail(courseId: number, studentId?: number) {
 
   if (!course) throw new NotFoundException('Course not found');
 
+  // ✅ LOG COURSE OPENED
+  await this.studentActivityLogRepo.save({
+    student: { id: studentId },
+    activityType: StudentActivityType.OPENED,
+    entityType: ActivityEntityType.COURSE,
+    entityId: courseId,
+  });
+
   let courseProgressMap: any = {};
   let lessonProgressMap: Record<number, boolean> = {};
 
-  if (studentId) {
-    const courseProgress = await this.courseProgressRepo.findOne({
-      where: {
-        course: { id: courseId },
-        student: { id: studentId },
-      },
-    });
+  const courseProgress = await this.courseProgressRepo.findOne({
+    where: {
+      course: { id: courseId },
+      student: { id: studentId },
+    },
+  });
 
-    const lessonProgress = await this.lessonProgressRepo.find({
-      where: { student: { id: studentId } },
-      relations: ['lesson'], // ✅ FIXED
-    });
+  const lessonProgress = await this.lessonProgressRepo.find({
+    where: { student: { id: studentId } },
+    relations: ['lesson'],
+  });
 
-    courseProgressMap = courseProgress || {};
+  courseProgressMap = courseProgress || {};
 
-    lessonProgress.forEach(lp => {
-      if (lp.lesson) {
-        lessonProgressMap[lp.lesson.id] = lp.completed;
-      }
-    });
-  }
+  lessonProgress.forEach(lp => {
+    if (lp.lesson) {
+      lessonProgressMap[lp.lesson.id] = lp.completed;
+    }
+  });
 
   const modules = course.modules.map(module => {
     const lessons = module.lessons.map(lesson => {
@@ -82,7 +94,7 @@ async getCourseDetail(courseId: number, studentId?: number) {
         title: lesson.title,
         difficulty: lesson.difficulty,
         completed,
-        progress: completed ? 100 : 0, // ✅ ADDED
+        progress: completed ? 100 : 0,
         resources: lesson.resources.map(r => ({
           id: r.id,
           type: r.resourceType,
@@ -94,6 +106,7 @@ async getCourseDetail(courseId: number, studentId?: number) {
     });
 
     const completedCount = lessons.filter(l => l.completed).length;
+
     const moduleProgress = lessons.length
       ? Math.round((completedCount / lessons.length) * 100)
       : 0;
@@ -120,6 +133,7 @@ async getCourseDetail(courseId: number, studentId?: number) {
     modules,
   };
 }
+
 async markLessonCompleted(
   lessonId: string,
   studentId: number,
@@ -190,6 +204,18 @@ async markLessonCompleted(
   }
 
   await this.courseProgressRepo.save(courseProgress);
+
+  // ✅ LOG LESSON COMPLETED
+  await this.studentActivityLogRepo.save({
+    student: { id: studentId },
+    activityType: StudentActivityType.COMPLETED,
+    entityType: ActivityEntityType.LESSON,
+    entityId: Number(lessonId),
+    metadataJson: {
+      courseId,
+      progressPercentage,
+    },
+  });
 
   return {
     message: 'Lesson marked as completed',
