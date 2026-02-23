@@ -4,10 +4,10 @@
   /* Yellow and White Premium Theme Configuration */
   --primary-yellow: #FACC15;
   --primary-yellow-hover: #EAB308;
-  --bg-light: #F8FAFC;         /* हल्का ग्रे-वाइट जो आंखों को सुकून दे */
-  --bg-white: #FFFFFF;        /* प्योर वाइट कार्ड्स के लिए */
-  --text-primary: #0F172A;    /* डार्क नेवी-ब्लैक साफ़ टेक्स्ट के लिए */
-  --text-secondary: #64748B;  /* सब-टेक्स्ट के लिए ग्रे */
+  --bg-light: #F8FAFC;        
+  --bg-white: #FFFFFF;        
+  --text-primary: #0F172A;    
+  --text-secondary: #64748B;  
   --border-light: #E2E8F0;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --transition-speed: 0.3s;

@@ -41,7 +41,7 @@ export default function AssignmentPage() {
     e.preventDefault();
 
     // Validation
-    if (!assignmentTitle.trim()) return alert("कृपया असाइनमेंट का टाइटल लिखें!");
+    if (!assignmentTitle.trim()) return alert("Please provide an assignment title!");
 
     let contentValue = "";
     if (submissionType === 'text') contentValue = textInput;

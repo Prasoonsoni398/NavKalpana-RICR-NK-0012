@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";  // ✅ ADD THIS
+import { useParams } from "next/navigation";
 import styles from "@/styles/Assignment.module.css";
 import AssignmentHeader from "@/components/features/AssignmentHeader";
 import AssignmentDescription from "@/components/features/AssignmentDescription";
@@ -11,18 +11,18 @@ import EvaluationSection from "@/components/features/EvaluationSection";
 import { assignmentService } from "@/services/assignment.services";
 import type {
   AssignmentWithSubmissionResponse,
-  SubmissionData,
 } from "@/models/assignment-submission.model";
 
 export default function AssignmentPage() {
-
-  const params = useParams();   // ✅ GET PARAMS HERE
+  const params = useParams();
   const assignmentId = Number(params.id);
 
   const [data, setData] =
     useState<AssignmentWithSubmissionResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showEvaluation, setShowEvaluation] = useState(false);
 
+  // Fetch assignment
   useEffect(() => {
     if (!assignmentId) return;
 
@@ -43,6 +43,7 @@ export default function AssignmentPage() {
     fetchData();
   }, [assignmentId]);
 
+  // Submit assignment
   const handleSubmit = async (formData: FormData) => {
     try {
       await assignmentService.submit(assignmentId, formData);
@@ -62,6 +63,7 @@ export default function AssignmentPage() {
   if (!data) return <p>No assignment found</p>;
 
   const { assignment, submission, isSubmitted } = data;
+  const status = submission?.status?.toUpperCase();
 
   return (
     <div className={styles.container}>
@@ -80,7 +82,21 @@ export default function AssignmentPage() {
       {isSubmitted && submission && (
         <>
           <SubmissionDetails submission={submission} />
-          {submission.status === "EVALUATED" && (
+
+          {/* Evaluate Button */}
+          {status === "SUBMITTED" && (
+            <div className={styles.evaluateWrapper}>
+              <button
+                className={styles.evaluateBtn}
+                onClick={() => setShowEvaluation(true)}
+              >
+                Evaluate Assignment
+              </button>
+            </div>
+          )}
+
+          {/* Show Evaluation Section After Click */}
+          {showEvaluation && (
             <EvaluationSection submission={submission} />
           )}
         </>
