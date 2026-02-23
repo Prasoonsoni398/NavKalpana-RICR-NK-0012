@@ -1,89 +1,97 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";  // ✅ ADD THIS
+import { useParams } from "next/navigation";
 import styles from "@/styles/Assignment.module.css";
 import AssignmentHeader from "@/components/features/AssignmentHeader";
-import AssignmentDescription from "@/components/features/AssignmentDescription";
+// अगर आपने अलग फाइल बनाई है तो इसे रखें, वरना नीचे वाले लोकल कंपोनेंट का यूज़ होगा
+// import AssignmentDescription from "@/components/features/AssignmentDescription"; 
 import SubmissionSection from "@/components/features/SubmissionSection";
 import SubmissionDetails from "@/components/features/SubmissionDetails";
 import EvaluationSection from "@/components/features/EvaluationSection";
 import { assignmentService } from "@/services/assignment.services";
-import type {
-  AssignmentWithSubmissionResponse,
-  SubmissionData,
-} from "@/models/assignment-submission.model";
+import type { AssignmentWithSubmissionResponse } from "@/models/assignment-submission.model";
+
+// --- 1. Interface for Props (बिल्ड एरर रोकने के लिए) ---
+interface DescriptionProps {
+  description: string;
+}
+
+// --- 2. Local Component (अगर आप अलग फाइल नहीं बनाना चाहते) ---
+// यहाँ 'export default' हटा दिया गया है क्योंकि एक फाइल में एक ही default export हो सकता है।
+function LocalAssignmentDescription({ description }: DescriptionProps) {
+  return (
+    <div style={{ padding: '20px', backgroundColor: '#fff', borderRadius: '8px', marginTop: '20px', border: '1px solid #e2e8f0' }}>
+      <h3 style={{ marginBottom: '10px', color: '#1e293b' }}>Assignment Description</h3>
+      <p style={{ color: '#475569', lineHeight: '1.6' }}>{description}</p>
+    </div>
+  );
+}
+
+
 
 export default function AssignmentPage() {
+  const params = useParams();
+  const assignmentId = params?.id ? Number(params.id) : null;
 
-  const params = useParams();   // ✅ GET PARAMS HERE
-  const assignmentId = Number(params.id);
-
-  const [data, setData] =
-    useState<AssignmentWithSubmissionResponse | null>(null);
+  const [data, setData] = useState<AssignmentWithSubmissionResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchData = async () => {
     if (!assignmentId) return;
+    try {
+      const response = await assignmentService.getAssignmentWithSubmission(assignmentId);
+      setData(response);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const fetchData = async () => {
-      try {
-        const response =
-          await assignmentService.getAssignmentWithSubmission(
-            assignmentId
-          );
-        setData(response);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  useEffect(() => {
     fetchData();
   }, [assignmentId]);
 
   const handleSubmit = async (formData: FormData) => {
+    if (!assignmentId) return;
     try {
       await assignmentService.submit(assignmentId, formData);
-
-      const updated =
-        await assignmentService.getAssignmentWithSubmission(
-          assignmentId
-        );
-
-      setData(updated);
+      await fetchData(); // डेटा रिफ्रेश करें
     } catch (error) {
-      console.error(error);
+      console.error("Submission error:", error);
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (!data) return <p>No assignment found</p>;
+  if (loading) return <div className={styles.container}><p>Loading...</p></div>;
+  if (!data || !data.assignment) return <div className={styles.container}><p>No assignment found</p></div>;
 
   const { assignment, submission, isSubmitted } = data;
 
   return (
     <div className={styles.container}>
+      {/* Header section */}
       <AssignmentHeader
-        title={assignment.title}
+        title={assignment.title || "Untitled Assignment"}
         deadline={new Date(assignment.deadline)}
         status={submission?.status || "Not Submitted"}
       />
 
-      <AssignmentDescription description={assignment.description} />
+      {/* Description section - Using local fixed component */}
+      <LocalAssignmentDescription description={assignment.description || "No description provided."} />
 
+      {/* Submission logic */}
       {!isSubmitted && (
         <SubmissionSection onSubmit={handleSubmit} />
       )}
 
       {isSubmitted && submission && (
-        <>
+        <div style={{ marginTop: '20px' }}>
           <SubmissionDetails submission={submission} />
           {submission.status === "EVALUATED" && (
             <EvaluationSection submission={submission} />
           )}
-        </>
+        </div>
       )}
     </div>
   );

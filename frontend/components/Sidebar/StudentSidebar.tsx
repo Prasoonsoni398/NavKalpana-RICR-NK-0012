@@ -19,7 +19,9 @@ const Sidebar = () => {
     { name: 'Assignments', icon: <Flame size={20}/>, path: '/student/assignments' },
     { name: 'Blogs', icon: <BookUser size={20}/>, path: '/student/blogs' }, 
     { name: 'Notes', icon: <NotepadText size={20}/>, path: '/notes' },  
+    { name: 'Quizzes', icon: <Flame size={20}/>, path: '/student/quiz-model' },
     { name: 'Settings', icon: <Settings size={20}/>, path: '/settings' },
+    
   ];
 
   return (

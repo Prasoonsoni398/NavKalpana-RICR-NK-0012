@@ -172,7 +172,7 @@ export default function ForgotPassword() {
           </form>
         )}
 
-        <Link href="/auth/login" className={styles.backLogin}>
+        <Link href="./student-login" className={styles.backLogin}>
           Back to Login
         </Link>
       </div>
