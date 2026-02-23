@@ -7,7 +7,13 @@ import { Course } from '../common/entities/course.entity';
 import { Module } from '../common/entities/module.entity';
 import { Lesson } from '../common/entities/lesson.entity';
 import { LessonResource } from '../common/entities/lesson_resources.entity';
+import { User } from '../common/entities/user.entity';
+import { AuthProvider, AuthProviderType } from '../common/entities/auth_providers.entity';
+import { Skill } from '../common/entities/skill.entity';
+import { ModuleSkill } from '../common/entities/module-skill.entity';
+import { UserSkill } from '../common/entities/user-skill.entity';
 
+import { UserRole } from '../common/enums/user-role.enum';
 import { DifficultyLevel } from '../common/enums/difficulty-level.enum';
 import { LessonResourceType } from '../common/enums/lesson-resource-type.enum';
 
@@ -18,12 +24,63 @@ async function bootstrap() {
   const moduleRepo = app.get<Repository<Module>>(getRepositoryToken(Module));
   const lessonRepo = app.get<Repository<Lesson>>(getRepositoryToken(Lesson));
   const resourceRepo = app.get<Repository<LessonResource>>(getRepositoryToken(LessonResource));
+  const userRepo = app.get<Repository<User>>(getRepositoryToken(User));
+  const authProviderRepo = app.get<Repository<AuthProvider>>(getRepositoryToken(AuthProvider));
+  const skillRepo = app.get<Repository<Skill>>(getRepositoryToken(Skill));
+  const moduleSkillRepo = app.get<Repository<ModuleSkill>>(getRepositoryToken(ModuleSkill));
+  const userSkillRepo = app.get<Repository<UserSkill>>(getRepositoryToken(UserSkill));
 
   console.log('🌱 Starting LMS Seeding...');
 
-  // -------------------------------
-  // COURSE 1: Full Stack Development
-  // -------------------------------
+  // ===============================
+  // 1️⃣ CREATE STUDENT
+  // ===============================
+
+  let student = await userRepo.findOne({
+    where: { email: 'john@student.com' },
+  });
+
+  if (!student) {
+    student = await userRepo.save({
+      name: 'Ritam',
+      email: 'john@student.com',
+      role: UserRole.STUDENT,
+      isActive: true,
+      isVerified: true,
+    });
+
+    console.log('👤 Student Created');
+  } else {
+    console.log('⚠️ Student already exists');
+  }
+
+  // ===============================
+  // 2️⃣ CREATE LOCAL AUTH PROVIDER
+  // ===============================
+
+  const existingAuth = await authProviderRepo.findOne({
+    where: {
+      user: { id: student.id },
+      provider: AuthProviderType.LOCAL,
+    },
+    relations: ['user'],
+  });
+
+  if (!existingAuth) {
+    await authProviderRepo.save({
+      user: student,
+      provider: AuthProviderType.LOCAL,
+      passwordHash:
+        '$2b$10$ZW1CtFpASe4zWTihCeF2ieF3iSc1LrMkRLRHgN8C98eNU.QFa8lvS',
+    });
+
+    console.log('🔐 Auth Provider Created');
+  }
+
+  // ===============================
+  // 3️⃣ CREATE COURSE
+  // ===============================
+
   const fullStack = await courseRepo.save({
     title: 'Full Stack Development',
     description: 'Complete web development from frontend to backend.',
@@ -31,11 +88,19 @@ async function bootstrap() {
     isPublished: true,
   });
 
+  // ===============================
+  // 4️⃣ CREATE MODULE
+  // ===============================
+
   const fsModule1 = await moduleRepo.save({
     title: 'Frontend Basics',
     position: 1,
     course: fullStack,
   });
+
+  // ===============================
+  // 5️⃣ CREATE LESSON
+  // ===============================
 
   const fsLesson1 = await lessonRepo.save({
     title: 'Introduction to React',
@@ -43,6 +108,10 @@ async function bootstrap() {
     position: 1,
     module: fsModule1,
   });
+
+  // ===============================
+  // 6️⃣ CREATE LESSON RESOURCES
+  // ===============================
 
   await resourceRepo.save([
     {
@@ -59,65 +128,64 @@ async function bootstrap() {
     },
   ]);
 
-  // -------------------------------
-  // COURSE 2: Data Science
-  // -------------------------------
-  const dataScience = await courseRepo.save({
-    title: 'Data Science',
-    description: 'Learn Python, ML, and AI fundamentals.',
-    instructorName: 'Ritam Sundar Sandhaki',
-    isPublished: true,
-  });
+  // ===============================
+  // 7️⃣ CREATE SKILLS
+  // ===============================
 
-  const dsModule1 = await moduleRepo.save({
-    title: 'Python for Data Science',
-    position: 1,
-    course: dataScience,
-  });
+  const skillNames = ['HTML', 'CSS', 'React', 'TypeScript'];
+  const skills: Skill[] = [];
 
-  const dsLesson1 = await lessonRepo.save({
-    title: 'NumPy & Pandas',
-    difficulty: DifficultyLevel.INTERMEDIATE,
-    position: 1,
-    module: dsModule1,
-  });
+  for (const name of skillNames) {
+    let skill = await skillRepo.findOne({ where: { name } });
 
-  await resourceRepo.save({
-    title: 'Pandas Tutorial',
-    resourceType: LessonResourceType.VIDEO,
-    resourceUrl: 'https://example.com/pandas',
-    lesson: dsLesson1,
-  });
+    if (!skill) {
+      skill = await skillRepo.save({ name });
+      console.log(`🛠 Skill Created: ${name}`);
+    }
 
-  // -------------------------------
-  // COURSE 3: DevOps
-  // -------------------------------
-  const devOps = await courseRepo.save({
-    title: 'DevOps',
-    description: 'CI/CD, Docker, Kubernetes & Cloud.',
-    instructorName: 'Ritam Sundar Sandhaki',
-    isPublished: true,
-  });
+    skills.push(skill);
+  }
 
-  const devModule1 = await moduleRepo.save({
-    title: 'Docker Fundamentals',
-    position: 1,
-    course: devOps,
-  });
+  // ===============================
+  // 8️⃣ ASSIGN SKILLS TO MODULE
+  // ===============================
 
-  const devLesson1 = await lessonRepo.save({
-    title: 'Docker Basics',
-    difficulty: DifficultyLevel.BEGINNER,
-    position: 1,
-    module: devModule1,
-  });
+  for (const skill of skills) {
+    const exists = await moduleSkillRepo.findOne({
+      where: {
+        module: { id: fsModule1.id },
+        skill: { id: skill.id },
+      },
+    });
 
-  await resourceRepo.save({
-    title: 'Docker Hands-on Lab',
-    resourceType: LessonResourceType.CODELAB,
-    resourceUrl: 'https://example.com/docker-lab',
-    lesson: devLesson1,
-  });
+    if (!exists) {
+      await moduleSkillRepo.save({
+        module: fsModule1,
+        skill,
+      });
+
+      console.log(`📚 Skill ${skill.name} added to Module`);
+    }
+  }
+
+  // ===============================
+  // 9️⃣ GIVE SKILLS TO STUDENT (Optional)
+  // ===============================
+
+  for (const skill of skills) {
+    await userSkillRepo
+      .createQueryBuilder()
+      .insert()
+      .into(UserSkill)
+      .values({
+        user: { id: student.id },
+        skill: { id: skill.id },
+      })
+      .orIgnore()
+      .execute();
+
+    console.log(`🎓 Skill ${skill.name} earned by Student`);
+  }
 
   console.log('✅ LMS Seeding Completed Successfully');
   await app.close();

@@ -12,6 +12,7 @@ import { CourseProgress } from './course_progress.entity';
 import { LessonProgress } from './lesson_progress.entity';
 import { Enrollment } from './enrollment.entity';
 import { AssignmentSubmission } from './assignment-submission.entity';
+import { UserSkill } from './user-skill.entity';
 @Entity({ name: 'users' })
 @Index(['email', 'role'], { unique: true })
 
@@ -63,4 +64,6 @@ export class User {
   enrollments: Enrollment[];
  @OneToMany(() => AssignmentSubmission, (submission) => submission.student)
   submissions: AssignmentSubmission[];
+  @OneToMany(() => UserSkill, (us) => us.user)
+userSkills: UserSkill[];
 }
