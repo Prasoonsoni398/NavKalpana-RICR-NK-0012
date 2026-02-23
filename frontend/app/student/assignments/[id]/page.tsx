@@ -36,6 +36,7 @@ export default function AssignmentPage() {
 
   const [data, setData] = useState<AssignmentWithSubmissionResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showEvaluation, setShowEvaluation] = useState(false);
 
   const fetchData = async () => {
     if (!assignmentId) return;
@@ -53,6 +54,7 @@ export default function AssignmentPage() {
     fetchData();
   }, [assignmentId]);
 
+  // Submit assignment
   const handleSubmit = async (formData: FormData) => {
     if (!assignmentId) return;
     try {
@@ -67,6 +69,7 @@ export default function AssignmentPage() {
   if (!data || !data.assignment) return <div className={styles.container}><p>No assignment found</p></div>;
 
   const { assignment, submission, isSubmitted } = data;
+  const status = submission?.status?.toUpperCase();
 
   return (
     <div className={styles.container}>
@@ -88,7 +91,21 @@ export default function AssignmentPage() {
       {isSubmitted && submission && (
         <div style={{ marginTop: '20px' }}>
           <SubmissionDetails submission={submission} />
-          {submission.status === "EVALUATED" && (
+
+          {/* Evaluate Button */}
+          {status === "SUBMITTED" && (
+            <div className={styles.evaluateWrapper}>
+              <button
+                className={styles.evaluateBtn}
+                onClick={() => setShowEvaluation(true)}
+              >
+                Evaluate Assignment
+              </button>
+            </div>
+          )}
+
+          {/* Show Evaluation Section After Click */}
+          {showEvaluation && (
             <EvaluationSection submission={submission} />
           )}
         </div>
