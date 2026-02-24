@@ -10,6 +10,7 @@ import { QuizOption } from '../../common/entities/quiz-option.entity';
 import { QuizAttempt } from '../../common/entities/quiz-attempt.entity';
 import { User } from 'src/common/entities/user.entity';
 import { StudentActivityLog } from 'src/common/entities/student-activity-log.entity';
+import { Enrollment } from 'src/common/entities/enrollment.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { StudentActivityLog } from 'src/common/entities/student-activity-log.ent
       QuizOption,
       QuizAttempt,
       User,
-      StudentActivityLog
+      StudentActivityLog,
+      Enrollment
     ]),
   ],
   controllers: [QuizController],

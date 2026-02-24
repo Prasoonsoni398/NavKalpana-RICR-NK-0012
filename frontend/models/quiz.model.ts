@@ -9,6 +9,8 @@ export interface Quiz {
   durationMinutes: number;
   totalQuestions: number;
   isPublished: boolean;
+  moduleTitle: string;
+  courseTitle: string;
 }
 
 // --------------------

@@ -46,8 +46,9 @@ export class QuizController {
   // }
 
   @Get()
-  findAll() {
-    return this.quizService.findAll();
+  findAll( @Req() req) {
+    const studentId = req.user.id;
+    return this.quizService.findAll(studentId);
   }
 
   @Get(':id')

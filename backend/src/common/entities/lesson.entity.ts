@@ -15,6 +15,7 @@ import { LessonResource } from './lesson_resources.entity';
 import { LessonProgress } from './lesson_progress.entity';
 import { Assignment } from './assignment.entity';
 import { DifficultyLevel } from '../enums/difficulty-level.enum';
+import { Quiz } from './quiz.entity';
 
 @Entity({ name: 'lessons' })
 export class Lesson {
@@ -53,4 +54,6 @@ export class Lesson {
   // ✅ Assignment Relation
   @OneToOne(() => Assignment, (assignment) => assignment.lesson)
   assignment: Assignment;
+  @OneToMany(() => Quiz, (quiz) => quiz.lesson)
+  quizzes: Quiz[];
 }

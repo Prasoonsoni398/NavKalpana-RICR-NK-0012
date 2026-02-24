@@ -18,6 +18,7 @@ import { User } from 'src/common/entities/user.entity';
 import { StudentActivityLog } from 'src/common/entities/student-activity-log.entity';
 import { StudentActivityType } from '../../common/enums/student-activity-type.enum';
 import { ActivityEntityType } from '../../common/enums/activity-entity-type.enum';
+import { Enrollment } from 'src/common/entities/enrollment.entity';
 
 @Injectable()
 export class QuizService {
@@ -37,6 +38,8 @@ export class QuizService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(StudentActivityLog)
     private readonly studentActivityLogRepo: Repository<StudentActivityLog>,
+    @InjectRepository(Enrollment)
+    private readonly enrollmentRepo: Repository<Enrollment>,
   ) {}
 
   // // Create Quiz
@@ -71,11 +74,37 @@ export class QuizService {
   //   return savedQuiz;
   // }
 
-  async findAll(): Promise<Quiz[]> {
-    return this.quizRepo.find({
-      relations: ['questions', 'questions.options'],
-    });
-  }
+async findAll(studentId: number) {
+
+  const quizzes = await this.quizRepo.find({
+    relations: [
+      'lesson',
+      'lesson.module',
+      'lesson.module.course',
+      'questions',
+      'questions.options',
+    ],
+  });
+
+  const result = quizzes.map((quiz) => {
+
+    const courseTitle =
+      quiz.lesson?.module?.course?.title ?? null;
+
+    return {
+      quizId: quiz.id,
+      title: quiz.title,
+      durationMinutes: quiz.durationMinutes,
+      totalQuestions: quiz.totalQuestions,
+
+      lessonId: quiz.lesson?.id ?? null,
+      moduleTitle: quiz.lesson?.module?.title ?? null,
+      courseTitle: courseTitle,
+    };
+  });
+
+  return result
+}
 
 async findOne(id: number): Promise<any> {
   const quiz = await this.quizRepo.findOne({
