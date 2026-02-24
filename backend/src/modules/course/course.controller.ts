@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
+  Req
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -14,18 +16,22 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiBearerAuth
 } from '@nestjs/swagger';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course } from '../../common/entities/course.entity';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard) // Protect all routes in this controller
 @ApiTags('Courses') // Swagger group
+@ApiBearerAuth()
 @Controller('courses')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
-  // ✅ Create Course
+  //Create Course
   @Post()
   @ApiOperation({ summary: 'Create a new course' })
   @ApiBody({ type: CreateCourseDto })
@@ -39,7 +45,7 @@ export class CourseController {
     return await this.courseService.create(createCourseDto);
   }
 
-  // ✅ Get All Courses
+  //  Get All Courses
   @Get()
   @ApiOperation({ summary: 'Get all courses' })
   @ApiResponse({
@@ -58,8 +64,9 @@ export class CourseController {
     description: 'List of courses',
     type: [Course],
   })
-  async findMyCouse() {
-    return await this.courseService.findAll();
+  async findMyCourses(@Req() req: any) {
+    const userId = req.user?.id || req.user?.userId;
+    return await this.courseService.findMyAllCourse(userId);
   }
 
   // ✅ Get Course By ID

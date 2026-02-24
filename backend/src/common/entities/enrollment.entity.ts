@@ -11,7 +11,7 @@ import { User } from './user.entity';
 import { Course } from './course.entity';
 
 @Entity({ name: 'enrollments' })
-@Unique(['student', 'course']) // ✅ Prevent duplicate enrollments
+@Unique(['student', 'course']) 
 export class Enrollment {
 
   @PrimaryGeneratedColumn('increment')  

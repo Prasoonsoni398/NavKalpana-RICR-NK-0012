@@ -13,23 +13,34 @@ import { Lesson } from './lesson.entity';
 @Entity({ name: 'lesson_progress' })
 @Index(['student', 'lesson'], { unique: true })
 export class LessonProgress {
-  @PrimaryGeneratedColumn('increment')
-  id: string;
 
-  @ManyToOne(() => User, (user) => user.lessonProgress)
+  // ✅ Auto Increment ID (MUST be number)
+  @PrimaryGeneratedColumn('increment')
+  id: number;
+
+  // ✅ Relation with User
+  @ManyToOne(() => User, (user) => user.lessonProgress, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   student: User;
 
-  @ManyToOne(() => Lesson, (lesson) => lesson.progress)
+  // ✅ Relation with Lesson
+  @ManyToOne(() => Lesson, (lesson) => lesson.progress, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'lesson_id' })
   lesson: Lesson;
 
-  @Column({ default: false })
+  // ✅ Completion Status
+  @Column({ type: 'boolean', default: false })
   completed: boolean;
 
-  @Column({ nullable: true })
-  completedAt: Date;
+  // ✅ Completion Date
+  @Column({ type: 'timestamp', nullable: true })
+  completedAt: Date | null;
 
+  // ✅ Auto Update Timestamp
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

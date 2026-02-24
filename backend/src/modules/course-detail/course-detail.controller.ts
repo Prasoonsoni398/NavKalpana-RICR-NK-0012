@@ -55,4 +55,23 @@ export class CourseDetailController {
     const studentId = req.user?.id || req.user?.userId;
     return this.courseDetailService.markLessonCompleted(lessonId, studentId);
   }
+
+  /**
+ * ⭐ Mark entire course as complete for a student
+ * POST /course-detail/:courseId/complete
+ */
+@Post(':courseId/complete')
+@ApiOperation({ summary: 'Mark entire course as complete for a student' })
+@ApiParam({ name: 'courseId', description: 'Course ID', type: Number })
+async markCourseComplete(
+  @Param('courseId') courseId: number,
+  @Req() req: any,
+) {
+  const studentId = req.user?.id || req.user?.userId;
+
+  return this.courseDetailService.markCourseCompleted(
+    Number(courseId),
+    Number(studentId),
+  );
+}
 }

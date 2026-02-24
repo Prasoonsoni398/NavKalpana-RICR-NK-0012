@@ -34,7 +34,6 @@ export class CourseDetailService {
   ) {}
 
   async getCourseDetail(courseId: number, studentId?: number) {
-
   const student = await this.userRepo.findOne({
     where: { id: studentId, role: 'STUDENT' },
   });
@@ -59,17 +58,7 @@ export class CourseDetailService {
     student: { id: studentId },
     activityType: StudentActivityType.OPENED,
     entityType: ActivityEntityType.COURSE,
-    entityId: courseId,
-  });
-
-  let courseProgressMap: any = {};
-  let lessonProgressMap: Record<number, boolean> = {};
-
-  const courseProgress = await this.courseProgressRepo.findOne({
-    where: {
-      course: { id: courseId },
-      student: { id: studentId },
-    },
+    entityId: Number(courseId),
   });
 
   const lessonProgress = await this.lessonProgressRepo.find({
@@ -77,17 +66,22 @@ export class CourseDetailService {
     relations: ['lesson'],
   });
 
-  courseProgressMap = courseProgress || {};
-
+  const lessonProgressMap: Record<number, boolean> = {};
   lessonProgress.forEach(lp => {
     if (lp.lesson) {
       lessonProgressMap[lp.lesson.id] = lp.completed;
     }
   });
 
+  let totalLessonsCount = 0;
+  let totalCompletedCount = 0;
+
   const modules = course.modules.map(module => {
     const lessons = module.lessons.map(lesson => {
       const completed = lessonProgressMap[lesson.id] || false;
+
+      totalLessonsCount++;
+      if (completed) totalCompletedCount++;
 
       return {
         id: lesson.id,
@@ -120,7 +114,10 @@ export class CourseDetailService {
     };
   });
 
-  const progress = courseProgressMap?.progressPercentage || 0;
+  // ✅ Calculate course progress dynamically
+  const progress = totalLessonsCount
+    ? Math.round((totalCompletedCount / totalLessonsCount) * 100)
+    : 0;
 
   return {
     id: course.id,
@@ -133,7 +130,6 @@ export class CourseDetailService {
     modules,
   };
 }
-
 async markLessonCompleted(
   lessonId: string,
   studentId: number,
@@ -222,4 +218,28 @@ async markLessonCompleted(
     progressPercentage,
   };
 }
+
+async markCourseCompleted(courseId: number, studentId: number) {
+  const lessons = await this.lessonRepo.find({
+    where: { module: { course: { id: courseId } } },
+    select: ['id'],
+  });
+
+  if (!lessons.length) {
+    throw new NotFoundException('No lessons found for this course');
+  }
+
+  await Promise.all(
+    lessons.map((lesson) =>
+      this.markLessonCompleted(lesson.id.toString(), studentId),
+    ),
+  );
+
+  return {
+    message: 'All lessons completed successfully',
+  };
+}
+
+
+
 }

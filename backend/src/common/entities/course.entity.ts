@@ -9,6 +9,7 @@ import {
 import { Module } from './module.entity';
 import { CourseProgress } from './course_progress.entity';
 import { Enrollment } from './enrollment.entity';   
+import { ClassSession } from './class-session.entity';
 
 @Entity({ name: 'courses' })
 export class Course {
@@ -48,4 +49,8 @@ export class Course {
   
   @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
   enrollments: Enrollment[];
+  
+  @OneToMany(() => ClassSession, (session) => session.course)
+  classSessions: ClassSession[];
+  
 }

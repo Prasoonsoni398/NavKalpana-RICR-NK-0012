@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
-  OneToMany
+  OneToMany,
 } from 'typeorm';
 import { Otp } from './otps.entity';
 import { CourseProgress } from './course_progress.entity';
@@ -15,9 +15,7 @@ import { AssignmentSubmission } from './assignment-submission.entity';
 import { UserSkill } from './user-skill.entity';
 @Entity({ name: 'users' })
 @Index(['email', 'role'], { unique: true })
-
 export class User {
-
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -40,7 +38,6 @@ export class User {
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
-  
   @Column({ name: 'is_verified', type: 'boolean', default: false })
   isVerified: boolean;
 
@@ -57,13 +54,22 @@ export class User {
   updatedAt: Date;
 
   // ─── RELATIONS ──────────────────────────────
-  courseProgress: CourseProgress[]
-  lessonProgress: LessonProgress[]
-  otps: Otp[]
-   @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
-  enrollments: Enrollment[];
- @OneToMany(() => AssignmentSubmission, (submission) => submission.student)
-  submissions: AssignmentSubmission[];
-  @OneToMany(() => UserSkill, (us) => us.user)
+
+@OneToMany(() => CourseProgress, (progress) => progress.student)
+courseProgress: CourseProgress[];
+
+@OneToMany(() => LessonProgress, (lesson) => lesson.student)
+lessonProgress: LessonProgress[];
+
+@OneToMany(() => Otp, (otp) => otp.user)
+otps: Otp[];
+
+@OneToMany(() => Enrollment, (enrollment) => enrollment.student)
+enrollments: Enrollment[];
+
+@OneToMany(() => AssignmentSubmission, (submission) => submission.student)
+submissions: AssignmentSubmission[];
+
+@OneToMany(() => UserSkill, (us) => us.user)
 userSkills: UserSkill[];
 }
