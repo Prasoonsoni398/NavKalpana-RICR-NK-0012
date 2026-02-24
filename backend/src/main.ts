@@ -7,14 +7,17 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  //  Enable CORS (important for frontend connection)
+  // ✅ Add Global API Prefix
+  app.setGlobalPrefix('api/v1.0');
+
+  // Enable CORS
   app.enableCors();
 
-  //  Global Validation Pipe (VERY IMPORTANT)
+  // Global Validation Pipe
   app.useGlobalPipes(
     new ValidationPipe({
-      forbidNonWhitelisted: true,   
-      transform: true,              
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
@@ -28,7 +31,9 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('/api-docs', app, document);
+  // Swagger will now be available at:
+  // http://localhost:3000/api/v1.0/api-docs
+  SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
 }
