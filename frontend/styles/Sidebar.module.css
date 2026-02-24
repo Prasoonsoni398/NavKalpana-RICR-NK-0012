@@ -4,7 +4,7 @@
   height: 100vh;
   position: fixed;
   left: 0;
-  top: 0;
+  top: 60px;
   background-color: #ffffff;
   border-right: 1px solid #f1f5f9;
   display: flex;

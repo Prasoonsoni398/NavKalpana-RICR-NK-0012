@@ -575,17 +575,78 @@
 .middleRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 30px;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .activitySection {
-  background: var(--bg-white);
-  padding: 24px;
-  border-radius: 24px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-light);
-  animation: fadeInUp 0.8s ease-out;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  border: 1px solid #f1f5f9;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+}
+
+.activityMeta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.statusBadge {
+  background: #fef9c3;
+  color: #854d0e;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.barChart {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 150px;
+  padding: 10px 0;
+}
+
+.barContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.barFillWrapper {
+  height: 120px;
+  width: 12px;
+  background: #f8fafc;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.barFill {
+  width: 100%;
+  background: #FACC15;
+  border-radius: 20px;
+  transition: height 0.3s ease;
+}
+
+.barLabel {
+  margin-top: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
 }
 
 .activitySection h3 {
@@ -598,7 +659,6 @@
   color: var(--text-primary);
 }
 
-/* --- Recent Submissions List --- */
 .activityList {
   display: flex;
   flex-direction: column;
@@ -636,7 +696,6 @@
   color: var(--text-secondary);
 }
 
-/* --- Bar Chart Styling --- */
 .barChart {
   display: flex;
   align-items: flex-end;
@@ -654,6 +713,28 @@
   gap: 10px;
   height: 100%;
   justify-content: flex-end;
+}
+
+.barContainer:nth-child(1) .barFill { animation-delay: 0.1s; }
+.barContainer:nth-child(2) .barFill { animation-delay: 0.2s; }
+.barContainer:nth-child(3) .barFill { animation-delay: 0.3s; }
+.barContainer:nth-child(4) .barFill { animation-delay: 0.4s; }
+.barContainer:nth-child(5) .barFill { animation-delay: 0.5s; }
+.barContainer:nth-child(6) .barFill { animation-delay: 0.6s; }
+.barContainer:nth-child(7) .barFill { animation-delay: 0.7s; }
+
+@keyframes growBar {
+  0% { 
+    transform: scaleY(0); 
+    opacity: 0; 
+  }
+  70% { 
+    transform: scaleY(1.1);
+  }
+  100% { 
+    transform: scaleY(1); 
+    opacity: 1; 
+  }
 }
 
 .barFill {
@@ -676,13 +757,11 @@
   color: var(--text-secondary);
 }
 
-/* --- Animations --- */
 @keyframes growBar {
   from { transform: scaleY(0); opacity: 0; }
   to { transform: scaleY(1); opacity: 1; }
 }
 
-/* --- Responsiveness --- */
 @media (max-width: 1100px) {
   .middleRow {
     grid-template-columns: 1fr; /* Stack on small screens */
@@ -702,7 +781,6 @@
   }
 }
 
-/* --- Animation: कार्ड्स एक-एक करके पॉप होंगे --- */
 @keyframes cardPopIn {
   from {
     opacity: 0;
@@ -725,7 +803,7 @@
 .statMiniCard {
   background: #ffffff;
   padding: 15px 20px;
-  border-radius: 16px; /* थोड़ा और मॉडर्न कर्व */
+  border-radius: 16px; 
   flex: 1;
   min-width: 200px; /* मोबाइल पर बेहतर दिखने के लिए */
   display: flex;
@@ -801,12 +879,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-}
-
-.sectionHeader h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
 }
 
 .viewAllBtn {
@@ -1240,40 +1312,26 @@
 }
 
 /* --- Common Card Styling --- */
-.cardBase, 
-.eventCalendarCard, 
-.monthlyTracker, 
-.leaderboardCard, 
-.activitySection, 
-.skillsSection {
+.eventCalendarCard {
   background: #ffffff;
-  padding: 22px;
-  border-radius: 24px;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
   border: 1px solid #f1f5f9;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
 }
 
-.cardBase:hover, 
-.eventCalendarCard:hover, 
-.monthlyTracker:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.06);
-}
-
-/* --- Event Calendar Details --- */
 .calendarHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 1.25rem;
 }
 
 .sidebarTitle {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 16px;
+  gap: 8px;
+  font-size: 1rem;
   font-weight: 700;
   color: #1e293b;
 }
@@ -1281,41 +1339,44 @@
 .navActions {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #f8fafc;
-  padding: 5px 10px;
-  border-radius: 12px;
+  gap: 12px;
+}
+
+.currentMonth {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+  min-width: 100px;
+  text-align: center;
 }
 
 .navBtn {
-  background: none;
-  border: none;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 4px;
   cursor: pointer;
-  color: #64748b;
-  font-size: 16px;
-  transition: color 0.2s;
+  display: flex;
+  transition: all 0.2s;
 }
 
-.navBtn:hover { color: #FACC15; }
-
-.currentMonth {
-  font-size: 12px;
-  font-weight: 700;
-  min-width: 85px;
-  text-align: center;
+.navBtn:hover {
+  background: #FACC15;
+  border-color: #FACC15;
 }
 
+/* Grid Styling */
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  gap: 8px;
+  text-align: center;
 }
 
 .weekdayLabel {
-  font-size: 10px;
+  font-size: 0.75rem;
   font-weight: 800;
-  color: #cbd5e1;
-  text-align: center;
+  color: #94a3b8;
   padding-bottom: 8px;
 }
 
@@ -1324,211 +1385,632 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  border-radius: 8px;
   cursor: pointer;
   position: relative;
-  transition: 0.2s;
+  transition: all 0.2s;
 }
 
 .calendarDay:hover {
-  background: #FEF9C3;
-  color: #000;
+  background: #fffbeb;
+  color: #b45309;
 }
 
 .today {
-  background: #FACC15 !important;
-  color: #000 !important;
-  font-weight: 800;
-  box-shadow: 0 4px 10px rgba(250, 204, 21, 0.4);
+  background: #1e293b !important;
+  color: #ffffff !important;
 }
 
 .eventDot {
+  position: absolute;
+  bottom: 4px;
   width: 4px;
   height: 4px;
-  background: #FACC15;
+  background: #FACC15; /* Your Theme Color */
   border-radius: 50%;
-  position: absolute;
-  bottom: 5px;
+  box-shadow: 0 0 5px #FACC15;
 }
 
-/* --- Performance Tracker Circle --- */
-.trackerContent {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  margin-top: 15px;
-}
-
-.circularChart {
-  width: 85px;
-  height: 85px;
-  transform: rotate(-90deg);
-}
-
-.circleBg { fill: none; stroke: #f1f5f9; stroke-width: 3; }
-.circle {
-  fill: none;
-  stroke-width: 3;
-  stroke-linecap: round;
-  transition: stroke-dasharray 1s ease;
-}
-
-.percentage {
-  fill: #1e293b;
-  font-size: 8px;
-  font-weight: 800;
-  text-anchor: middle;
-  transform: rotate(90deg);
-  transform-origin: center;
-}
-
-/* --- Skills Pills --- */
-.pillsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 15px;
-}
-
-.skillPill {
-  background: #f8fafc;
-  padding: 8px 14px;
-  border-radius: 50px;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border: 1px solid #e2e8f0;
-  transition: 0.3s;
-}
-
-.skillPill:hover {
-  background: #FEF9C3;
-  border-color: #FACC15;
-  transform: scale(1.05);
-}
-
-/* --- Modal & Tooltip --- */
+/* Modal Styling */
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(15, 23, 42, 0.4);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  animation: popIn 0.3s ease;
+  z-index: 100;
 }
 
 .eventModal {
   background: white;
-  padding: 25px;
-  border-radius: 24px;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
   width: 90%;
-  max-width: 340px;
-  text-align: center;
+  max-width: 350px;
+  animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .modalInput {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  padding: 10px;
+  border: 2px solid #f1f5f9;
+  border-radius: 8px;
   margin: 15px 0;
   outline: none;
 }
 
-/* --- Responsiveness (Tablet & Mobile) --- */
-@media (max-width: 1200px) {
-  .rightPanel {
-    width: 300px;
-    min-width: 300px;
+.modalInput:focus {
+  border-color: #FACC15;
+}
+
+.saveBtn {
+  background: #FACC15;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+/* Navigation Buttons Fix */
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc; /* लाइट ग्रे बैकग्राउंड */
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.navBtn {
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.navBtn:hover {
+  background: #FACC15; /* Your Theme Yellow */
+  color: #1e293b;
+  border-color: #FACC15;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+}
+
+.navBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(250, 204, 21, 0.2);
+}
+
+/* Modal Action Buttons Fix */
+.modalActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.saveBtn {
+  flex: 2;
+  background: #FACC15;
+  color: #1e293b;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.saveBtn:hover {
+  background: #eab308;
+  transform: scale(1.02);
+}
+
+.cancelBtn {
+  flex: 1;
+  background: #f1f5f9;
+  color: #64748b;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.cancelBtn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* skill */
+
+.skillsSection {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid #f1f5f9;
+  grid-column: span 2;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+  
+  /* Entry Animation for the whole card */
+  animation: cardFlyIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.skillsHeaderWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.skillCount {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #854d0e;
+  background: #fef9c3;
+  padding: 5px 14px;
+  border-radius: 50px;
+  box-shadow: 0 2px 5px rgba(250, 204, 21, 0.2);
+}
+
+.pillsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  perspective: 1000px; /* For 3D depth */
+}
+
+/* Individual Skill Pill Animation */
+.skillPill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* Entry Bounce Animation */
+  animation: pillPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+/* Staggered Delay for Pills (एक-एक करके आने के लिए) */
+.skillPill:nth-child(1) { animation-delay: 0.1s; }
+.skillPill:nth-child(2) { animation-delay: 0.15s; }
+.skillPill:nth-child(3) { animation-delay: 0.2s; }
+.skillPill:nth-child(4) { animation-delay: 0.25s; }
+.skillPill:nth-child(5) { animation-delay: 0.3s; }
+.skillPill:nth-child(6) { animation-delay: 0.35s; }
+
+.skillPill:hover {
+  background: #ffffff;
+  border-color: #FACC15;
+  color: #1e293b;
+  transform: translateY(-5px) scale(1.05) rotate(2deg); /* हवा में उड़ता हुआ फील */
+  box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.3);
+}
+
+.checkIcon {
+  color: #22c55e;
+  transition: transform 0.3s ease;
+}
+
+.skillPill:hover .checkIcon {
+  transform: scale(1.3) rotate(10deg);
+}
+
+/* Progress Bar with "Liquid" Fill Animation */
+.skillProgressBar {
+  margin-top: 2rem;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.skillProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #FACC15, #fbbf24);
+  border-radius: 50px;
+  width: 0%; /* JS will handle or use style={{width: '...'}} */
+  animation: liquidFill 1.5s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+/* --- KEYFRAMES --- */
+
+@keyframes cardFlyIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(40px) scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
   }
 }
 
-@media (max-width: 1100px) {
-  .rightPanel {
-    position: static;
-    width: 100%;
-    min-width: 100%;
-    height: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    padding-right: 0;
+@keyframes pillPop {
+  from { 
+    opacity: 0; 
+    transform: scale(0.5) rotate(-10deg); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1) rotate(0deg); 
   }
 }
 
-@media (max-width: 768px) {
-  .rightPanel {
-    grid-template-columns: 1fr;
-    padding: 0 10px;
+@keyframes liquidFill {
+  from { width: 0%; }
+  to { width: var(--progress-width, 45%); } /* Pass width via variable or style */
+}
+
+/* --- RESPONSIVENESS --- */
+
+@media (max-width: 1024px) {
+  .skillsSection {
+    grid-column: span 1; /* छोटी स्क्रीन पर 1 कॉलम ले लेगा */
   }
 }
 
-/* --- Tracker Card Container --- */
+@media (max-width: 480px) {
+  .skillsSection {
+    padding: 1rem;
+  }
+  .skillPill {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+  .pillsContainer {
+    gap: 0.5rem;
+  }
+}
+.leaderboardCard {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03);
+  animation: cardFadeIn 0.8s ease-out;
+}
+
+.leaderboardCard h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* List Container */
+.leaderList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Individual Item Styling */
+.leaderItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: itemSlideUp 0.5s ease-out both;
+}
+
+/* Hover Effect: Hawa में उड़ने वाला feel */
+.leaderItem:hover {
+  transform: translateX(10px) translateY(-2px);
+  background: #ffffff;
+  border-color: #FACC15;
+  box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.2);
+  cursor: pointer;
+}
+
+/* Rank Styling */
+.rank {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  width: 35px;
+}
+
+/* Top 3 Ranks Ke Liye Special Colors */
+.leaderItem:nth-child(1) .rank { color: #fbbf24; font-size: 1.1rem; } /* Gold */
+.leaderItem:nth-child(2) .rank { color: #94a3b8; } /* Silver */
+.leaderItem:nth-child(3) .rank { color: #b45309; } /* Bronze */
+
+/* Name & Score Styling */
+.userName {
+  flex: 1;
+  font-weight: 700;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.userScore {
+  font-weight: 700;
+  color: #FACC15; /* Your Theme Yellow */
+  background: #fffbeb;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+/* --- Animations --- */
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes itemSlideUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Staggered Delay: एक-एक करके आइटम्स आएँगे */
+.leaderItem:nth-child(1) { animation-delay: 0.1s; }
+.leaderItem:nth-child(2) { animation-delay: 0.2s; }
+.leaderItem:nth-child(3) { animation-delay: 0.3s; }
+.leaderItem:nth-child(4) { animation-delay: 0.4s; }
+.leaderItem:nth-child(5) { animation-delay: 0.5s; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .leaderItem {
+    padding: 10px;
+  }
+  .userName {
+    font-size: 0.85rem;
+  }
+}
+
+.activitySection {
+  background: #ffffff;
+  /* padding: 1.5rem; */
+  border-radius: 1.5rem;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  /* गैप को बिल्कुल खत्म करने के लिए 4px या 5px कर दो */
+  gap: 6px !important; 
+  
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  padding: 0;
+  line-height: 1; /* एक्स्ट्रा वर्टिकल स्पेस हटाने के लिए */
+}
+
+
+
+  
+
+.quizCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+/* Hover Effect */
+.quizCard:hover {
+  background: #ffffff;
+  border-color: #FACC15;
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 20px -8px rgba(250, 204, 21, 0.25);
+}
+
+/* Date Badge Style */
+.dateBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  min-width: 55px;
+  height: 60px;
+  border-radius: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.quizCard:hover .dateBadge {
+  background: #FACC15;
+  border-color: #FACC15;
+}
+
+.month {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.day {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1;
+}
+
+.quizCard:hover .month, 
+.quizCard:hover .day {
+  color: #1e293b;
+}
+
+/* Today Indicator */
+.todayDot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+  background: #22c55e;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+}
+
+/* Quiz Info Text */
+.quizInfo h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.quizMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.separator {
+  color: #cbd5e1;
+}
+
+/* Arrow Icon Transition */
+.arrowIcon {
+  margin-left: auto;
+  color: #cbd5e1;
+  transition: all 0.3s ease;
+}
+
+.quizCard:hover .arrowIcon {
+  color: #FACC15;
+  transform: translateX(4px);
+}
+
+/* --- Animations --- */
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Media Queries --- */
+@media (max-width: 640px) {
+  .activitySection {
+    padding: 1rem;
+  }
+  
+  .quizCard {
+    gap: 12px;
+  }
+  
+  .dateBadge {
+    min-width: 50px;
+    height: 55px;
+  }
+  
+  .day { font-size: 1.1rem; }
+}
 .monthlyTracker {
   background: #ffffff;
-  padding: 24px;
-  border-radius: 24px;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
   border: 1px solid #f1f5f9;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.monthlyTracker:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.05);
-}
-
-/* --- Header & Select Styling --- */
 .trackerHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
 }
 
 .trackerHeader h3 {
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #1e293b;
   margin: 0;
 }
 
+.filterGroup {
+  display: flex;
+  gap: 8px;
+}
+
+/* Styled Select Dropdowns */
 .filterSelect {
-  padding: 6px 12px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
   background: #f8fafc;
-  font-size: 13px;
+  border: 1px solid #e2e8f0;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #64748b;
   cursor: pointer;
   outline: none;
-  transition: 0.2s;
+  transition: all 0.2s;
 }
 
-.filterSelect:focus {
+.filterSelect:hover {
   border-color: #FACC15;
+  background: #ffffff;
 }
 
-/* --- Content Layout --- */
 .trackerContent {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  justify-content: space-around;
+  gap: 1rem;
 }
 
-/* --- Circular Progress Animation --- */
+/* Circular Chart Styling */
 .progressCircle {
-  width: 100px;
-  height: 100px;
-  position: relative;
+  width: 110px;
+  height: 110px;
 }
 
 .circularChart {
@@ -1548,51 +2030,218 @@
   fill: none;
   stroke-width: 3;
   stroke-linecap: round;
-  /* एनीमेशन यहाँ से शुरू होता है */
-  animation: progress 1.5s ease-out forwards;
-}
-
-@keyframes progress {
-  0% { stroke-dasharray: 0 100; }
+  /* Drawing Animation */
+  animation: progress 1.2s ease-out forwards;
 }
 
 .percentage {
   fill: #1e293b;
-  font-size: 8px;
+  font-family: inherit;
+  font-size: 0.5rem;
   font-weight: 800;
   text-anchor: middle;
-  font-family: inherit;
 }
 
-/* --- Stats on the Right --- */
+/* Mini Stats Layout */
 .trackerStats {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex: 1;
 }
 
 .statMini {
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
-  padding: 10px 15px;
-  border-radius: 14px;
-  transition: 0.2s;
-}
-
-.statMini:hover {
-  background: #FEFCE8; /* Light Yellow on Hover */
 }
 
 .statMini span {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
   font-weight: 600;
 }
 
 .statMini strong {
-  font-size: 16px;
+  font-size: 1rem;
   color: #1e293b;
+  font-weight: 800;
+}
+
+/* --- Animations --- */
+@keyframes progress {
+  0% { stroke-dasharray: 0 100; }
+}
+
+/* --- Media Queries --- */
+@media (max-width: 480px) {
+  .trackerContent {
+    flex-direction: column;
+    text-align: center;
+  }
+  .trackerStats {
+    flex-direction: row;
+    gap: 2rem;
+  }
+}
+
+.monthlyTracker {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  
+  /* Entry Animation: कार्ड नीचे से ऊपर आएगा */
+  animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Card Hover: हल्का सा हवा में तैरता हुआ */
+.monthlyTracker:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+}
+
+.trackerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trackerHeader h3 {
+  font-size: 1.1rem;
   font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  position: relative;
+}
+
+/* Dropdown Hover & Styling */
+.filterSelect {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filterSelect:hover {
+  border-color: #FACC15;
+  background: #fffbeb;
+  color: #1e293b;
+}
+
+/* Circular Chart Hover */
+.progressCircle {
+  width: 110px;
+  height: 110px;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.monthlyTracker:hover .progressCircle {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.circle {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  /* Drawing Animation */
+  animation: progressFill 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.percentage {
+  fill: #1e293b;
+  font-size: 0.55rem;
+  font-weight: 800;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards 1s; /* चार्ट भरने के बाद नंबर दिखेगा */
+}
+
+/* Mini Stats Entry */
+.statMini {
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.5s ease both;
+}
+
+.statMini:nth-child(1) { animation-delay: 0.3s; }
+.statMini:nth-child(2) { animation-delay: 0.4s; }
+
+.statMini strong {
+  transition: color 0.3s ease;
+}
+
+.monthlyTracker:hover .statMini strong {
+  color: #FACC15; /* होवर पर नंबर हाईलाइट होंगे */
+}
+
+/* --- KEYFRAMES --- */
+
+@keyframes progressFill {
+  from { stroke-dasharray: 0 100; }
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* --- RESPONSIVENESS (Media Queries) --- */
+
+@media (max-width: 1024px) {
+  .monthlyTracker {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .trackerContent {
+    justify-content: space-between;
+  }
+  .progressCircle {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+@media (max-width: 480px) {
+  .trackerHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .trackerContent {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 10px 0;
+  }
+
+  .trackerStats {
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 1rem;
+  }
+
+  .statMini {
+    align-items: center;
+  }
 }

@@ -4,21 +4,16 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styles from "@/styles/Assignment.module.css";
 import AssignmentHeader from "@/components/features/AssignmentHeader";
-// अगर आपने अलग फाइल बनाई है तो इसे रखें, वरना नीचे वाले लोकल कंपोनेंट का यूज़ होगा
-// import AssignmentDescription from "@/components/features/AssignmentDescription"; 
 import SubmissionSection from "@/components/features/SubmissionSection";
 import SubmissionDetails from "@/components/features/SubmissionDetails";
 import EvaluationSection from "@/components/features/EvaluationSection";
 import { assignmentService } from "@/services/assignment.services";
 import type { AssignmentWithSubmissionResponse } from "@/models/assignment-submission.model";
 
-// --- 1. Interface for Props (बिल्ड एरर रोकने के लिए) ---
 interface DescriptionProps {
   description: string;
 }
 
-// --- 2. Local Component (अगर आप अलग फाइल नहीं बनाना चाहते) ---
-// यहाँ 'export default' हटा दिया गया है क्योंकि एक फाइल में एक ही default export हो सकता है।
 function LocalAssignmentDescription({ description }: DescriptionProps) {
   return (
     <div style={{ padding: '20px', backgroundColor: '#fff', borderRadius: '8px', marginTop: '20px', border: '1px solid #e2e8f0' }}>
