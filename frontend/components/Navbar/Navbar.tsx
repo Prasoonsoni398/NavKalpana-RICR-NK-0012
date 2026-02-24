@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation"; // useRouter जोड़ा गया
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "@/styles/Navbar.module.css";
 
@@ -69,7 +69,6 @@ export default function Navbar() {
                     <>
                       <div className={styles.dropdownLabel}>Select Portal</div>
                       <div className={styles.dropdownOptions}>
-                        {/* ✅ यहाँ बटन के बजाय Link इस्तेमाल किया है जो Login Page पर ले जाएगा */}
                         <Link href="/auth/student-login" className={styles.portalLink}>
                           Student Login
                         </Link>

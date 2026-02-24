@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer/Footer";
-// import Navbar from "@/components/Navbar/Navbar";
+import Navbar from "@/components/Navbar/Navbar";
 import ToastProvider from "@/redux/provider/ToastProvider";
 import { StoreProvider } from "@/redux/provider/StoreProvider";
 
@@ -39,7 +39,7 @@ export default function RootLayout({
 
           {/* Main Layout Container */}
           <div className="flex flex-col min-h-screen">
-            {/* <Navbar /> */}
+            <Navbar />
 
             {/* children के अंदर आपके सारे पेजेस आएंगे */}
             <main className="mainContent">

@@ -19,20 +19,20 @@ const Sidebar = () => {
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20}/>, path: '/student/student-dashboard' },
     { name: 'Courses', icon: <BookOpen size={20}/>, path: '/student/my-courses' },
-    { name: 'Chapter', icon: <FileText size={20}/>, path: '/student/chapters' },
     { name: 'Tutorials', icon: <GraduationCap size={20}/>, path: '/student/tutorials' },
     { name: 'Assignments', icon: <Flame size={20}/>, path: '/student/assignments' },
-    { name: 'Blogs', icon: <BookUser size={20}/>, path: '/student/blogs' }, 
-    { name: 'Notes', icon: <NotepadText size={20}/>, path: '/notes' },  
     { name: 'Quizzes', icon: <Flame size={20}/>, path: '/student/quiz-model' },
+    { name: 'learning-support', icon: <BookUser size={20}/>, path: '/student/learning-support' },
     { name: 'Settings', icon: <Settings size={20}/>, path: '/settings' },
+    { name: 'Logout', icon: <LogOut size={20}/>, path: '/logout' },
+
   ];
 
   return (
     <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
       {/* Collapse Button */}
       <button className={styles.toggleBtn} onClick={toggleSidebar}>
-        {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        {isCollapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
       </button>
 
       <div className={styles.logoContainer}>

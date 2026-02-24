@@ -1,96 +1,79 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import styles from '@/styles/StudentDashboard.module.css';
-import { studentService } from '@/services/student.services'; // API Service
+import { studentService } from '@/services/student.services';
+import { courseService } from '@/services/user.services';
 import toast from 'react-hot-toast';
 import {
   Search, Bell, Trophy, Flame, Target,
   Star, CheckCircle2, TrendingUp, Clock,
-  PlayCircle, Calendar, ChevronRight, Layout, Briefcase, Building, Users, ExternalLink,ChevronLeft,
+  PlayCircle, Calendar, ChevronRight, Layout, Briefcase, Building, Users, ExternalLink, ChevronLeft,
+  FileText
 } from 'lucide-react';
 
 export default function StudentDashboard() {
-
+  // --- 1. States ---
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [greeting, setGreeting] = useState("");
+  const [student, setStudent] = useState({ name: '', email: '' });
+
+  const [myCourses, setMyCourses] = useState<any[]>([]);
   const [assignmentCount, setAssignmentCount] = useState(0);
   const [recentAssignments, setRecentAssignments] = useState<any[]>([]);
-  const [student, setStudent] = useState({ name: '', email: '' });
+
+  // 🆕 Quiz States
+  const [quizzes, setQuizzes] = useState<any[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [events, setEvents] = useState<any>({});
+  const [showModal, setShowModal] = useState<boolean>(false); // ✅ Added
+const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [newEventName, setNewEventName] = useState<string>(""); // ✅ Added
 
-
-  // इवेंट्स के लिए इंटरफेस डिफाइन करें
-  interface CalendarEvents {
-    [key: string]: string;
-  }
-
-  // स्टेट्स (Typed)
-
-  const [events, setEvents] = useState<CalendarEvents>({
-    "2026-02-15": "React Exam",
-    "2026-02-24": "Project Submission"
-  });
-
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [newEventName, setNewEventName] = useState<string>("");
-
-  // लोकल स्टोरेज से डेटा लोड करने के लिए (ताकि रिफ्रेश पर डेटा ना जाए)
+  // --- 2. Initial Data Fetching ---
   useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good Morning");
+    else if (hour < 17) setGreeting("Good Afternoon");
+    else setGreeting("Good Evening");
+
+    const localInfo = localStorage.getItem("student_info");
+    if (localInfo) setStudent(JSON.parse(localInfo));
+
     const savedEvents = localStorage.getItem("dashboard_events");
-    if (savedEvents) {
-      setEvents(JSON.parse(savedEvents));
-    }
+    if (savedEvents) setEvents(JSON.parse(savedEvents));
+
+    const loadAllData = async () => {
+      try {
+        setLoading(true);
+        const [profileData, coursesData, assignmentsData, quizzesData] = await Promise.all([
+          studentService.getProfile().catch(() => null),
+          courseService.getMyCourses().catch(() => []),
+          courseService.getAllAssignments().catch(() => []),
+          courseService.getAllQuizzes().catch(() => [])
+        ]);
+
+        if (profileData) setProfile(profileData.student);
+        setMyCourses(coursesData || []);
+
+        const assignments = assignmentsData || [];
+        setAssignmentCount(assignments.length);
+        setRecentAssignments(assignments.slice(0, 3));
+
+        setQuizzes(quizzesData || []);
+
+      } catch (err) {
+        console.error("Sync Error:", err);
+        toast.error("Failed to load dashboard data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadAllData();
   }, []);
 
-  const handleDateClick = (date: number): void => {
-    const dateStr: string = `2026-02-${date.toString().padStart(2, '0')}`;
-    setSelectedDate(dateStr);
-    setNewEventName(events[dateStr] || "");
-    setShowModal(true);
-  };
-
-  const saveEvent = (): void => {
-    const updatedEvents: CalendarEvents = { ...events, [selectedDate]: newEventName };
-
-    // अगर इनपुट खाली है तो उस तारीख का इवेंट डिलीट कर दें
-    if (!newEventName.trim()) {
-      delete updatedEvents[selectedDate];
-    }
-
-    setEvents(updatedEvents);
-    localStorage.setItem("dashboard_events", JSON.stringify(updatedEvents));
-    setShowModal(false);
-    toast.success("Calendar Updated!");
-  };
-
-  const deleteEvent = (): void => {
-    const updatedEvents = { ...events };
-    delete updatedEvents[selectedDate]; // उस तारीख का डेटा हटा दो
-
-    setEvents(updatedEvents);
-    localStorage.setItem("dashboard_events", JSON.stringify(updatedEvents));
-    setShowModal(false);
-    setNewEventName("");
-    toast.success("Event Deleted");
-  };
-
-  const monthNames = [
-    "Jan", "Feb", "Mar", "April", "May", "June",
-    "July", "Aug", "Sept", "Oct", "Nov", "Dec"
-  ];
-
-  const years = [2024, 2025, 2026];
-
-  const monthName = [
-    "Jan", "Feb", "Mar", "April", "May", "June",
-    "July", "Aug", "Sept", "Oct", "Nov", "Dec"
-  ];
-
-  const year = [2024, 2025, 2026];
-
+  // --- 3. Handlers ---
   const prevMonth = () => {
     if (selectedMonth === 0) {
       setSelectedMonth(11);
@@ -109,83 +92,60 @@ export default function StudentDashboard() {
     }
   };
 
-  const currentMonth = selectedMonth;
-  const currentYear = selectedYear;
+  // 🆕 Quiz Start Handler
+  const handleStartQuiz = async (quizId: string) => {
+    try {
+      await courseService.startQuiz(quizId);
+      toast.success("Quiz started! Good luck 🍀");
+    } catch (error) {
+      toast.error("Could not start quiz");
+    }
+  };
 
+  // --- 4. Logic & Helper Data ---
+  if (loading) return <div className={styles.loadingState}>Loading Dashboard...</div>;
+
+  const displayName = profile?.name || student.name || "Student";
+  const displayEmail = profile?.email || student.email || "";
+
+  const performanceValue = 75;
+
+  const leaderboard = [
+    { rank: 1, name: displayName, score: 1250 },
+    { rank: 2, name: "Arjun Mehta", score: 1120 }, // आपकी अपनी रैंक
+    { rank: 3, name: "Sneha Kapoor", score: 980 },
+    { rank: 4, name: "Vikram Rathore", score: 850 },
+  ];
+
+
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 8 }, (_, i) => currentYear - 2 + i);
+
+  const monthNames = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
   const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1).getDay();
   const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
 
 
-  const performanceValue = (selectedMonth * 7 + 45) % 100;
+// 2. यह रहा वो फंक्शन जो गायब है:
+const handleDateClick = (date: number) => {
+  console.log("Selected Date:", date);
+  setSelectedDate(date);
+  // यहाँ आप चाहें तो उस डेट के असाइनमेंट फ़िल्टर करने का लॉजिक भी डाल सकते हैं
+};
 
-  // --- New Feature States (Heatmap & Stats) ---
   const statsOverview = [
-    { label: "Total Courses", value: "08", icon: <Layout size={20} />, color: "#FACC15" },
-    { label: "Hours Spent", value: "124h", icon: <Clock size={20} />, color: "#FACC15" },
+    { label: "Total Courses", value: myCourses.length.toString().padStart(2, '0'), icon: <Layout size={20} />, color: "#FACC15" },
+    { label: "Assignments", value: assignmentCount.toString().padStart(2, '0'), icon: <Briefcase size={20} />, color: "#FACC15" },
+    { label: "Available Quizzes", value: quizzes.length.toString().padStart(2, '0'), icon: <FileText size={20} />, color: "#FACC15" }, // 🆕 Quiz Stat
     { label: "XP Earned", value: "12.5k", icon: <Trophy size={20} />, color: "#FACC15" },
-    { label: "Certificates", value: "03", icon: <CheckCircle2 size={20} />, color: "#FACC15" },
   ];
+
+  const totalAssignments = 12;
 
   const heatmapData = Array.from({ length: 52 }, () =>
     Array.from({ length: 7 }, () => Math.floor(Math.random() * 4))
   );
-
-  // --- API & Effects (Original Logic) ---
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good Morning");
-    else if (hour < 17) setGreeting("Good Afternoon");
-    else setGreeting("Good Evening");
-
-    const data = localStorage.getItem("student_info");
-    if (data) {
-      setStudent(JSON.parse(data));
-    }
-
-    const loadDashboardData = async () => {
-      try {
-        const data = await studentService.getProfile();
-        setProfile(data.student);
-
-        if (data.assignments) {
-          setAssignmentCount(data.assignments.length);
-          setRecentAssignments(data.assignments.slice(0, 3));
-        } else {
-          const localData = localStorage.getItem('my_assignments');
-          if (localData) {
-            const parsed = JSON.parse(localData);
-            setAssignmentCount(parsed.length);
-            setRecentAssignments(parsed.slice(0, 3));
-          }
-        }
-      } catch (err) {
-        console.log("API profile load skipped or failed");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadDashboardData();
-  }, []);
-
-  if (loading) return <div className={styles.loadingState}>Loading Dashboard...</div>;
-
-  // Data mapping
-  const displayName = profile?.name || student.name || "Student";
-  const displayEmail = profile?.email || student.email || "";
-
-  const leaderboard = [
-    { rank: 1, name: displayName, score: 1250 },
-    { rank: 2, name: "Rahul Sharma", score: 1120 },
-    { rank: 3, name: "Anjali Kumari", score: 980 },
-  ];
-
-  const myCourses = [
-    { id: 1, title: "Advanced React Patterns", progress: 75, instructor: "Sarah Drasner" },
-    { id: 2, title: "Node.js Backend Architecture", progress: 40, instructor: "Maximilian S." },
-    { id: 3, title: "UI/UX Fundamentals", progress: 90, instructor: "Gary Simon" },
-    { id: 4, title: "Python for Data Science", progress: 60, instructor: "John Doe" },
-  ];
 
   const jobs = [
     { id: 1, role: "Frontend Developer", company: "Google", loc: "Bangalore", type: "Full-time", pay: "₹18-24 LPA" },
@@ -194,12 +154,28 @@ export default function StudentDashboard() {
     { id: 4, role: "Backend Developer", company: "Microsoft", loc: "Pune", type: "Full-time", pay: "₹25-30 LPA" },
   ];
 
+
   const alumniList = [
     { id: 1, name: "Sandeep Maheshwari", role: "SDE-2 @ Microsoft", batch: "Batch 2022", img: "https://i.pravatar.cc/150?u=1" },
     { id: 2, name: "Priya Sharma", role: "Product Manager @ Amazon", batch: "Batch 2021", img: "https://i.pravatar.cc/150?u=2" },
     { id: 3, name: "Aman Gupta", role: "Full Stack @ Uber", batch: "Batch 2023", img: "https://i.pravatar.cc/150?u=3" },
     { id: 4, name: "Rahul Verma", role: "Data Scientist @ Tesla", batch: "Batch 2020", img: "https://i.pravatar.cc/150?u=4" }
   ];
+
+
+// यही वो फंक्शन है जो एरर दे रहा है
+const saveEvent = () => {
+  if (!newEventName.trim()) return; // अगर नाम खाली है तो कुछ मत करो
+
+  const newEvent = {
+    id: Date.now(),
+    name: newEventName,
+    date: selectedDate, // जो डेट सेलेक्ट की गई है
+  };
+
+  setEvents([...events, newEvent]);
+  setNewEventName(""); 
+};
 
 
   return (
@@ -226,7 +202,44 @@ export default function StudentDashboard() {
           </div>
         </header>
 
-        {/* --- 2. Continue Learning Hero --- */}
+        {/* ---2. Bento Grid Stats (Original) --- */}
+        <div className={styles.bentoGrid}>
+          <div className={`${styles.bentoCard} ${styles.scoreCard}`}>
+            <div className={styles.scoreInfo}>
+              <p className={styles.label}>Academic Score</p>
+              <h2 className={styles.yellowText}>
+                {profile?.academicScore ? `${profile.academicScore}%` : "85.4%"}
+              </h2>
+              <span className={styles.trendText}>
+                <TrendingUp size={14} /> +2.5% vs last month
+              </span>
+            </div>
+            <Trophy size={60} color="#FACC15" className={styles.iconBg} />
+          </div>
+
+          <div className={`${styles.bentoCard} ${styles.streakCard}`}>
+            <div className={styles.cardHeader}>
+              <Flame size={32} color="#FB923C" fill="#FB923C" />
+              <span className={styles.badge}>Keep it up!</span>
+            </div>
+            <h3>{profile?.streak || "15"} Days</h3>
+            <p className={styles.label}>Learning Streak</p>
+          </div>
+
+          <div className={`${styles.bentoCard} ${styles.assignmentCard}`}>
+            <Target size={32} color="#FACC15" />
+            <h3>{assignmentCount} / {totalAssignments || 12}</h3>
+            <p className={styles.label}>Assignments Completed</p>
+            <div className={styles.miniProgress}>
+              <div
+                className={styles.miniBar}
+                style={{ width: `${(assignmentCount / (totalAssignments || 12)) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        {/* --- 3. Continue Learning Hero --- */}
         <div className={styles.continueSection}>
           <div className={styles.continueCard}>
             <div className={styles.continueCardContent}>
@@ -241,30 +254,6 @@ export default function StudentDashboard() {
             <div className={styles.bgDecoration}>
               <PlayCircle size={150} color="#FACC15" />
             </div>
-          </div>
-        </div>
-
-        {/* ---3. Bento Grid Stats (Original) --- */}
-        <div className={styles.bentoGrid}>
-          <div className={`${styles.bentoCard} ${styles.scoreCard}`}>
-            <div className={styles.scoreInfo}>
-              <p>Academic Score</p>
-              <h2 style={{ color: '#FACC15' }}>{profile?.academicScore || "85.4%"}</h2>
-              <span className={styles.trendText}><TrendingUp size={14} /> +2.5%</span>
-            </div>
-            <Trophy size={60} color="#FACC15" />
-          </div>
-
-          <div className={`${styles.bentoCard} ${styles.streakCard}`}>
-            <Flame size={32} color="#FB923C" />
-            <h3>{profile?.streak || "15 Days"}</h3>
-            <p>Learning Streak</p>
-          </div>
-
-          <div className={`${styles.bentoCard} ${styles.assignmentCard}`}>
-            <Target size={32} color="#FACC15" />
-            <h3>{assignmentCount} / 12</h3>
-            <p>Assignments Done</p>
           </div>
         </div>
 
@@ -454,8 +443,8 @@ export default function StudentDashboard() {
           </div>
 
           <div className={styles.calendarGrid}>
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-              <div key={day} className={styles.weekdayLabel}>{day}</div>
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+              <div key={`${day}-${index}`} className={styles.weekdayLabel}>{day}</div>
             ))}
 
             {Array.from({ length: firstDayOfMonth }).map((_, i) => (
@@ -517,14 +506,14 @@ export default function StudentDashboard() {
                 onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
                 className={styles.filterSelect}
               >
-                {monthName.map((m, i) => <option key={i} value={i}>{m.substring(0, 3)}</option>)}
+                {monthNames.map((m, i) => <option key={i} value={i}>{m.substring(0, 3)}</option>)}
               </select>
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                 className={styles.filterSelect}
               >
-                {year.map((y) => <option key={y} value={y}>{y}</option>)}</select>
+                {years.map((y) => <option key={y} value={y}>{y}</option>)}</select>
             </div>
           </div>
           <div className={styles.trackerContent}>
@@ -542,33 +531,65 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* 3. Upcoming Quizzes */}
+        {/* 10.3. Upcoming Quizzes */}
         <div className={styles.activitySection}>
-          <h3 className={styles.sectionHeader}><Calendar size={18} color="#FACC15" /> Upcoming Quizzes</h3>
+          <h3 className={styles.sectionHeader}>
+            Upcoming Quizzes
+          </h3>
+
           <div className={styles.quizCard}>
             <div className={styles.dateBadge}>
-              <span>FEB</span>
-              <strong>24</strong>
+              <span className={styles.month}>FEB</span>
+              <strong className={styles.day}>24</strong>
+              {/* Today indicator */}
+              <div className={styles.todayDot}></div>
             </div>
+
             <div className={styles.quizInfo}>
               <h4>React Final Quiz</h4>
-              <p>10:00 AM • 45 Mins</p>
+              <div className={styles.quizMeta}>
+                <span>10:00 AM</span>
+                <span className={styles.separator}>•</span>
+                <span>45 Mins</span>
+              </div>
             </div>
-            <ChevronRight size={14} color="#94A3B8" />
+
+            <div className={styles.arrowIcon}>
+              <ChevronRight size={18} />
+            </div>
           </div>
         </div>
 
-        {/* 4. Skills */}
+        {/* 10.4. Skills */}
         <div className={styles.skillsSection}>
-          <h3 className={styles.sectionHeader}><Star size={18} color="#FACC15" /> Skills Acquired</h3>
+          <div className={styles.skillsHeaderWrapper}>
+            <h3 className={styles.sectionHeader}>Skills Acquired
+            </h3>
+            {/* SRS Requirement: Acquired / Total Skills */}
+            <span className={styles.skillCount}>
+              {profile?.acquiredSkills || 5} / {profile?.totalSkills || 12}
+            </span>
+          </div>
+
           <div className={styles.pillsContainer}>
             {["React JS", "Node.js", "UI Design", "Next.js", "Python"].map((skill, i) => (
-              <div key={i} className={styles.skillPill}><CheckCircle2 size={14} /> {skill}</div>
+              <div key={i} className={styles.skillPill}>
+                <CheckCircle2 size={14} className={styles.checkIcon} />
+                {skill}
+              </div>
             ))}
+            <div className={`${styles.skillPill} ${styles.morePill}`}>+7 More</div>
+          </div>
+
+          <div className={styles.skillProgressBar}>
+            <div
+              className={styles.skillProgressFill}
+              style={{ width: `${(5 / 12) * 100}%` }}
+            ></div>
           </div>
         </div>
 
-        {/* 5. Leaderboard */}
+        {/* 10.5. Leaderboard */}
         <div className={styles.leaderboardCard}>
           <h3>Top Performers</h3>
           <div className={styles.leaderList}>
