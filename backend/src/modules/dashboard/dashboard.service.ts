@@ -16,6 +16,8 @@ import { StudentActivityType } from '../../common/enums/student-activity-type.en
 import { UserSkill } from '../../common/entities/user-skill.entity';
 import { Quiz } from 'src/common/entities/quiz.entity';
 import { JobPost } from 'src/common/entities/job-post.entity';
+import { Alumni } from 'src/common/entities/alumni.entity';
+import { TopPerformer } from 'src/common/entities/top_performers.entity';
 import e from 'express';
 
 @Injectable()
@@ -47,7 +49,13 @@ export class DashboardService {
     @InjectRepository(StudentActivityLog)
     private readonly studentActivityLogRepo: Repository<StudentActivityLog>,
     @InjectRepository(Quiz)
-private quizRepo: Repository<Quiz>,
+    private quizRepo: Repository<Quiz>,
+    @InjectRepository(JobPost)
+    private jobpostRepo: Repository<JobPost>,
+    @InjectRepository(Alumni)
+    private alumniRepo: Repository<Alumni>,
+    @InjectRepository(TopPerformer)
+    private topPerformerRepo: Repository<TopPerformer>,
   ) {}
 
   // ✅ ADMIN DASHBOARD
@@ -73,7 +81,7 @@ private quizRepo: Repository<Quiz>,
     };
   }
 
-  // ✅ STUDENT DASHBOARD
+  //  STUDENT DASHBOARD
   async getStudentStats(userId: number) {
     const enrollments = await this.enrollmentRepo.find({
       where: { student: { id: userId } },
@@ -119,19 +127,33 @@ private quizRepo: Repository<Quiz>,
     const learningStreak = await this.calculateLearningStreak(userId);
     const weeklyActivity = await this.getWeeklyActivity(userId);
     const earnedSkills = await this.userSkillRepo.find({
-    where: { user: { id: userId } },
-    relations: ['skill'],
-    order: { earnedAt: 'DESC' },
-  });
+      where: { user: { id: userId } },
+      relations: ['skill'],
+      order: { earnedAt: 'DESC' },
+    });
 
-  const skills = earnedSkills.map(us => ({
-    id: us.skill.id,
-    name: us.skill.name,
-    earnedAt: us.earnedAt,
-  }));
+    const skills = earnedSkills.map((us) => ({
+      id: us.skill.id,
+      name: us.skill.name,
+      earnedAt: us.earnedAt,
+    }));
 
-  const totalSkills = skills;
-  const eventCalendar = await this.getCalendarEvents(userId);
+    const totalSkills = skills;
+    const eventCalendar = await this.getCalendarEvents(userId);
+   const jobPosts = await this.jobpostRepo.find({
+  relations: ['company'],   
+  order: { createdAt: 'DESC' },
+  take: 4,
+});
+ const alumni = await this.alumniRepo.find({
+  order: { id: 'DESC' },
+  take: 4,
+});
+
+ const topPerformers = await this.topPerformerRepo.find({
+  order: { score: 'DESC' },
+  take: 6,
+});
 
     return {
       greeting: this.getGreeting(),
@@ -144,6 +166,9 @@ private quizRepo: Repository<Quiz>,
       weeklyActivity,
       totalSkills,
       eventCalendar,
+      jobPosts,
+      alumni,
+      topPerformers
     };
   }
 
@@ -258,67 +283,67 @@ private quizRepo: Repository<Quiz>,
   }
 
   async getCalendarEvents(userId: number) {
-  // 1️⃣ Get enrolled course IDs
-  const enrollments = await this.enrollmentRepo.find({
-    where: { student: { id: userId } },
-    relations: ['course'],
-  });
+    // 1️⃣ Get enrolled course IDs
+    const enrollments = await this.enrollmentRepo.find({
+      where: { student: { id: userId } },
+      relations: ['course'],
+    });
 
-  const courseIds = enrollments.map(e => e.course.id);
+    const courseIds = enrollments.map((e) => e.course.id);
 
-  if (!courseIds.length) return [];
+    if (!courseIds.length) return [];
 
-  // ===============================
-  // 2️⃣ ASSIGNMENTS (Only enrolled courses)
-  // ===============================
+    // ===============================
+    // 2️⃣ ASSIGNMENTS (Only enrolled courses)
+    // ===============================
 
-  const assignments = await this.assignmentRepo
-    .createQueryBuilder('assignment')
-    .leftJoinAndSelect('assignment.lesson', 'lesson')
-    .leftJoinAndSelect('lesson.module', 'module')
-    .leftJoinAndSelect('module.course', 'course')
-    .where('course.id IN (:...courseIds)', { courseIds })
-    .andWhere('assignment.deadline IS NOT NULL')
-    .getMany();
+    const assignments = await this.assignmentRepo
+      .createQueryBuilder('assignment')
+      .leftJoinAndSelect('assignment.lesson', 'lesson')
+      .leftJoinAndSelect('lesson.module', 'module')
+      .leftJoinAndSelect('module.course', 'course')
+      .where('course.id IN (:...courseIds)', { courseIds })
+      .andWhere('assignment.deadline IS NOT NULL')
+      .getMany();
 
-  const assignmentEvents = assignments.map(a => ({
-    id: `assignment-${a.id}`,
-    title: a.title,
-    type: 'ASSIGNMENT',
-    date: a.deadline,
-    course: a.lesson.module.course.title,
-  }));
+    const assignmentEvents = assignments.map((a) => ({
+      id: `assignment-${a.id}`,
+      title: a.title,
+      type: 'ASSIGNMENT',
+      date: a.deadline,
+      course: a.lesson.module.course.title,
+    }));
 
-  // ===============================
-  // 3️⃣ QUIZZES (Using createdAt)
-  // ===============================
+    // ===============================
+    // 3️⃣ QUIZZES (Using createdAt)
+    // ===============================
 
-  const quizzes = await this.quizRepo
-    .createQueryBuilder('quiz')
-    .leftJoinAndSelect('quiz.lesson', 'lesson')
-    .leftJoinAndSelect('lesson.module', 'module')
-    .leftJoinAndSelect('module.course', 'course')
-    .where('course.id IN (:...courseIds)', { courseIds })
-    .getMany();
+    const quizzes = await this.quizRepo
+      .createQueryBuilder('quiz')
+      .leftJoinAndSelect('quiz.lesson', 'lesson')
+      .leftJoinAndSelect('lesson.module', 'module')
+      .leftJoinAndSelect('module.course', 'course')
+      .where('course.id IN (:...courseIds)', { courseIds })
+      .getMany();
 
-  const quizEvents = quizzes.map(q => ({
-    id: `quiz-${q.id}`,
-    title: q.title,
-    type: 'QUIZ',
-    date: q.createdAt, // ✅ using createdAt now
-    course: q.lesson.module.course.title,
-  }));
+    const quizEvents = quizzes.map((q) => ({
+      id: `quiz-${q.id}`,
+      title: q.title,
+      type: 'QUIZ',
+      date: q.createdAt, // ✅ using createdAt now
+      course: q.lesson.module.course.title,
+    }));
 
-  // ===============================
-  // 4️⃣ Merge + Sort by Date
-  // ===============================
+    // ===============================
+    // 4️⃣ Merge + Sort by Date
+    // ===============================
 
-  const events = [...assignmentEvents, ...quizEvents];
+    const events = [...assignmentEvents, ...quizEvents];
 
-  return events.sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-  );
-}
+    return events.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
+  }
   //  TEACHER DASHBOARD
   async getTeacherStats(userId: number) {
     return {

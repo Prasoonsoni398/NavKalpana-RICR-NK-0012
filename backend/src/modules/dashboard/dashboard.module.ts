@@ -14,10 +14,14 @@ import { Quiz } from 'src/common/entities/quiz.entity';
 import { QuizAttempt } from 'src/common/entities/quiz-attempt.entity';
 import { StudentActivityLog } from 'src/common/entities/student-activity-log.entity';
 import { UserSkill } from '../../common/entities/user-skill.entity';
+import { JobPost } from 'src/common/entities/job-post.entity';
+import { Alumni } from 'src/common/entities/alumni.entity';
+import { TopPerformer } from 'src/common/entities/top_performers.entity';
+
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Course,Enrollment,CourseProgress,Assignment,AssignmentSubmission,Quiz,QuizAttempt,StudentActivityLog,UserSkill]),
+    TypeOrmModule.forFeature([User, Course,Enrollment,CourseProgress,Assignment,AssignmentSubmission,Quiz,QuizAttempt,StudentActivityLog,UserSkill,JobPost,Alumni,TopPerformer]),
   ],
   controllers: [DashboardController],
   providers: [DashboardService],
