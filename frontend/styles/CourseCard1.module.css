@@ -1,15 +1,17 @@
 .wrapper {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 20px;
+  justify-content: center; /* horizontal center */
+  align-items: center;     /* vertical center */
+  padding: 5px;
   background: var(--bg-light);
+  width: 100%;
+  min-height: 100vh;       /* ensures single card is vertically centered */
+  box-sizing: border-box;
 }
 
-/* Card */
 .card {
   background: var(--bg-white);
-  border-radius: 20px; /* और भी मॉडर्न राउंडेड */
+  border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -24,15 +26,49 @@
   border-color: var(--primary-yellow);
 }
 
+
+/* Skeleton styles */
+.skeletonCard {
+  animation: pulse 1.5s infinite;
+}
+
+.skeletonText {
+  height: 12px;
+  background: #e5e7eb; /* gray */
+  border-radius: 6px;
+}
+
+.skeletonButton {
+  width: 60%;
+  height: 36px;
+  background: #e5e7eb;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #f3f4f6;
+  }
+  50% {
+    background-color: #e5e7eb;
+  }
+  100% {
+    background-color: #f3f4f6;
+  }
+}
+
+/* Keep the rest of your CSS unchanged (image, content, buttons) */
+
 .image {
   width: 100%;
-  height: 190px;
+  height: 200px;
   object-fit: cover;
-  background: #F1F5F9; /* इमेज लोड न होने पर ग्रे बैकग्राउंड */
+  background: #F1F5F9;
 }
 
 .content {
-  padding: 24px;
+  padding: 10px;
 }
 
 .title {
@@ -47,7 +83,7 @@
   height: 40px;
   font-size: 14px;
   color: var(--text-secondary);
-  margin-bottom: 20px;
+  margin-bottom: 7px;
   line-height: 1.5;
 }
 
@@ -58,10 +94,9 @@
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
-/* --- Progress Bar (The Yellow Update) --- */
 .progressContainer {
   width: 100%;
   height: 10px;
@@ -74,9 +109,8 @@
 
 .progressFill {
   height: 100%;
-  background: var(--primary-yellow); /* ग्रीन से बदलकर येलो */
+  background: var(--primary-yellow);
   border-radius: 20px;
-  width: 0; 
   transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 2px 0 8px rgba(250, 204, 21, 0.4);
 }
@@ -86,15 +120,14 @@
   color: var(--text-primary);
   margin-bottom: 20px;
   font-weight: 700;
-  text-align: right; /* प्रोग्रेस % को राइट में कर दिया है */
+  text-align: right;
 }
 
-/* --- Button --- */
 .button {
   width: 100%;
   padding: 14px;
-  background: var(--primary-yellow); /* प्योर येलो ब्रांड कलर */
-  color: #000; /* ब्लैक टेक्स्ट */
+  background: var(--primary-yellow);
+  color: #000;
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -102,6 +135,10 @@
   font-size: 15px;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 .button:hover {

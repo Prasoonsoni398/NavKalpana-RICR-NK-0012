@@ -13,6 +13,9 @@ export interface CourseResponse {
   instructorName: string;
   thumbnailUrl?: string | null;
   isPublished: boolean;
+  attendancePercentage: number;
+  totalClasses: number;
+  presentCount: number;
   createdAt: string;
 }
 

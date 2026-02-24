@@ -17,6 +17,14 @@ class CourseDetailsService {
     );
     return response.data;
   }
+
+  // Mark entire course as completed
+async markCourseComplete(courseId: number): Promise<any> {
+  const response = await api.post(
+    `${this.baseUrl}/${courseId}/complete`
+  );
+  return response.data;
+}
 }
 
 export const courseDetailsService = new CourseDetailsService();
