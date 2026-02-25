@@ -3,9 +3,24 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import styles from "@/styles/QuizModal.module.css";
-
 import { quizService } from "@/services/quiz.services";
-import { QuizDetailResponse, Answer } from "@/models/quiz.model";
+
+interface QuizOption {
+  id: number;
+  optionText: string;
+}
+
+interface QuizQuestion {
+  id: number;
+  question: string;
+  options: QuizOption[];
+}
+
+interface Quiz {
+  title: string;
+  durationMinutes: number;
+  questions: QuizQuestion[];
+}
 
 export default function QuizPage() {
   const params = useParams();
@@ -13,45 +28,42 @@ export default function QuizPage() {
 
   const quizId = Number(params.id);
 
-  const [quiz, setQuiz] =
-    useState<QuizDetailResponse | null>(null);
-
-  const [attemptId, setAttemptId] =
-    useState<number | null>(null);
-
-  const [timeLeft, setTimeLeft] =
-    useState<number | null>(null);
-
-  const [answers, setAnswers] =
-    useState<Record<number, number[]>>({});
-
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [current, setCurrent] = useState(0);
 
   /* ================= LOAD QUIZ ================= */
 
   useEffect(() => {
-    const init = async () => {
-      const quizData = await quizService.getById(quizId);
-      setQuiz(quizData);
+    const loadQuiz = async () => {
+      try {
+        console.log("Loading quiz:", quizId);
 
-      const attempt = await quizService.startAttempt({
-        quizId,
-        studentId: 1, // replace with auth user
-      });
+        const data = await quizService.getById(quizId);
 
-      setAttemptId(attempt.id);
-      setTimeLeft(quizData.durationMinutes * 60);
+        console.log("Quiz Data:", data);
+
+        if (!data) {
+          alert("Quiz not found");
+          router.push("/student/quiz-model");
+          return;
+        }
+
+        setQuiz(data);
+        setTimeLeft(data.durationMinutes * 60);
+      } catch (error) {
+        console.error("Load error:", error);
+        alert("Error loading quiz");
+      }
     };
 
-    init();
-  }, [quizId]);
+    if (quizId) loadQuiz();
+  }, [quizId, router]);
 
   /* ================= TIMER ================= */
 
   useEffect(() => {
     if (!timeLeft) return;
-
-    if (timeLeft <= 0) submitQuiz();
 
     const timer = setInterval(() => {
       setTimeLeft((t) => (t ? t - 1 : 0));
@@ -60,41 +72,15 @@ export default function QuizPage() {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  /* ================= SELECT ANSWER ================= */
+  /* ================= LOADING ================= */
 
-  const selectOption = (
-    questionId: number,
-    optionId: number
-  ) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: [optionId],
-    }));
-  };
-
-  /* ================= SUBMIT QUIZ ================= */
-
-  const submitQuiz = async () => {
-    if (!attemptId || !quiz) return;
-
-    const formatted: Answer[] =
-      Object.entries(answers).map(([qId, opts]) => ({
-        questionId: Number(qId),
-        selectedOptionIds: opts,
-      }));
-
-    const result = await quizService.submitAttempt({
-      attemptId,
-      answers: formatted,
-    });
-
-    router.push(
-      `/student/quiz-model/result?score=${result.scorePercentage}`
+  if (!quiz || timeLeft === null) {
+    return (
+      <div className={styles.centered}>
+        <p>Loading quiz...</p>
+      </div>
     );
-  };
-
-  if (!quiz || timeLeft === null)
-    return <div className={styles.centered}>Loading...</div>;
+  }
 
   const question = quiz.questions[current];
 
@@ -104,13 +90,13 @@ export default function QuizPage() {
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        {/* HEADER */}
+        {/* Header */}
         <div className={styles.header}>
           <div className={styles.title}>{quiz.title}</div>
           <div className={styles.timer}>{timeLeft}s</div>
         </div>
 
-        {/* PROGRESS BAR */}
+        {/* Progress */}
         <div className={styles.progressTrack}>
           <div
             className={styles.progressFill}
@@ -118,77 +104,37 @@ export default function QuizPage() {
           />
         </div>
 
-        {/* ⭐ QUESTION NAVIGATION BAR */}
-        <div className={styles.questionBar}>
-          {quiz.questions.map((q, index) => {
-            const answered = answers[q.id];
-
-            return (
-              <button
-                key={q.id}
-                className={`${styles.qBtn}
-                  ${current === index ? styles.qActive : ""}
-                  ${answered ? styles.qAnswered : ""}
-                `}
-                onClick={() => setCurrent(index)}
-              >
-                {index + 1}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* QUESTION */}
+        {/* Question */}
         <div className={styles.question}>
           {current + 1}. {question.question}
         </div>
 
-        {/* OPTIONS */}
+        {/* Options */}
         <div className={styles.options}>
-          {question.options.map((opt) => (
-            <div
-              key={opt.id}
-              className={`${styles.option}
-                ${
-                  answers[question.id]?.includes(opt.id)
-                    ? styles.optionSelected
-                    : ""
-                }`}
-              onClick={() =>
-                selectOption(question.id, opt.id)
-              }
-            >
+          {question.options.map((opt: QuizOption) => (
+            <div key={opt.id} className={styles.option}>
               {opt.optionText}
             </div>
           ))}
         </div>
 
-        {/* FOOTER */}
+        {/* Footer */}
         <div className={styles.footer}>
           <button
-            className={`${styles.btn} ${styles.prevBtn}`}
+            className={styles.btn}
             disabled={current === 0}
             onClick={() => setCurrent((c) => c - 1)}
           >
             Previous
           </button>
 
-          {current === quiz.questions.length - 1 ? (
-            <button
-              className={`${styles.btn} ${styles.submitBtn}`}
-              onClick={submitQuiz}
-            >
-              Submit Quiz
-            </button>
-          ) : (
-            <button
-              className={`${styles.btn} ${styles.nextBtn}`}
-              disabled={!answers[question.id]}
-              onClick={() => setCurrent((c) => c + 1)}
-            >
-              Next
-            </button>
-          )}
+          <button
+            className={styles.btn}
+            disabled={current === quiz.questions.length - 1}
+            onClick={() => setCurrent((c) => c + 1)}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>

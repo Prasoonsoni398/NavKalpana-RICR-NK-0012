@@ -23,9 +23,10 @@ export default function QuizListPage() {
     const fetchQuizzes = async () => {
       try {
         const data = await quizService.getAll();
+        console.log("Quizzes:", data);
         setQuizzes(data);
       } catch (error) {
-        console.error(error);
+        console.error("Fetch error:", error);
       } finally {
         setLoading(false);
       }
@@ -34,31 +35,31 @@ export default function QuizListPage() {
     fetchQuizzes();
   }, []);
 
- const handleCardClick = (id: number) => {
-  if (id) {
-    router.push(`/student/quiz-model/${id}`);
-  } else {
-    router.push(`/student/quiz-model/${id}`);
-  }
-};
+  const handleCardClick = (id: number | string) => {
+    const quizId = Number(id);
 
-  /* ---------- Loading ---------- */
+    if (!quizId) {
+      alert("Invalid Quiz ID");
+      return;
+    }
+
+    console.log("Navigating to:", quizId);
+
+    router.push(`/student/quiz-model/${quizId}`);
+  };
+
   if (loading) {
     return (
       <div className={styles.centered}>
-        <div className={styles.spinner}></div>
-        <p className={styles.loadingText}>Loading quizzes...</p>
+        <p>Loading quizzes...</p>
       </div>
     );
   }
 
-  /* ---------- Empty ---------- */
   if (!quizzes.length) {
     return (
       <div className={styles.centered}>
-        <p className={styles.errorText}>
-          No quizzes available right now
-        </p>
+        <p>No quizzes available</p>
       </div>
     );
   }
@@ -70,13 +71,10 @@ export default function QuizListPage() {
       <div className={styles.grid}>
         {quizzes.map((quiz) => (
           <div key={quiz.id} className={styles.quizCard}>
-            <span className={styles.badge}>Quiz</span>
-
             <h3 className={styles.quizTitle}>
               {quiz.title}
             </h3>
 
-            {/* COURSE INFO */}
             <div className={styles.courseInfo}>
               <div className={styles.courseItem}>
                 <GraduationCap size={16} />
@@ -89,7 +87,6 @@ export default function QuizListPage() {
               </div>
             </div>
 
-            {/* META */}
             <div className={styles.metaRow}>
               <div className={styles.metaItem}>
                 <Clock size={14} />
@@ -102,10 +99,11 @@ export default function QuizListPage() {
               </div>
             </div>
 
-            {/* ✅ ROUTER PUSH BUTTON */}
             <button
               className={styles.btnPrimary}
-              onClick={() => handleCardClick(quiz.id)}
+              onClick={() => {
+                handleCardClick(quiz.id);
+              }}
             >
               Start Quiz →
             </button>
