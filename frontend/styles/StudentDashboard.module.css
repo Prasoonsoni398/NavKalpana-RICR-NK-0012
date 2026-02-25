@@ -2293,3 +2293,18 @@
   font-weight: 500;
   color: #666;
 }
+
+.viewBtn{
+  background: #FACC15;
+  color: #1e293b;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.viewBtn:hover {
+  transform: scale(1.05);
+}
