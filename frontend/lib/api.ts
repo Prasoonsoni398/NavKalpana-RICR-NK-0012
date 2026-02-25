@@ -111,3 +111,12 @@ api.interceptors.response.use(
 // 🔹 Utility
 // ===============================
 export const getImageUrl = (path: string) => `${IMAGE_URL}/${path}`;
+
+
+//===============================
+// 🔹 Jobs APIs
+// ===============================
+
+export const getJobs = () => api.get("/jobs");
+
+export const getInternships = () => api.get("/jobs?type=Internship");

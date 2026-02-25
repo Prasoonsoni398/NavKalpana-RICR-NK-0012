@@ -6,7 +6,7 @@ import styles from '@/styles/Sidebar.module.css';
 import { 
   LayoutDashboard, BookOpen, FileText, GraduationCap,
   Flame, BookUser, NotepadText, Settings, LogOut,
-  ChevronLeft, ChevronRight 
+  ChevronLeft, ChevronRight  
 } from 'lucide-react';
 
 const Sidebar = () => {
