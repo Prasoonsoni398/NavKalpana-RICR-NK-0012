@@ -118,7 +118,7 @@ export default function QuizPage() {
           />
         </div>
 
-        {/* ⭐ QUESTION NAVIGATION BAR */}
+        {/*  QUESTION NAVIGATION BAR */}
         <div className={styles.questionBar}>
           {quiz.questions.map((q, index) => {
             const answered = answers[q.id];
