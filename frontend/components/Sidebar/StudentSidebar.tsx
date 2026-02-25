@@ -1,4 +1,5 @@
 "use client";
+import { Briefcase } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -6,9 +7,10 @@ import styles from "@/styles/Sidebar.module.css";
 import {
   LayoutDashboard,
   BookOpen,
-  GraduationCap,
+  ClipboardCheck,
   BookUser,
-  Settings,
+  GraduationCap,
+  Settings, 
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -41,13 +43,16 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/student/student-dashboard" },
+    { name: "Dashboard", icon: <LayoutDashboard size={20 } />, path: "/student/student-dashboard" },
     { name: "Courses", icon: <BookOpen size={20} />, path: "/student/my-courses" },
     { name: "Assignments", icon: <Flame size={20} />, path: "/student/assignments" },
-    { name: "Quizzes", icon: <GraduationCap size={20} />, path: "/student/quiz-model" },
+    { name: "Quizzes", icon: <ClipboardCheck size={20} />, path: "/student/quiz-model" },
     { name: "Attendance", icon: <Calendar size={20} />, path: "/student/attendance/1" },
     { name: "Learning Support", icon: <BookUser size={20} />, path: "/student/learning-support" },
+    { name: "Job & Internship", icon: <Briefcase size={20} />, path: "/student/jobs" },
+    { name: "Alumni Network", icon: <GraduationCap size={20} />, path: "/student/alumni" },
     { name: "Settings", icon: <Settings size={20} />, path: "/settings" },
+
   ];
 
   return (
