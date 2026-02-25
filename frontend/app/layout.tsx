@@ -1,12 +1,13 @@
 "use client"; 
 
 import { usePathname } from "next/navigation";
-import { Geist, Geist_Mono } from "next/font/google";
+// import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import styles from "@/styles/StudentLayout.module.css"; 
 import Navbar from "@/components/Navbar/Navbar";
 import ToastProvider from "@/redux/provider/ToastProvider";
 import { StoreProvider } from "@/redux/provider/StoreProvider";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
