@@ -12,6 +12,9 @@
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --transition-speed: 0.3s;
 }
+
+/* ================= PAGE ================= */
+
 .container {
   max-width: 900px;
   margin: 2rem auto;
@@ -36,7 +39,9 @@
   border: 1px solid var(--border-light);
 }
 
-.headerTop {
+/* ================= HEADER FIX ================= */
+
+.headerWrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -86,36 +91,23 @@
   margin: 0 0 1rem 0;
 }
 
-.card p {
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 0;
-}
+/* ================= CARD BASE ================= */
 
-/* Submission Type Selector */
-.submissionTypeSelector {
-  display: flex;
-  gap: 1rem;
+.card {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid #F1F5F9;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
 }
 
-.typeButton {
-  flex: 1;
-  min-width: 120px;
-  padding: 0.75rem 1rem;
-  background: var(--bg-light);
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+/* ================= DESCRIPTION ================= */
+
+.descriptionBox h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
 }
 
 .typeButton:hover {
@@ -136,85 +128,102 @@
   gap: 1.5rem;
 }
 
+/* ================= FORM SECTION ================= */
+
 .formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .formGroup label {
-  color: var(--text-primary);
-  font-weight: 500;
-  font-size: 0.95rem;
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-dark);
 }
 
-.formGroup small {
-  color: var(--text-secondary);
-  font-size: 0.85rem;
+/* ================= FILE UPLOAD FIX ================= */
+
+.fileUpload {
+  position: relative;
+  border: 2px dashed var(--border-light);
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  transition: 0.2s;
+  cursor: pointer;
+  background: #FAFAFA;
 }
 
-.fileInput {
-  padding: 0.75rem;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  background: var(--bg-light);
+.fileUpload:hover {
+  border-color: var(--primary);
+  background: #FFFBEB;
+}
+
+.fileUpload input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
   cursor: pointer;
 }
 
-.fileInput:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+/* ================= TEXTAREA ================= */
 
-.textarea {
-  padding: 0.75rem;
+.textArea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border-radius: 12px;
   border: 1px solid var(--border-light);
-  border-radius: 8px;
-  background: var(--bg-white);
-  color: var(--text-primary);
-  font-size: 0.95rem;
   resize: vertical;
   min-height: 120px;
   font-family: inherit;
+  font-size: 0.95rem;
 }
 
 .textarea:focus {
   outline: none;
-  border-color: var(--primary-yellow);
-  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(250,204,21,0.2);
 }
 
-.input {
-  padding: 0.75rem;
+/* ================= INPUT ================= */
+
+.inputField {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
   border: 1px solid var(--border-light);
-  border-radius: 8px;
-  background: var(--bg-white);
-  color: var(--text-primary);
   font-size: 0.95rem;
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--primary-yellow);
-  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(250,204,21,0.2);
 }
 
-.submitButton {
-  background: var(--primary-yellow);
-  color: var(--text-primary);
+/* ================= BUTTON ================= */
+
+.submitBtn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--primary);
+  font-weight: 700;
   border: none;
   border-radius: 8px;
   padding: 0.875rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-speed) ease;
+  transition: 0.2s;
   margin-top: 1rem;
 }
 
-.submitButton:hover:not(:disabled) {
-  background: var(--primary-yellow-hover);
-  transform: translateY(-1px);
+.submitBtn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--primary-glow);
 }
 
 .submitButton:disabled {
@@ -222,205 +231,31 @@
   cursor: not-allowed;
 }
 
-/* Submission Details */
-.submissionDetails {
-  margin-bottom: 1.5rem;
-}
+/* ================= PENDING ================= */
 
-.detailsGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.detailItem {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: var(--bg-light);
-  border-radius: 8px;
-}
-
-.detailItem strong {
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.detailItem span {
-  color: var(--text-secondary);
-}
-
-.detailItem a {
-  color: var(--primary-yellow-hover);
-  text-decoration: none;
-  word-break: break-all;
-}
-
-.detailItem a:hover {
-  text-decoration: underline;
-}
-
-.textAnswer {
-  background: var(--bg-white);
-  padding: 1rem;
-  border-radius: 6px;
-  border: 1px solid var(--border-light);
-  color: var(--text-primary);
-  line-height: 1.6;
-  white-space: pre-wrap;
-}
-
-/* Status Boxes */
 .pendingBox {
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  border-radius: 8px;
-  padding: 1rem;
-  color: #92400e;
-  font-size: 0.95rem;
-  margin-top: 1.5rem;
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  background: var(--warning-bg);
+  color: var(--warning);
+  font-weight: 600;
+  margin-top: 1rem;
 }
+
+/* ================= EVALUATED ================= */
 
 .evaluatedBox {
+  padding: 1.8rem;
+  border-radius: 18px;
+  background: var(--success-bg);
   margin-top: 1.5rem;
-  border-top: 1px solid var(--border-light);
-  padding-top: 1.5rem;
 }
 
-.evaluatedHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+.evaluatedBox h4 {
+  margin-bottom: 1rem;
+  font-weight: 700;
 }
 
-.evaluatedHeader h4 {
-  color: var(--text-primary);
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0;
-}
-
-.revaluationBtn {
-  background: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--text-secondary);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
-}
-
-.revaluationBtn:hover {
-  background: var(--bg-light);
-  border-color: var(--primary-yellow);
-  color: var(--text-primary);
-}
-
-.resultGrid {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 1.5rem;
-  background: var(--bg-light);
-  padding: 1.5rem;
-  border-radius: 8px;
-}
-
-.resultItem {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.resultItem strong {
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.resultItem span {
-  color: var(--primary-yellow-hover);
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.resultItem p {
-  color: var(--text-primary);
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .container {
-    padding: 0 1rem;
-    margin: 1rem auto;
-  }
-
-  .header {
-    padding: 1rem;
-  }
-
-  .headerTop {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .title {
-    font-size: 1.5rem;
-  }
-
-  .card {
-    padding: 1rem;
-  }
-
-  .submissionTypeSelector {
-    flex-direction: column;
-  }
-
-  .typeButton {
-    width: 100%;
-  }
-
-  .evaluatedHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .resultGrid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-/* Animation for loading state */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-.loadingState {
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-/* Additional utility classes */
-.icon {
-  font-size: 1.2rem;
-}
-
-.divider {
-  height: 1px;
-  background: var(--border-light);
-  margin: 1.5rem 0;
+.evaluatedBox p {
+  margin-bottom: 0.5rem;
 }

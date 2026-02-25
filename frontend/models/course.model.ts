@@ -13,9 +13,18 @@ export interface CourseResponse {
   instructorName: string;
   thumbnailUrl?: string | null;
   isPublished: boolean;
+
+  // 📅 Attendance
   attendancePercentage: number;
   totalClasses: number;
   presentCount: number;
+
+  // 📚 Lesson Progress
+  totalLessons: number;
+  completedLessons: number;
+  completionPercentage: number;
+  isCompleted: boolean;
+
   createdAt: string;
 }
 

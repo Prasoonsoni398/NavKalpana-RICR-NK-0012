@@ -1,0 +1,177 @@
+.container {
+    padding: 40px;
+    background: var(--bg-light);
+}
+
+.heading {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 30px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    background: var(--bg-white);
+    padding: 28px;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+   transition: all 0.3s ease;
+}
+
+.card:hover {
+   transform: translate(-8px , -8px);
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-yellow);
+}
+
+/* Avatar */
+.avatar {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 18px;
+  border: 3px solid rgba(250, 204, 21, 0.3);
+}
+
+.profileImg {
+  object-fit: cover;
+}
+.name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+/* ========================= */
+/* Company Animated Section  */
+/* ========================= */
+
+.companyWrapper {
+    perspective: 900px;
+    display: inline-block;
+    margin-bottom: 14px;
+
+    animation: fadeSlideIn 0.6s ease forwards;
+}
+
+/* Inner Flip */
+.companyInner {
+    position: relative;
+    height: 32px;
+    min-width: 120px;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1),
+        box-shadow var(--transition-speed),
+        transform var(--transition-speed);
+    transform-style: preserve-3d;
+}
+
+/* Flip Animation */
+.companyWrapper:hover .companyInner {
+    transform: rotateY(180deg) scale(1.05);
+}
+
+/* Common */
+.companyFront,
+.companyBack {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    font-size: 12px;
+    font-weight: 500;
+    backface-visibility: hidden;
+    border: 1px solid var(--border-light);
+    transition: all var(--transition-speed);
+}
+
+/* Front */
+.companyFront {
+    background: #F1F5F9;
+    color: var(--text-primary);
+}
+
+/* Back */
+.companyBack {
+    background: rgba(250, 204, 21, 0.15);
+    color: var(--text-primary);
+    border-color: rgba(250, 204, 21, 0.4);
+    transform: rotateY(180deg);
+}
+
+/* Hover Glow */
+.companyWrapper:hover .companyFront,
+.companyWrapper:hover .companyBack {
+    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.25);
+}
+
+/* Fade Slide In Animation */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Position */
+.position {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+/* Button */
+.button {
+    display: inline-block;
+    background: var(--primary-yellow);
+    color: var(--text-primary);
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background var(--transition-speed);
+}
+
+.button:hover {
+    background: var(--primary-yellow-hover);
+}
+
+
+
+.card {
+    background: var(--bg-white);
+    padding: 28px;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardReveal 0.6s ease forwards;
+}
+
+/* Card Animation */
+@keyframes cardReveal {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

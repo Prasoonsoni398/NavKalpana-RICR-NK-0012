@@ -5,6 +5,13 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
   const { pathname } = request.nextUrl;
 
+  // Redirect root "/" to student dashboard
+  if (pathname === "/") {
+    return NextResponse.redirect(
+      new URL("/student/student-dashboard", request.url)
+    );
+  }
+
   // Protect /student/* routes
   if (pathname.startsWith("/student")) {
     if (!token) {
@@ -24,9 +31,11 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
+// Only ONE config export
 export const config = {
   matcher: [
-    "/student/:path*",        // protected routes
-    "/auth/student-login",    // login page
+    "/",                       // root route
+    "/student/:path*",          // protected routes
+    "/auth/student-login",      // login page
   ],
 };

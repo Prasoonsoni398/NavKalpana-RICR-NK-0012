@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import styles from '@/styles/Sidebar.module.css';
 import { Dispatch, SetStateAction } from "react";
 import { 
@@ -9,9 +9,9 @@ import {
   BookUser, Settings, LogOut,
   ChevronLeft, ChevronRight, Calendar, Flame 
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@mui/material';
 
-// 1. Types define करें
 interface SidebarProps {
   isCollapsed: boolean;
   setIsCollapsed: Dispatch<SetStateAction<boolean>>;
@@ -19,24 +19,27 @@ interface SidebarProps {
 
 const Sidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
   const pathname = usePathname();
+const Sidebar = () => {
   const router = useRouter();
 
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
-  // ✅ LOGOUT FUNCTION (Clean & Safe)
+    // ✅ LOGOUT FUNCTION
   const handleLogout = () => {
-    // 1️⃣ Clear Storage
+    // 1️⃣ Clear localStorage
     localStorage.clear();
     sessionStorage.clear();
 
-    // 2️⃣ Clear all cookies
+    // 3️⃣ Clear all cookies
     document.cookie.split(";").forEach((cookie) => {
       const cookieName = cookie.split("=")[0].trim();
       document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     });
 
-    // 3️⃣ Redirect & Refresh
+    // 4️⃣ Redirect to login page
     router.push("/auth/student-login");
+
+    // 5️⃣ Optional hard refresh
     setTimeout(() => {
       window.location.reload();
     }, 100);
@@ -50,38 +53,44 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
     { name: 'Attendance', icon: <Calendar size={20}/>, path: '/student/attendance/1' },
     { name: 'Learning Support', icon: <BookUser size={20}/>, path: '/student/learning-support' },
     { name: 'Settings', icon: <Settings size={20}/>, path: '/settings' },
+
   ];
 
   return (
     <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
-      {/* Collapse Button */}
+      {/* 3. Collapse Button */}
       <button className={styles.toggleBtn} onClick={toggleSidebar}>
         {isCollapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
       </button>
 
       <div className={styles.logoContainer}>
-          <div className={styles.logoIcon}>S</div>
-          {!isCollapsed && <span className={styles.logoText}>Skill<span>verse</span></span>}
+        <div className={styles.logoIcon}>S</div>
+        {!isCollapsed && (
+          <span className={styles.logoText}>
+            Skill<span>verse</span>
+          </span>
+        )}
       </div>
 
       <nav className={styles.navMenu}>
         {menuItems.map((item) => (
-          <Link key={item.name} href={item.path} 
-            className={`${styles.navItem} ${pathname === item.path ? styles.navActive : ''}`}>
-            {item.icon} 
+          <Link
+            key={item.name}
+            href={item.path}
+            className={`${styles.navItem} ${
+              pathname === item.path ? styles.navActive : ""
+            }`}
+          >
+            {item.icon}
             {!isCollapsed && <span>{item.name}</span>}
           </Link>
         ))}
       </nav>
 
       <div className={styles.logoutWrapper}>
-        <Button 
-          onClick={handleLogout} 
-          className={styles.logoutBtn}
-          sx={{ color: 'inherit', textTransform: 'none', width: '100%', justifyContent: isCollapsed ? 'center' : 'flex-start' }}
-        >
+        <Button href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className={styles.logoutBtn}>
           <LogOut size={20}/> 
-          {!isCollapsed && <span style={{ marginLeft: '12px' }}>Logout</span>}
+          {!isCollapsed && <span>Logout</span>}
         </Button>
       </div>
     </aside>
