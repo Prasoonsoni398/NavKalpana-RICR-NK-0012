@@ -41,7 +41,7 @@ export default function AssignmentsPage() {
   }
 };
 
-  // 🔥 Filtering + Search Logic
+  //  Filtering + Search Logic
   const filteredAssignments = useMemo(() => {
     return assignments
       .filter((a) =>
@@ -139,6 +139,7 @@ export default function AssignmentsPage() {
                 <p className={styles.courseName}>
                   {assignment.description}
                 </p>
+                <p>{assignment.deadline}</p>
 
                 {assignment.submission && (
                   <div className={styles.metaInfo}>

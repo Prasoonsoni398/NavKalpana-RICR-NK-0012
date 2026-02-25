@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 // import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import styles from "@/styles/StudentLayout.module.css"; 
-import Navbar from "@/components/Navbar/Navbar";
 import ToastProvider from "@/redux/provider/ToastProvider";
 import { StoreProvider } from "@/redux/provider/StoreProvider";
 
@@ -40,15 +39,10 @@ export default function RootLayout({
         <StoreProvider>
           <ToastProvider />
 
-          <div className="flex flex-col min-h-screen">
 
-            {!isStudentArea && <Navbar />}
-
-            <main className={`${isStudentArea ? styles.noMargin : styles.mainContent} flex-grow`}>
+          <main className={`${isStudentArea ? styles.noMargin : styles.mainContent} flex-grow`}>
               {children}
             </main>
-
-          </div>
         </StoreProvider>
       </body>
     </html>

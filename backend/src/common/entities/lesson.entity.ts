@@ -19,8 +19,8 @@ import { Quiz } from './quiz.entity';
 
 @Entity({ name: 'lessons' })
 export class Lesson {
-  @PrimaryGeneratedColumn('increment')
-  id: string;
+ @PrimaryGeneratedColumn('increment')
+id: number;   // ✅ change from string to number
 
   @ManyToOne(() => Module, (module) => module.lessons)
   @JoinColumn({ name: 'module_id' })

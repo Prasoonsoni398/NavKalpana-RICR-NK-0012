@@ -3,4 +3,5 @@ export enum ActivityEntityType {
   COURSE = 'COURSE',
   QUIZ = 'QUIZ',
   ASSIGNMENT = 'ASSIGNMENT',
+  MODULE = 'MODULE',
 }
