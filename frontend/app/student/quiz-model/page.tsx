@@ -34,11 +34,13 @@ export default function QuizListPage() {
     fetchQuizzes();
   }, []);
 
-  /* ---------- NAVIGATE ---------- */
-  const handleStartQuiz = (quizId: number) => {
-    console.log("Starting quiz with ID:", quizId);
-    router.push(`/student/quiz-model/${quizId}`);
-  };
+ const handleCardClick = (id: number) => {
+  if (id) {
+    router.push(`/student/quiz-model/${id}`);
+  } else {
+    router.push(`/student/quiz-model/${id}`);
+  }
+};
 
   /* ---------- Loading ---------- */
   if (loading) {
@@ -103,7 +105,7 @@ export default function QuizListPage() {
             {/* ✅ ROUTER PUSH BUTTON */}
             <button
               className={styles.btnPrimary}
-              onClick={() => handleStartQuiz(quiz.id)}
+              onClick={() => handleCardClick(quiz.id)}
             >
               Start Quiz →
             </button>
