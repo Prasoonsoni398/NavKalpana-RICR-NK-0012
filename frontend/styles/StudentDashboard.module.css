@@ -796,6 +796,7 @@
   display: flex;
   gap: 20px;
   margin-bottom: 25px;
+  margin-top: 25px;
   flex-wrap: wrap;
   width: 100%;
 }
@@ -2093,12 +2094,10 @@
   flex-direction: column;
   gap: 1.25rem;
   
-  /* Entry Animation: कार्ड नीचे से ऊपर आएगा */
   animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Card Hover: हल्का सा हवा में तैरता हुआ */
 .monthlyTracker:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
@@ -2161,7 +2160,7 @@
   font-size: 0.55rem;
   font-weight: 800;
   opacity: 0;
-  animation: fadeIn 0.5s ease forwards 1s; /* चार्ट भरने के बाद नंबर दिखेगा */
+  animation: fadeIn 0.5s ease forwards 1s; 
 }
 
 /* Mini Stats Entry */
@@ -2179,7 +2178,7 @@
 }
 
 .monthlyTracker:hover .statMini strong {
-  color: #FACC15; /* होवर पर नंबर हाईलाइट होंगे */
+  color: #FACC15; 
 }
 
 /* --- KEYFRAMES --- */
@@ -2244,4 +2243,53 @@
   .statMini {
     align-items: center;
   }
+}
+
+.attendanceCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  background: #fff;
+}
+
+.attendanceBody {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 15px 0;
+}
+
+.circularProgress {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: conic-gradient(#FACC15 calc(var(--percent) * 1%), #f3f4f6 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* प्रोग्रेस बार के बीच का हिस्सा सफ़ेद रखने के लिए */
+.circularProgress::before {
+  content: "";
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  background: white;
+  border-radius: 50%;
+}
+
+.progressValue {
+  position: relative;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.statusText {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
 }

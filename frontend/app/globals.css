@@ -13,23 +13,24 @@
 }
 
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  background-color: var(--bg-light); /* अब डार्क नहीं, वाइटिश दिखेगा */
+  margin: 0;
+  padding: 0;
+ background-color: var(--bg-light); 
   color: var(--text-primary);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Common Global Components */
 .btn-primary {
   background-color: var(--primary-yellow);
-  color: #000000; /* पीले बटन पर काला टेक्स्ट बेस्ट दिखता है */
+  color: #000000; 
   padding: 10px 20px;
   border: none;
   border-radius: 10px;
@@ -57,13 +58,13 @@ body {
 }
 
 .mainContent {
-  padding-top: 70px; /* Navbar की हाइट के बराबर */
+  padding-top: 70px; 
   min-height: calc(100vh - 70px);
 }
 
 @media (max-width: 768px) {
   .mainContent {
-    padding-top: 60px; /* मोबाइल हाइट */
+    padding-top: 60px; 
   }
 }
 
@@ -89,4 +90,13 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
+}
+
+.mainContent {
+  flex: 1;
+  margin-left: 220px; 
+  margin-top: 80px;   
+  padding: 40px;
+  background: var(--bg-light);
+  transition: all 0.3s ease;
 }

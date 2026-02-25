@@ -122,7 +122,6 @@ export default function LandingPage() {
 
       {/* 4. CORE OFFERINGS SECTION */}
       <section className={styles.offeringsSection}>
-        <span style={{ color: '#3B82F6', fontWeight: '600', display: 'block', textAlign: 'center' }}>Courses</span>
         <h2 className={styles.sectionTitle}>Master Coding with Our Core Offerings</h2>
         <div className={styles.offeringGrid}>
           {offerings.map((item, i) => (
@@ -141,13 +140,13 @@ export default function LandingPage() {
         <div className={styles.testimonialGrid}>
           <div className={styles.testiCard}>
             <div className={styles.quoteIcon}>"</div>
-            <p style={{ color: '#E2E8F0' }}>I don't have words to thank this man, I'm really grateful to have this channel. If you're a mere beginner, you can trust this guy.</p>
+            <p style={{ color: '#000' }}>I don't have words to thank this man, I'm really grateful to have this channel. If you're a mere beginner, you can trust this guy.</p>
             <span className={styles.userName}>Mohit Kumar</span>
             <span className={styles.userTitle}>Web Developer</span>
           </div>
           <div className={styles.testiCard}>
             <div className={styles.quoteIcon}>"</div>
-            <p style={{ color: '#E2E8F0' }}>For everyone who wants to level up their skills - seriously, this channel is for you! Both basic and advanced stacks are covered.</p>
+            <p style={{ color: '#000' }}>For everyone who wants to level up their skills - seriously, this channel is for you! Both basic and advanced stacks are covered.</p>
             <span className={styles.userName}>Rakesh Shetty</span>
             <span className={styles.userTitle}>Web Developer</span>
           </div>

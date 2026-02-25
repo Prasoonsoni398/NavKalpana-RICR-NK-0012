@@ -1,8 +1,9 @@
-// app/layout.tsx
-import type { Metadata } from "next";
+"use client"; 
+
+import { usePathname } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/Footer/Footer";
+import styles from "@/styles/StudentLayout.module.css"; 
 import Navbar from "@/components/Navbar/Navbar";
 import ToastProvider from "@/redux/provider/ToastProvider";
 import { StoreProvider } from "@/redux/provider/StoreProvider";
@@ -17,36 +18,35 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Skillverse | Premium Learning Platform",
-  description: "Master your skills with EduLeaf's premium courses",
-};
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isStudentArea = pathname?.startsWith("/student");
+
   return (
     <html lang="en">
+      <head>
+        <title>Skillverse | Premium Learning Platform</title>
+        <meta name="description" content="Master your skills with EduLeaf's premium courses" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        {/* ✅ StoreProvider wrappers for Redux State */}
         <StoreProvider>
           <ToastProvider />
 
-          {/* Main Layout Container */}
           <div className="flex flex-col min-h-screen">
-            <Navbar />
 
-            {/* children के अंदर आपके सारे पेजेस आएंगे */}
-            <main className="mainContent">
+            {!isStudentArea && <Navbar />}
+
+            <main className={`${isStudentArea ? styles.noMargin : styles.mainContent} flex-grow`}>
               {children}
             </main>
 
-            <Footer />
           </div>
         </StoreProvider>
       </body>

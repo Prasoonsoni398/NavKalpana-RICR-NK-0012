@@ -3,7 +3,10 @@ import React, { useState, useEffect } from 'react';
 import styles from '@/styles/StudentDashboard.module.css';
 import { studentService } from '@/services/student.services';
 import { courseService } from '@/services/user.services';
+import { useRouter } from "next/navigation";
+import dashboardService from '@/services/dashboard.services';
 import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 import {
   Search, Bell, Trophy, Flame, Target,
   Star, CheckCircle2, TrendingUp, Clock,
@@ -12,68 +15,106 @@ import {
 } from 'lucide-react';
 
 export default function StudentDashboard() {
-  // --- 1. States ---
+  const [dashboardData, setDashboardData] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [greeting, setGreeting] = useState("");
-  const [student, setStudent] = useState({ name: '', email: '' });
+  const [events, setEvents] = useState<any>({});
+  const router = useRouter();
+
+  // Redux से डेटा निकालना
+  const authState = useSelector((state: any) => state.auth);
+  const token = authState?.token;
+
+  // नाम के लिए Redux और LocalStorage का बैकअप
+  const reduxName = authState?.user?.name || authState?.student?.name;
+  const localName = typeof window !== 'undefined' ? localStorage.getItem('userName') : null;
+  const finalBackupName = reduxName || localName || "Student";
 
   const [myCourses, setMyCourses] = useState<any[]>([]);
-  const [assignmentCount, setAssignmentCount] = useState(0);
-  const [recentAssignments, setRecentAssignments] = useState<any[]>([]);
 
-  // 🆕 Quiz States
-  const [quizzes, setQuizzes] = useState<any[]>([]);
+  // कैलेंडर स्टेट्स
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [events, setEvents] = useState<any>({});
-  const [showModal, setShowModal] = useState<boolean>(false); // ✅ Added
-const [selectedDate, setSelectedDate] = useState<number | null>(null);
-  const [newEventName, setNewEventName] = useState<string>(""); // ✅ Added
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [greeting, setGreeting] = useState("");
 
-  // --- 2. Initial Data Fetching ---
+  // --- 1. Data Fetching ---
+  useEffect(() => {
+    const loadAllData = async () => {
+      try {
+        setLoading(true);
+        if (token) {
+          const apiResponse = await fetchStudentDashboard(token);
+          setDashboardData(apiResponse); // आपका JSON सीधा आ रहा है
+        }
+
+        const [profileData, coursesData] = await Promise.all([
+          studentService.getProfile().catch(() => null),
+          courseService.getMyCourses().catch(() => [])
+        ]);
+
+        if (profileData) setProfile(profileData.student);
+        setMyCourses(coursesData || []);
+
+      } catch (err) {
+        console.error("Dashboard Sync Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadAllData();
+  }, [token]);
+
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) setGreeting("Good Morning");
     else if (hour < 17) setGreeting("Good Afternoon");
     else setGreeting("Good Evening");
 
-    const localInfo = localStorage.getItem("student_info");
-    if (localInfo) setStudent(JSON.parse(localInfo));
-
-    const savedEvents = localStorage.getItem("dashboard_events");
-    if (savedEvents) setEvents(JSON.parse(savedEvents));
-
     const loadAllData = async () => {
-      try {
-        setLoading(true);
-        const [profileData, coursesData, assignmentsData, quizzesData] = await Promise.all([
-          studentService.getProfile().catch(() => null),
-          courseService.getMyCourses().catch(() => []),
-          courseService.getAllAssignments().catch(() => []),
-          courseService.getAllQuizzes().catch(() => [])
-        ]);
-
-        if (profileData) setProfile(profileData.student);
-        setMyCourses(coursesData || []);
-
-        const assignments = assignmentsData || [];
-        setAssignmentCount(assignments.length);
-        setRecentAssignments(assignments.slice(0, 3));
-
-        setQuizzes(quizzesData || []);
-
-      } catch (err) {
-        console.error("Sync Error:", err);
-        toast.error("Failed to load dashboard data");
-      } finally {
-        setLoading(false);
-      }
     };
     loadAllData();
-  }, []);
+  }, [token]);
 
-  // --- 3. Handlers ---
+  // --- 2. UI Helpers (API Mapping) ---
+  const displayName = dashboardData?.name || finalBackupName;
+  const displayEmail = authState?.user?.email || profile?.email || "";
+  const completedAssignments = dashboardData?.assignments?.completed || 0;
+  const totalAssignments = dashboardData?.assignments?.total || 0;
+  const assignmentCount = completedAssignments;
+  const recentAssignments = dashboardData?.recentAssignments || [];
+  const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1).getDay();
+  const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+  const performanceValue = dashboardData?.academicScore || 0;
+
+  // Stats Mapping from your API
+  const statsOverview = [
+    { label: "Academic Score", value: dashboardData?.academicScore || 0, icon: <Star size={20} />, color: "#FACC15" },
+    { label: "Assignments", value: `${dashboardData?.assignments?.completed || 0}/${dashboardData?.assignments?.total || 0}`, icon: <Briefcase size={20} />, color: "#FACC15" },
+    { label: "Streak", value: `${dashboardData?.learningStreak || 0} 🔥`, icon: <Flame size={20} />, color: "#FACC15" },
+    { label: "Courses", value: myCourses.length.toString().padStart(2, '0'), icon: <Layout size={20} />, color: "#FACC15" },
+  ];
+
+  // Attendance Logic (Using academicScore as placeholder if attendance not in API)
+  const attendancePercent = dashboardData?.academicScore || 85;
+
+  // Mapping Job Posts from your API
+  const jobs = dashboardData?.jobPosts?.map((job: any) => ({
+    id: job.id,
+    role: job.title,
+    company: job.company?.name,
+    loc: "Remote",
+    type: "Full-time",
+    pay: "Not Disclosed"
+  })) || [];
+
+  const heatmapData = Array.from({ length: 52 }, () =>
+    Array.from({ length: 7 }, () => Math.floor(Math.random() * 4))
+  );
+
+  // --- Calendar Navigation Handlers ---
+
   const prevMonth = () => {
     if (selectedMonth === 0) {
       setSelectedMonth(11);
@@ -91,93 +132,26 @@ const [selectedDate, setSelectedDate] = useState<number | null>(null);
       setSelectedMonth((prev) => prev + 1);
     }
   };
+  // Mapping Alumni from your API
+  const alumniList = dashboardData?.alumni?.map((al: any) => ({
+    id: al.id,
+    name: al.name,
+    role: al.position,
+    batch: al.batch,
+    img: `https://i.pravatar.cc/150?u=${al.id}`
+  })) || [];
 
-  // 🆕 Quiz Start Handler
-  const handleStartQuiz = async (quizId: string) => {
-    try {
-      await courseService.startQuiz(quizId);
-      toast.success("Quiz started! Good luck 🍀");
-    } catch (error) {
-      toast.error("Could not start quiz");
-    }
-  };
-
-  // --- 4. Logic & Helper Data ---
-  if (loading) return <div className={styles.loadingState}>Loading Dashboard...</div>;
-
-  const displayName = profile?.name || student.name || "Student";
-  const displayEmail = profile?.email || student.email || "";
-
-  const performanceValue = 75;
-
-  const leaderboard = [
-    { rank: 1, name: displayName, score: 1250 },
-    { rank: 2, name: "Arjun Mehta", score: 1120 }, // आपकी अपनी रैंक
-    { rank: 3, name: "Sneha Kapoor", score: 980 },
-    { rank: 4, name: "Vikram Rathore", score: 850 },
-  ];
-
-
-
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 8 }, (_, i) => currentYear - 2 + i);
+  // Mapping Leaderboard
+  const leaderboard = dashboardData?.topPerformers?.map((tp: any, index: number) => ({
+    rank: index + 1,
+    name: tp.name,
+    score: tp.score
+  })) || [];
 
   const monthNames = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
-  const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1).getDay();
-  const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+  const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - 5 + i);
 
-
-// 2. यह रहा वो फंक्शन जो गायब है:
-const handleDateClick = (date: number) => {
-  console.log("Selected Date:", date);
-  setSelectedDate(date);
-  // यहाँ आप चाहें तो उस डेट के असाइनमेंट फ़िल्टर करने का लॉजिक भी डाल सकते हैं
-};
-
-  const statsOverview = [
-    { label: "Total Courses", value: myCourses.length.toString().padStart(2, '0'), icon: <Layout size={20} />, color: "#FACC15" },
-    { label: "Assignments", value: assignmentCount.toString().padStart(2, '0'), icon: <Briefcase size={20} />, color: "#FACC15" },
-    { label: "Available Quizzes", value: quizzes.length.toString().padStart(2, '0'), icon: <FileText size={20} />, color: "#FACC15" }, // 🆕 Quiz Stat
-    { label: "XP Earned", value: "12.5k", icon: <Trophy size={20} />, color: "#FACC15" },
-  ];
-
-  const totalAssignments = 12;
-
-  const heatmapData = Array.from({ length: 52 }, () =>
-    Array.from({ length: 7 }, () => Math.floor(Math.random() * 4))
-  );
-
-  const jobs = [
-    { id: 1, role: "Frontend Developer", company: "Google", loc: "Bangalore", type: "Full-time", pay: "₹18-24 LPA" },
-    { id: 2, role: "React Intern", company: "Meta", loc: "Remote", type: "Internship", pay: "₹45k/mo" },
-    { id: 3, role: "SDE Intern", company: "Amazon", loc: "Hyderabad", type: "Internship", pay: "₹60k/mo" },
-    { id: 4, role: "Backend Developer", company: "Microsoft", loc: "Pune", type: "Full-time", pay: "₹25-30 LPA" },
-  ];
-
-
-  const alumniList = [
-    { id: 1, name: "Sandeep Maheshwari", role: "SDE-2 @ Microsoft", batch: "Batch 2022", img: "https://i.pravatar.cc/150?u=1" },
-    { id: 2, name: "Priya Sharma", role: "Product Manager @ Amazon", batch: "Batch 2021", img: "https://i.pravatar.cc/150?u=2" },
-    { id: 3, name: "Aman Gupta", role: "Full Stack @ Uber", batch: "Batch 2023", img: "https://i.pravatar.cc/150?u=3" },
-    { id: 4, name: "Rahul Verma", role: "Data Scientist @ Tesla", batch: "Batch 2020", img: "https://i.pravatar.cc/150?u=4" }
-  ];
-
-
-// यही वो फंक्शन है जो एरर दे रहा है
-const saveEvent = () => {
-  if (!newEventName.trim()) return; // अगर नाम खाली है तो कुछ मत करो
-
-  const newEvent = {
-    id: Date.now(),
-    name: newEventName,
-    date: selectedDate, // जो डेट सेलेक्ट की गई है
-  };
-
-  setEvents([...events, newEvent]);
-  setNewEventName(""); 
-};
-
-
+  if (loading) return <div className={styles.loadingState}>Loading Dashboard...</div>;
   return (
     <div className={styles.dashboardWrapper}>
       <main className={styles.mainContent}>
@@ -186,7 +160,9 @@ const saveEvent = () => {
           <div className={styles.welcomeInfo}>
             <h1 className={styles.greetingText}>{greeting}, {displayName}! 👋</h1>
             <p className={styles.subText}>Email: {displayEmail}</p>
-            <p className={styles.subText}>You have completed {assignmentCount} assignments so far.</p>
+            <p className={styles.subText}>
+              You have completed {dashboardData?.assignments?.completed || 0} assignments so far.
+            </p>
           </div>
           <div className={styles.headerActions}>
             <div className={styles.searchBox}>
@@ -235,6 +211,9 @@ const saveEvent = () => {
                 className={styles.miniBar}
                 style={{ width: `${(assignmentCount / (totalAssignments || 12)) * 100}%` }}
               ></div>
+              <button onClick={() => router.push('/student/assignments')} className={styles.viewBtn}>
+                View Details
+              </button>
             </div>
           </div>
         </div>
@@ -331,7 +310,7 @@ const saveEvent = () => {
           ))}
         </div>
 
-        {/* ---7. Skills & Courses (Original) --- */}
+        {/* ---7.  Courses (Original) --- */}
         <div className={styles.coursesSection}>
           <div className={styles.sectionHeader}>
             <h3>My Courses</h3>
@@ -587,6 +566,26 @@ const saveEvent = () => {
               style={{ width: `${(5 / 12) * 100}%` }}
             ></div>
           </div>
+        </div>
+
+        <div className={`${styles.bentoCard} ${styles.attendanceCard}`}>
+          <div className={styles.cardHeader}>
+            <h4>My Attendance</h4>
+          </div>
+
+          <div className={styles.attendanceBody}>
+            <div className={styles.circularProgress}>
+              <span className={styles.progressValue}>{attendancePercent}%</span>
+            </div>
+            <div className={styles.attendanceInfo}>
+              <p>Total Classes: <strong>40</strong></p>
+              <p>Present: <strong>34</strong></p>
+            </div>
+          </div>
+
+          <p className={styles.statusText}>
+            {attendancePercent >= 75 ? "✅ Good Standing" : "⚠️ Low Attendance"}
+          </p>
         </div>
 
         {/* 10.5. Leaderboard */}
