@@ -1,172 +1,615 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
-  CheckCircle,
+  Link2,
+  Type,
   Clock,
-  Search,
-} from "lucide-react";
-import { assignmentService } from "@/services/assignment.services";
-import styles from "@/styles/Assignment.module.css";
-import { useRouter } from "next/navigation";
+  CheckCircle,
+  AlertCircle,
+  Award,
+  MessageSquare,
+  Upload,
+  Send,
+  X,
+  Calendar,
+  AlertTriangle,
+  ChevronRight,
+  FileUp,
+  ExternalLink,
+  Save
+} from 'lucide-react';
+import styles from '@/styles/Assignment.module.css';
+import { assignmentService } from '@/services/assignment.services';
+import { fileUploadService } from '@/services/fileupload.services';
+import type { 
+  AssignmentWithSubmissionResponse, 
+  SubmissionData,
+} from '@/models/assignment-submission.model';
+import toast from 'react-hot-toast';
 
-export default function AssignmentsPage() {
-  const router = useRouter();
-  const [assignments, setAssignments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
+type SubmissionType = 'file' | 'text' | 'link';
 
-  useEffect(() => {
-    const fetchAssignments = async () => {
-      try {
-        const data = await assignmentService.getAll();
-        setAssignments(data || []);
-      } catch (error) {
-        console.error("Failed to fetch assignments", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAssignments();
-  }, []);
-
- const handleCardClick = (assignment: any) => {
-  if (assignment.submission) {
-    router.push(`/student/assignments/${assignment.id}/view`);
-  } else {
-    router.push(`/student/assignments/${assignment.id}/submit`);
-  }
+// Helper function to get status display
+const getStatusDisplay = (status: string): 'NOT_SUBMITTED' | 'SUBMITTED' | 'LATE_SUBMITTED' | 'EVALUATED' => {
+  const statusMap: Record<string, 'NOT_SUBMITTED' | 'SUBMITTED' | 'LATE_SUBMITTED' | 'EVALUATED'> = {
+    'NOT_SUBMITTED': 'NOT_SUBMITTED',
+    'SUBMITTED': 'SUBMITTED',
+    'LATE_SUBMITTED': 'LATE_SUBMITTED',
+    'EVALUATED': 'EVALUATED',
+    'PENDING': 'SUBMITTED',
+    'COMPLETED': 'EVALUATED',
+    'GRADED': 'EVALUATED'
+  };
+  return statusMap[status] || 'NOT_SUBMITTED';
 };
 
-  //  Filtering + Search Logic
-  const filteredAssignments = useMemo(() => {
-    return assignments
-      .filter((a) =>
-        a.title.toLowerCase().includes(search.toLowerCase())
-      )
-      .filter((a) => {
-        if (filter === "completed") return !!a.submission;
-        if (filter === "pending") return !a.submission;
-        return true;
-      });
-  }, [assignments, search, filter]);
+export default function AssignmentPage() {
+  const params = useParams();
+  const router = useRouter();
+  const assignmentId = params?.id ? Number(params.id) : null;
 
-  const completedCount = assignments.filter(a => a.submission).length;
-  const pendingCount = assignments.length - completedCount;
+  const [data, setData] = useState<AssignmentWithSubmissionResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [selectedType, setSelectedType] = useState<SubmissionType>('file');
+  const [formData, setFormData] = useState({
+    file: null as File | null,
+    text: '',
+    link: ''
+  });
+  const [timeRemaining, setTimeRemaining] = useState<string>('');
+  const [isLate, setIsLate] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+
+  // Fetch assignment data
+  useEffect(() => {
+    if (!assignmentId) return;
+    fetchAssignmentData();
+  }, [assignmentId]);
+
+  // Countdown timer for deadline
+  useEffect(() => {
+    if (!data?.assignment) return;
+
+    const timer = setInterval(() => {
+      const now = new Date();
+      const deadline = new Date(data.assignment.deadline);
+      const diff = deadline.getTime() - now.getTime();
+
+      if (diff <= 0) {
+        setTimeRemaining('Deadline passed');
+        setIsLate(true);
+        clearInterval(timer);
+      } else {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+        if (days > 0) {
+          setTimeRemaining(`${days}d ${hours}h remaining`);
+        } else if (hours > 0) {
+          setTimeRemaining(`${hours}h ${minutes}m remaining`);
+        } else {
+          setTimeRemaining(`${minutes}m remaining`);
+        }
+        setIsLate(false);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [data?.assignment]);
+
+  const fetchAssignmentData = async () => {
+    try {
+      setLoading(true);
+      const response = await assignmentService.getAssignmentWithSubmission(assignmentId!);
+      setData(response);
+      
+      // Pre-fill form if there's an existing submission
+      if (response.submission) {
+        setFormData({
+          file: null,
+          text: response.submission.content || '',
+          link: response.submission.fileUrl || ''
+        });
+        if (response.submission.content) setSelectedType('text');
+        if (response.submission.fileUrl) setSelectedType('link');
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      toast.error('Failed to load assignment');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      // Validate file size (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('File size must be less than 10MB');
+        return;
+      }
+      setFormData({ ...formData, file });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!assignmentId || !data?.assignment) return;
+
+    // Validate based on submission type
+    if (selectedType === 'file' && !formData.file && !data?.submission?.fileUrl) {
+      toast.error('Please select a file to upload');
+      return;
+    }
+    if (selectedType === 'text' && !formData.text.trim()) {
+      toast.error('Please enter your answer');
+      return;
+    }
+    if (selectedType === 'link' && !formData.link.trim()) {
+      toast.error('Please enter a link');
+      return;
+    }
+
+    setSubmitting(true);
+    const toastId = toast.loading('Submitting assignment...');
+
+    try {
+      let fileUrl = data?.submission?.fileUrl || '';
+
+      // Upload file if new file is selected
+      if (formData.file) {
+        const uploadRes = await fileUploadService.uploadFile(formData.file);
+        fileUrl = uploadRes?.url || uploadRes?.fileUrl || '';
+      }
+
+      // Create FormData object for submission
+      const formDataObj = new FormData();
+      
+      // Add file URL if available
+      if (fileUrl) {
+        formDataObj.append('fileUrl', fileUrl);
+      }
+      
+      // Add text content if available
+      if (formData.text) {
+        formDataObj.append('textAnswer', formData.text);
+      }
+      
+      // Add external link if available
+      if (formData.link) {
+        formDataObj.append('externalLink', formData.link);
+      }
+
+      // Submit using FormData
+      await assignmentService.submit(assignmentId, formDataObj);
+
+      toast.success('Assignment submitted successfully!', { id: toastId });
+      await fetchAssignmentData(); // Refresh data
+      setShowPreview(true); // Show success preview
+      
+      // Reset form after successful submission
+      setFormData({
+        file: null,
+        text: '',
+        link: ''
+      });
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast.error('Failed to submit assignment. Please try again.', { id: toastId });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const displayStatus = getStatusDisplay(status);
+    
+    const statusConfig = {
+      NOT_SUBMITTED: { label: 'Not Submitted', color: '#64748B', icon: <AlertCircle size={14} /> },
+      SUBMITTED: { label: 'Submitted', color: '#3B82F6', icon: <CheckCircle size={14} /> },
+      LATE_SUBMITTED: { label: 'Late Submitted', color: '#F59E0B', icon: <AlertTriangle size={14} /> },
+      EVALUATED: { label: 'Evaluated', color: '#10B981', icon: <Award size={14} /> }
+    };
+    
+    const config = statusConfig[displayStatus];
+    
+    return (
+      <span className={styles.statusBadge} style={{ backgroundColor: `${config.color}15`, color: config.color }}>
+        {config.icon}
+        {config.label}
+      </span>
+    );
+  };
+
+  // Helper function to safely format date
+  const formatDate = (date: Date | string | undefined) => {
+    if (!date) return 'N/A';
+    try {
+      return new Date(date).toLocaleString();
+    } catch {
+      return 'Invalid date';
+    }
+  };
 
   if (loading) {
-    return <p className={styles.loading}>Loading assignments...</p>;
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner} />
+        <p>Loading assignment...</p>
+      </div>
+    );
   }
+
+  if (!data?.assignment) {
+    return (
+      <div className={styles.errorContainer}>
+        <AlertCircle size={48} />
+        <h2>Assignment Not Found</h2>
+        <p>The assignment you're looking for doesn't exist or has been removed.</p>
+        <button onClick={() => router.back()} className={styles.backButton}>
+          Go Back
+        </button>
+      </div>
+    );
+  }
+
+  const { assignment, submission, isSubmitted } = data;
+  const deadline = new Date(assignment.deadline);
 
   return (
     <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div>
-          <h1>My Assignments</h1>
-          <p>Track your assignment status</p>
-        </div>
-
-        {/* Stats */}
-        <div className={styles.statsRow}>
-          <div className={styles.statBox}>
-            <span className={styles.statVal}>{assignments.length}</span>
-            <span className={styles.statLab}>Total</span>
-          </div>
-          <div className={styles.statBox}>
-            <span className={styles.statVal}>{completedCount}</span>
-            <span className={styles.statLab}>Completed</span>
-          </div>
-          <div className={styles.statBox}>
-            <span className={styles.statVal}>{pendingCount}</span>
-            <span className={styles.statLab}>Pending</span>
+      {/* Header Section */}
+      <motion.div 
+        className={styles.header}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className={styles.headerLeft}>
+          <h1 className={styles.title}>{assignment.title}</h1>
+          <div className={styles.metaInfo}>
+            <span className={styles.metaItem}>
+              <Calendar size={16} />
+              Deadline: {deadline.toLocaleDateString()} at {deadline.toLocaleTimeString()}
+            </span>
+            <span className={styles.metaItem}>
+              <Clock size={16} />
+              {timeRemaining}
+            </span>
           </div>
         </div>
-      </div>
-
-      {/* Controls */}
-      <div className={styles.controls}>
-        <div className={styles.searchBar}>
-          <Search size={18} />
-          <input
-            type="text"
-            placeholder="Search assignments..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className={styles.headerRight}>
+          {submission && getStatusBadge(submission.status)}
         </div>
+      </motion.div>
 
-        <div className={styles.filterGroup}>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="completed">Completed</option>
-            <option value="pending">Pending</option>
-          </select>
-        </div>
-      </div>
+      {/* Main Content Grid */}
+      <div className={styles.contentGrid}>
+        {/* Left Column - Assignment Details */}
+        <motion.div 
+          className={styles.leftColumn}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className={styles.card}>
+            <h2 className={styles.cardTitle}>Assignment Description</h2>
+            <p className={styles.description}>{assignment.description}</p>
+          </div>
 
-      {/* Cards */}
-      <div className={styles.grid}>
-        {filteredAssignments.length === 0 ? (
-          <p>No assignments found.</p>
-        ) : (
-          filteredAssignments.map((assignment) => (
-            <div key={assignment.id} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <div className={`${styles.iconBg} ${styles.bgYellow}`}>
-                  <FileText size={20} />
+          {submission && getStatusDisplay(submission.status) === 'EVALUATED' && (
+            <motion.div 
+              className={styles.evaluationCard}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h2 className={styles.cardTitle}>Evaluation Result</h2>
+              <div className={styles.evaluationContent}>
+                <div className={styles.marksContainer}>
+                  <span className={styles.marksLabel}>Marks Obtained</span>
+                  <span className={styles.marksValue}>{submission.marks || 0} / 100</span>
                 </div>
-
-                <span
-                  className={`${styles.statusBadge} ${
-                    assignment.submission
-                      ? styles.completed
-                      : styles.pending
-                  }`}
-                >
-                  {assignment.submission ? "COMPLETED" : "PENDING"}
-                </span>
-              </div>
-
-              <div className={styles.cardBody}>
-                <h3>{assignment.title}</h3>
-                <p className={styles.courseName}>
-                  {assignment.description}
-                </p>
-
-                {assignment.submission && (
-                  <div className={styles.metaInfo}>
-                    <div className={styles.metaItem}>
-                      <CheckCircle size={16} />
-                      Marks:{" "}
-                      {assignment.submission.marks ?? "Not Evaluated"}
-                    </div>
-                    <div className={styles.metaItem}>
-                      <Clock size={16} />
-                      Feedback:{" "}
-                      {assignment.submission.feedback ??
-                        "No feedback yet"}
-                    </div>
+                {submission.feedback && (
+                  <div className={styles.feedbackContainer}>
+                    <span className={styles.feedbackLabel}>
+                      <MessageSquare size={16} />
+                      Feedback
+                    </span>
+                    <p className={styles.feedbackText}>{submission.feedback}</p>
                   </div>
                 )}
               </div>
+            </motion.div>
+          )}
+        </motion.div>
 
-              <div className={styles.cardFooter}>
-                <button className={styles.submitBtn} onClick={() => handleCardClick(assignment)}>
-                  {assignment.submission
-                    ? "View Submission"
-                    : "Submit Assignment"}
+        {/* Right Column - Submission Form */}
+        <motion.div 
+          className={styles.rightColumn}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          {!isSubmitted ? (
+            <div className={styles.submissionCard}>
+              <h2 className={styles.cardTitle}>Submit Assignment</h2>
+              
+              {/* Submission Type Selector */}
+              <div className={styles.typeSelector}>
+                <button
+                  className={`${styles.typeButton} ${selectedType === 'file' ? styles.active : ''}`}
+                  onClick={() => setSelectedType('file')}
+                >
+                  <FileUp size={18} />
+                  File Upload
+                </button>
+                <button
+                  className={`${styles.typeButton} ${selectedType === 'text' ? styles.active : ''}`}
+                  onClick={() => setSelectedType('text')}
+                >
+                  <Type size={18} />
+                  Text Answer
+                </button>
+                <button
+                  className={`${styles.typeButton} ${selectedType === 'link' ? styles.active : ''}`}
+                  onClick={() => setSelectedType('link')}
+                >
+                  <Link2 size={18} />
+                  External Link
                 </button>
               </div>
+
+              <form onSubmit={handleSubmit} className={styles.form}>
+                <AnimatePresence mode="wait">
+                  {selectedType === 'file' && (
+                    <motion.div
+                      key="file"
+                      className={styles.formGroup}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <label className={styles.label}>
+                        <Upload size={16} />
+                        Upload File
+                      </label>
+                      <div className={styles.fileUploadArea}>
+                        <input
+                          type="file"
+                          id="file"
+                          onChange={handleFileChange}
+                          className={styles.fileInput}
+                          accept=".pdf,.doc,.docx,.txt,.zip,.jpg,.png"
+                        />
+                        <label htmlFor="file" className={styles.fileLabel}>
+                          <FileText size={24} />
+                          <span>
+                            {formData.file ? formData.file.name : 'Click to upload or drag and drop'}
+                          </span>
+                          <span className={styles.fileHint}>
+                            Max file size: 10MB (PDF, DOC, DOCX, TXT, ZIP, JPG, PNG)
+                          </span>
+                        </label>
+                      </div>
+                      {formData.file && (
+                        <motion.div 
+                          className={styles.filePreview}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                        >
+                          <FileText size={16} />
+                          <span>{formData.file.name}</span>
+                          <span className={styles.fileSize}>
+                            ({(formData.file.size / 1024 / 1024).toFixed(2)} MB)
+                          </span>
+                          <button 
+                            type="button"
+                            onClick={() => setFormData({ ...formData, file: null })}
+                            className={styles.removeFile}
+                          >
+                            <X size={14} />
+                          </button>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {selectedType === 'text' && (
+                    <motion.div
+                      key="text"
+                      className={styles.formGroup}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <label className={styles.label}>
+                        <Type size={16} />
+                        Your Answer
+                      </label>
+                      <textarea
+                        value={formData.text}
+                        onChange={(e) => setFormData({ ...formData, text: e.target.value })}
+                        className={styles.textarea}
+                        placeholder="Type your answer here..."
+                        rows={8}
+                      />
+                      <span className={styles.charCount}>
+                        {formData.text.length} characters
+                      </span>
+                    </motion.div>
+                  )}
+
+                  {selectedType === 'link' && (
+                    <motion.div
+                      key="link"
+                      className={styles.formGroup}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <label className={styles.label}>
+                        <Link2 size={16} />
+                        External Link
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.link}
+                        onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                        className={styles.input}
+                        placeholder="https://github.com/your-repo or https://docs.google.com/..."
+                      />
+                      {formData.link && (
+                        <motion.a 
+                          href={formData.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className={styles.linkPreview}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                        >
+                          <ExternalLink size={14} />
+                          Preview link
+                        </motion.a>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Late Submission Warning */}
+                {isLate && (
+                  <motion.div 
+                    className={styles.warning}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                  >
+                    <AlertTriangle size={16} />
+                    <span>Deadline has passed. Your submission will be marked as late.</span>
+                  </motion.div>
+                )}
+
+                <button
+                  type="submit"
+                  className={styles.submitButton}
+                  disabled={submitting}
+                >
+                  {submitting ? (
+                    <>
+                      <span className={styles.spinner} />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      Submit Assignment
+                    </>
+                  )}
+                </button>
+              </form>
             </div>
-          ))
-        )}
+          ) : (
+            /* Submission Details - Only rendered when submission exists */
+            submission && (
+              <motion.div 
+                className={styles.submissionCard}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <h2 className={styles.cardTitle}>Your Submission</h2>
+                
+                <div className={styles.submissionDetails}>
+                  <div className={styles.detailItem}>
+                    <span className={styles.detailLabel}>Submitted on</span>
+                    <span className={styles.detailValue}>
+                      {formatDate(submission.submissionTime)}
+                    </span>
+                  </div>
+
+                  <div className={styles.detailItem}>
+                    <span className={styles.detailLabel}>Status</span>
+                    <div className={styles.detailValue}>
+                      {getStatusBadge(submission.status)}
+                    </div>
+                  </div>
+
+                  {submission.lateFlag && (
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>Late Submission</span>
+                      <span className={styles.detailValue} style={{ color: '#F59E0B' }}>
+                        Yes
+                      </span>
+                    </div>
+                  )}
+
+                  {submission.fileUrl && (
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>Submitted File</span>
+                      <a 
+                        href={submission.fileUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className={styles.fileLink}
+                      >
+                        <FileText size={16} />
+                        View File
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                  )}
+
+                  {submission.content && (
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>Your Answer</span>
+                      <div className={styles.textAnswer}>
+                        {submission.content}
+                      </div>
+                    </div>
+                  )}
+
+                  {submission.fileUrl && (
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>External Link</span>
+                      <a 
+                        href={submission.fileUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className={styles.link}
+                      >
+                        {submission.fileUrl}
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                {getStatusDisplay(submission.status) !== 'EVALUATED' && (
+                  <div className={styles.pendingMessage}>
+                    <Clock size={16} />
+                    <span>Your submission is pending evaluation. You'll receive feedback soon.</span>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => router.push('/student/assignments')}
+                  className={styles.backToAssignments}
+                >
+                  <ChevronRight size={16} />
+                  Back to Assignments
+                </button>
+              </motion.div>
+            )
+          )}
+        </motion.div>
       </div>
     </div>
   );

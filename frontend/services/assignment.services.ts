@@ -26,7 +26,7 @@ class AssignmentService {
   ): Promise<SubmissionData> {
     const response = await api.post(
       `${this.baseUrl}/${assignmentId}/submit`,
-      formData,
+      formData
     );
 
     return response.data;
@@ -47,10 +47,19 @@ class AssignmentService {
 
   // 🔥 Get Assignment With Student Submission
   async getAssignmentWithSubmission(
-    assignmentId: number 
+    assignmentId: number
   ): Promise<AssignmentWithSubmissionResponse> {
     const response = await api.get(
       `${this.baseUrl}/my-assignment/${assignmentId}`
+    );
+
+    return response.data;
+  }
+
+  // ✅ 🔥 NEW: Request Revaluation
+  async requestRevaluation(submissionId: number) {
+    const response = await api.post(
+      `${this.baseUrl}/revaluation/${submissionId}`
     );
 
     return response.data;
