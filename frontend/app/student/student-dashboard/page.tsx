@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styles from '@/styles/StudentDashboard.module.css';
 import { studentService } from '@/services/student.services';
 import { courseService } from '@/services/user.services';
+import { useRouter } from "next/navigation";
 import dashboardService from '@/services/dashboard.services';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -18,6 +19,7 @@ export default function StudentDashboard() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<any>({});
+  const router = useRouter();
 
   // Redux से डेटा निकालना
   const authState = useSelector((state: any) => state.auth);
@@ -209,6 +211,9 @@ export default function StudentDashboard() {
                 className={styles.miniBar}
                 style={{ width: `${(assignmentCount / (totalAssignments || 12)) * 100}%` }}
               ></div>
+              <button onClick={() => router.push('/student/assignments')} className={styles.viewBtn}>
+                View Details
+              </button>
             </div>
           </div>
         </div>
