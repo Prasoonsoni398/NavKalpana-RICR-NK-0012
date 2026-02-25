@@ -19,10 +19,9 @@ const Sidebar = () => {
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20}/>, path: '/student/student-dashboard' },
     { name: 'Courses', icon: <BookOpen size={20}/>, path: '/student/my-courses' },
-    { name: 'Tutorials', icon: <GraduationCap size={20}/>, path: '/student/tutorials' },
     { name: 'Assignments', icon: <Flame size={20}/>, path: '/student/assignments' },
-    { name: 'Quizzes', icon: <Flame size={20}/>, path: '/student/quiz-model' },
-    { name: 'learning-support', icon: <BookUser size={20}/>, path: '/student/learning-support' },
+    { name: 'Quizzes', icon: <GraduationCap size={20}/>, path: '/student/quiz-model' },
+    { name: 'Learning Support', icon: <BookUser size={20}/>, path: '/student/learning-support' },
     { name: 'Settings', icon: <Settings size={20}/>, path: '/settings' },
     { name: 'Logout', icon: <LogOut size={20}/>, path: '/logout' },
 

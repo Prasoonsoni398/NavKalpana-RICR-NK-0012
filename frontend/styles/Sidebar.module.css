@@ -4,7 +4,6 @@
   height: 100vh;
   position: fixed;
   left: 0;
-  top: 60px;
   background-color: #ffffff;
   border-right: 1px solid #f1f5f9;
   display: flex;
@@ -26,7 +25,7 @@
   position: absolute;
   right: -12px;
   top: 40px;
-  background: #FACC15; /* थीम पीला रंग */
+  background: #FACC15; 
   border: none;
   width: 26px;
   height: 26px;

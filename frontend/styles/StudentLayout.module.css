@@ -1,18 +1,29 @@
-.wrapper {
-  padding: 40px;
-  background: var(--bg-light);
+/* मेन कंटेनर जो पूरे पेज को संभालेगा */
+.container {
+  display: flex;
   min-height: 100vh;
 }
 
-.header h1 {
-  font-size: 32px;
-  color: var(--text-primary);
+/* डिफ़ॉल्ट मेन कंटेंट (डैशबोर्ड और अन्य पेजेस के लिए) */
+.mainContent {
+ margin-top: 50px ;
+  padding-top: 20px ;
+  width: 100% ;
+  flex: 1;
 }
 
+.noMargin {
+  
 
+   flex: 1;
+  margin-left: 220px !important; 
+  background: var(--bg-light);
+  transition: all 0.3s ease;
+}
 
+/* स्टेट कार्ड्स और अन्य डिज़ाइन */
 .statCard {
-  background: var(--bg-white);
+  background: white;
   padding: 25px;
   border-radius: 16px;
   border: 1px solid var(--border-light);
@@ -26,13 +37,11 @@
   transform: translateY(-5px);
 }
 
-.mainContent {
-  margin-left: 220px; 
-}
-
+/* मोबाइल के लिए रिस्पॉन्सिव */
 @media (max-width: 768px) {
   .mainContent {
     margin-left: 0;
     width: 100%;
+    padding: 20px;
   }
 }

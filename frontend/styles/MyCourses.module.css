@@ -1,107 +1,102 @@
+/* MyCourses.module.css */
 
-
-
-/* .container {
-  padding: 20px;
-  width: 100%;
+.container {
+  padding: 40px;
+  background-color: var(--bg-white, #ffffff);
+  min-height: 100vh;
 }
-
-.header {
+.container {
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: var(--bg-white, #ffffff);
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
+  flex-direction: column;
 }
 
-.header h1 {
-  color: #1b5e20;
-  font-size: 1.8rem;
+.headerWrapper {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.primaryBtn {
-  background-color: #2e7d32;
-  color: white;
-  border: none;
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  border-bottom: 4px solid #FACC15; /* आपकी Yellow थीम */
+  display: inline-block;
+  padding-bottom: 10px;
+}
+
+.loader {
+  text-align: center;
+  margin-top: 50px;
+  color: #FACC15;
+  font-weight: bold;
+}
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.emptyState {
+  text-align: center;
+  grid-column: 1 / -1;
+  padding: 40px;
+}
+
+.emptyText {
+  color: #6B7280;
+  font-size: 18px;
+}
+
+.exploreBtn {
+  margin-top: 20px;
   padding: 10px 20px;
-  border-radius: 6px;
+  background-color: #FACC15;
+  border: none;
+  border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
+  transition: transform 0.2s;
 }
 
-
-.tableWrapper {
-  background: white;
-  border-radius: 10px;
-  border: 1px solid #e8f5e9;
-  overflow-x: auto; 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+.exploreBtn:hover {
+  transform: scale(1.05);
+  background-color: #eab308;
 }
 
-.courseTable {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 800px; 
+/* MyCourses.module.css */
+
+.container {
+  padding: 40px;
+  background-color: var(--bg-white, #ffffff);
+  min-height: 100vh;
 }
 
-.courseTable th {
-  background-color: #f1f8e9;
-  color: #2e7d32;
-  text-align: left;
-  padding: 15px;
-  font-weight: 600;
-  border-bottom: 2px solid #e8f5e9;
+.coursesGrid {
+  display: grid;
+  /* ✨ यही वो लाइन है जो एक लाइन में 3 कार्ड लाएगी */
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 30px; /* कार्ड्स के बीच की जगह */
+  margin-top: 40px;
+  max-width: 1200px; /* पेज को बहुत ज़्यादा फैलने से रोकने के लिए */
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.courseTable td {
-  padding: 15px;
-  border-bottom: 1px solid #f1f8e9;
-  color: #444;
-  vertical-align: middle;
+/* 📱 मोबाइल के लिए: एक लाइन में एक कार्ड */
+@media (max-width: 1024px) {
+  .coursesGrid {
+    grid-template-columns: repeat(2, 1fr); /* टैबलेट पर 2 */
+  }
 }
 
-.titleCell {
-  font-weight: 600;
-  color: #222;
+@media (max-width: 768px) {
+  .coursesGrid {
+    grid-template-columns: 1fr; /* मोबाइल पर 1 */
+  }
 }
-
-.priceCell {
-  font-weight: bold;
-  color: #2e7d32;
-}
-
-
-.statusBadge {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: bold;
-}
-
-.actionCell {
-  display: flex;
-  gap: 10px;
-}
-
-.editBtn {
-  background: none;
-  border: 1px solid #2e7d32;
-  color: #2e7d32;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.deleteBtn {
-  background: none;
-  border: 1px solid #d32f2f;
-  color: #d32f2f;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.deleteBtn:hover {
-  background-color: #ffebee;
-} */

@@ -184,7 +184,7 @@ function LessonContent({
   }
 
   return (
-    <>
+    <div> 
       {/* Header */}
       <div className={styles.lessonHeader}>
         <div className={styles.lessonHeaderMeta}>
@@ -265,7 +265,7 @@ function LessonContent({
       ) : (
         <div className={styles.completedBadge}>✓ Lesson Completed</div>
       )}
-    </>
+    </div>
   );
 }
 
