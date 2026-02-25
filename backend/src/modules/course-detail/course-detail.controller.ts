@@ -47,9 +47,9 @@ export class CourseDetailController {
    */
   @Post('lessons/:lessonId/complete')
   @ApiOperation({ summary: 'Mark a lesson as complete for a student' })
-  @ApiParam({ name: 'lessonId', description: 'Lesson ID', type: String })
+  @ApiParam({ name: 'lessonId', description: 'Lesson ID', type: Number })
   async markLessonComplete(
-    @Param('lessonId') lessonId: string,
+    @Param('lessonId') lessonId: number,
     @Req() req: any,
   ) {
     const studentId = req.user?.id || req.user?.userId;
@@ -74,4 +74,22 @@ async markCourseComplete(
     Number(studentId),
   );
 }
+
+@Post('/module/:moduleId/complete')
+@ApiOperation({ summary: 'Mark entire module as complete for a student' })
+@ApiParam({ name: 'moduleId', description: 'Module ID', type: Number })
+async markModuleComplete(
+  @Param('moduleId') moduleId: number,
+  @Req() req: any,
+) {
+  const studentId = req.user?.id || req.user?.userId;
+
+  return this.courseDetailService.markModuleCompleted(
+    Number(moduleId),
+    Number(studentId),
+  );
+}             
+   
+
+
 }
