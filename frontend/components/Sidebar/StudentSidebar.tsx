@@ -8,13 +8,38 @@ import {
   Flame, BookUser, NotepadText, Settings, LogOut,
   ChevronLeft, ChevronRight 
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@mui/material';
 
 const Sidebar = () => {
+  const router = useRouter();
   const pathname = usePathname();
-  // साइडबार के खुलने या बंद होने के लिए स्टेट
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+
+    // ✅ LOGOUT FUNCTION
+  const handleLogout = () => {
+    // 1️⃣ Clear localStorage
+    localStorage.clear();
+
+    // 2️⃣ Clear sessionStorage
+    sessionStorage.clear();
+
+    // 3️⃣ Clear all cookies
+    document.cookie.split(";").forEach((cookie) => {
+      const cookieName = cookie.split("=")[0].trim();
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+
+    // 4️⃣ Redirect to login page
+    router.push("/auth/student-login");
+
+    // 5️⃣ Optional hard refresh
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  };
 
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20}/>, path: '/student/student-dashboard' },
@@ -23,7 +48,6 @@ const Sidebar = () => {
     { name: 'Quizzes', icon: <GraduationCap size={20}/>, path: '/student/quiz-model' },
     { name: 'Learning Support', icon: <BookUser size={20}/>, path: '/student/learning-support' },
     { name: 'Settings', icon: <Settings size={20}/>, path: '/settings' },
-    { name: 'Logout', icon: <LogOut size={20}/>, path: '/logout' },
 
   ];
 
@@ -50,10 +74,10 @@ const Sidebar = () => {
       </nav>
 
       <div className={styles.logoutWrapper}>
-        <Link href="/logout" className={styles.logoutBtn}>
+        <Button href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className={styles.logoutBtn}>
           <LogOut size={20}/> 
           {!isCollapsed && <span>Logout</span>}
-        </Link>
+        </Button>
       </div>
     </aside>
   );
