@@ -1,14 +1,19 @@
 /* src/app/globals.css */
 
 :root {
-  --primary-yellow: #FACC15;
-  --primary-yellow-hover: #EAB308;
-  --bg-light: #F8FAFC;         
+  --primary-yellow: #6ad570;          /* Green */
+  --primary-yellow-hover: #4CAF50;    /* Light Green */
+
+  --bg-light: #E8F5E9;         
   --bg-white: #FFFFFF;       
-  --text-primary: #0F172A;    
-  --text-secondary: #64748B;  
-  --border-light: #E2E8F0;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  --text-primary: #1B5E20;    
+  --text-secondary: #607D8B;  
+
+  --border-light: #C8E6C9;
+
+  --shadow-sm: 0 1px 2px 0 rgba(46, 125, 50, 0.15);
+
   --transition-speed: 0.3s;
 }
 
