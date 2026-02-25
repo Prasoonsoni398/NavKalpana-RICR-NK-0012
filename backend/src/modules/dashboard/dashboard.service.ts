@@ -18,6 +18,9 @@ import { Quiz } from 'src/common/entities/quiz.entity';
 import { JobPost } from 'src/common/entities/job-post.entity';
 import { Alumni } from 'src/common/entities/alumni.entity';
 import { TopPerformer } from 'src/common/entities/top_performers.entity';
+import { ClassSession } from 'src/common/entities/class-session.entity';
+import { AttendanceRecord } from 'src/common/entities/attendance-record.entity';
+import { AttendanceStatus } from 'src/common/enums/attendance-status.enum';
 import e from 'express';
 
 @Injectable()
@@ -56,6 +59,11 @@ export class DashboardService {
     private alumniRepo: Repository<Alumni>,
     @InjectRepository(TopPerformer)
     private topPerformerRepo: Repository<TopPerformer>,
+    @InjectRepository(ClassSession)
+    private classSessionRepo: Repository<ClassSession>,
+
+    @InjectRepository(AttendanceRecord)
+    private attendanceRepo: Repository<AttendanceRecord>,
   ) {}
 
   // ✅ ADMIN DASHBOARD
@@ -83,6 +91,8 @@ export class DashboardService {
 
   //  STUDENT DASHBOARD
   async getStudentStats(userId: number) {
+    const user = await this.usersRepo.findOne({ where: { id: userId } });
+    if (!user) throw new Error('User not found');
     const enrollments = await this.enrollmentRepo.find({
       where: { student: { id: userId } },
       relations: ['course'],
@@ -140,35 +150,73 @@ export class DashboardService {
 
     const totalSkills = skills;
     const eventCalendar = await this.getCalendarEvents(userId);
-   const jobPosts = await this.jobpostRepo.find({
-  relations: ['company'],   
-  order: { createdAt: 'DESC' },
-  take: 4,
-});
- const alumni = await this.alumniRepo.find({
-  order: { id: 'DESC' },
-  take: 4,
-});
+    const jobPosts = await this.jobpostRepo.find({
+      relations: ['company'],
+      order: { createdAt: 'DESC' },
+      take: 4,
+    });
+    const alumni = await this.alumniRepo.find({
+      order: { id: 'DESC' },
+      take: 4,
+    });
 
- const topPerformers = await this.topPerformerRepo.find({
-  order: { score: 'DESC' },
-  take: 6,
-});
+    const topPerformers = await this.topPerformerRepo.find({
+      order: { score: 'DESC' },
+      take: 6,
+    });
+
+    // ==============================
+    // 📌 ATTENDANCE CALCULATION
+    // ==============================
+
+    const totalSessions =
+      courseIds.length === 0
+        ? 0
+        : await this.classSessionRepo.count({
+            where: {
+              course: {
+                id: In(courseIds),
+              },
+            },
+          });
+
+    const presentCount = await this.attendanceRepo.count({
+      where: {
+        student: { id: userId },
+        status: AttendanceStatus.PRESENT,
+      },
+    });
+
+    const performanceHeatmap = await this.getPerformanceHeatmap(userId);
+    const attendancePercentage =
+      totalSessions === 0
+        ? 0
+        : Math.round((presentCount / totalSessions) * 100);
+
+        const resumeLesson = await this.getResumeLesson(userId);
 
     return {
       greeting: this.getGreeting(),
+      studentName: user.name,
       academicScore,
+      attendance: {
+        present: presentCount,
+        total: totalSessions,
+        percentage: attendancePercentage,
+      },
       assignments: {
         completed: completedAssignments,
         total: totalAssignments,
       },
       learningStreak,
+      resumeLesson,
       weeklyActivity,
       totalSkills,
       eventCalendar,
       jobPosts,
       alumni,
-      topPerformers
+      topPerformers,
+      performanceHeatmap,
     };
   }
 
@@ -344,6 +392,73 @@ export class DashboardService {
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
   }
+
+  async getPerformanceHeatmap(userId: number) {
+    const logs = await this.studentActivityLogRepo
+      .createQueryBuilder('log')
+      .select('DATE(log.created_at)', 'date')
+      .addSelect(
+        "COALESCE(SUM((log.metadata_json->>'duration')::numeric), 0)",
+        'totalHours',
+      )
+      .where('log.student_id = :userId', { userId })
+      .andWhere('log.entity_type = :entityType', {
+        entityType: ActivityEntityType.LESSON,
+      })
+      .groupBy('DATE(log.created_at)')
+      .orderBy('DATE(log.created_at)', 'ASC')
+      .getRawMany();
+
+    const totalYearHours = logs.reduce(
+      (sum, row) => sum + Number(row.totalhours || row.totalHours),
+      0,
+    );
+
+    return {
+      totalYearHours: Math.round(totalYearHours),
+      data: logs.map((row) => ({
+        date: row.date,
+        hours: Number(row.totalhours || row.totalHours),
+      })),
+    };
+  }
+
+  async getResumeLesson(userId: number) {
+  // 1️⃣ Get last opened lesson log
+  const lastOpenedLog = await this.studentActivityLogRepo
+    .createQueryBuilder('log')
+    .where('log.student_id = :userId', { userId })
+    .andWhere('log.activity_type = :type', {
+      type: StudentActivityType.OPENED,
+    })
+    .andWhere('log.entity_type = :entityType', {
+      entityType: ActivityEntityType.LESSON,
+    })
+    .orderBy('log.created_at', 'DESC')
+    .getOne();
+
+  if (!lastOpenedLog) return null;
+
+  // 2️⃣ Fetch lesson manually using entityId
+  const lesson = await this.assignmentRepo.manager
+    .getRepository('Lesson') // or inject Lesson repository if you have it
+    .createQueryBuilder('lesson')
+    .leftJoinAndSelect('lesson.module', 'module')
+    .leftJoinAndSelect('module.course', 'course')
+    .where('lesson.id = :lessonId', {
+      lessonId: lastOpenedLog.entityId,
+    })
+    .getOne();
+
+  if (!lesson) return null;
+
+  return {
+    lessonId: lesson.id,
+    lessonTitle: lesson.title,
+    courseId: lesson.module.course.id,
+    courseTitle: lesson.module.course.title,
+  };
+}
   //  TEACHER DASHBOARD
   async getTeacherStats(userId: number) {
     return {

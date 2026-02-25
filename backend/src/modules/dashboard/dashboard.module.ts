@@ -17,11 +17,14 @@ import { UserSkill } from '../../common/entities/user-skill.entity';
 import { JobPost } from 'src/common/entities/job-post.entity';
 import { Alumni } from 'src/common/entities/alumni.entity';
 import { TopPerformer } from 'src/common/entities/top_performers.entity';
+import { ClassSession } from 'src/common/entities/class-session.entity';
+import { AttendanceRecord } from 'src/common/entities/attendance-record.entity';
+import { AttendanceStatus } from 'src/common/enums/attendance-status.enum';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Course,Enrollment,CourseProgress,Assignment,AssignmentSubmission,Quiz,QuizAttempt,StudentActivityLog,UserSkill,JobPost,Alumni,TopPerformer]),
+    TypeOrmModule.forFeature([User, Course,Enrollment,CourseProgress,Assignment,AssignmentSubmission,Quiz,QuizAttempt,StudentActivityLog,UserSkill,JobPost,Alumni,TopPerformer,ClassSession,AttendanceRecord]),
   ],
   controllers: [DashboardController],
   providers: [DashboardService],
