@@ -43,7 +43,6 @@ export default function StudentLogin() {
         throw new Error("Token not received from server");
       }
 
-      // --- डेटा मर्जिंग: नाम और ईमेल को लोकल स्टोरेज में सेव करना ---
       const studentData = {
         name: res.user?.name || (res as any).student?.name || "Student",
         email: res.user?.email || (res as any).student?.email || form.email 
@@ -65,7 +64,6 @@ export default function StudentLogin() {
       toast.success("Welcome 🎉 Login successful!", { id: toastId });
 
       setTimeout(() => {
-        // आपके पुराने कोड के अनुसार डैशबोर्ड पाथ
         router.push("/student/student-dashboard");
       }, 1000);
 

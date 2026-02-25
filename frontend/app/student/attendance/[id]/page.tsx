@@ -36,7 +36,6 @@ export default function AttendancePage() {
   // Logic to highlight calendar days
   const tileClassName = ({ date, view }: any) => {
     if (view === "month") {
-      // Local date को YYYY-MM-DD फॉर्मेट में बदलने का सही तरीका
       const offset = date.getTimezoneOffset();
       const adjustedDate = new Date(date.getTime() - (offset * 60 * 1000));
       const dateStr = adjustedDate.toISOString().split("T")[0];
@@ -46,7 +45,6 @@ export default function AttendancePage() {
     }
   };
 
-  // --- Main Render (अब यह AttendancePage के अंदर है) ---
   return (
     <div className={styles.container}>
       <h1 className={styles.mainTitle}>Attendance <span>Dashboard</span></h1>

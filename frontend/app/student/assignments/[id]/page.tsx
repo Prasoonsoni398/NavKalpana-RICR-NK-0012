@@ -21,9 +21,6 @@ export default function AssignmentPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // ----------------------------
-  // Fetch Assignment + Submission
-  // ----------------------------
   const fetchData = async () => {
     if (!assignmentId) return;
 
@@ -45,9 +42,6 @@ export default function AssignmentPage() {
     fetchData();
   }, [assignmentId]);
 
-  // ----------------------------
-  // Submit Assignment
-  // ----------------------------
   const handleSubmit = async (formValues: {
     file?: File;
     textAnswer?: string;
@@ -60,7 +54,7 @@ export default function AssignmentPage() {
 
       let fileUrl: string | undefined;
 
-      // 1️⃣ Upload file first
+      // Upload file first
       if (formValues.file) {
         const uploadRes = await fileUploadService.uploadFile(
           formValues.file
@@ -68,7 +62,7 @@ export default function AssignmentPage() {
         fileUrl = uploadRes?.url || uploadRes?.fileUrl;
       }
 
-      // 2️⃣ Prepare FormData
+      //  Prepare FormData
       const formData = new FormData();
       if (fileUrl) formData.append("fileUrl", fileUrl);
       if (formValues.textAnswer)
@@ -76,10 +70,10 @@ export default function AssignmentPage() {
       if (formValues.externalLink)
         formData.append("externalLink", formValues.externalLink);
 
-      // 3️⃣ Submit
+      // Submit
       await assignmentService.submit(assignmentId, formData);
 
-      // 4️⃣ Refresh page data
+      //  Refresh page data
       await fetchData();
     } catch (error) {
       console.error("Submission error:", error);
@@ -88,9 +82,6 @@ export default function AssignmentPage() {
     }
   };
 
-  // ----------------------------
-  // Loading
-  // ----------------------------
   if (loading) {
     return (
       <div className={styles.container}>
