@@ -139,6 +139,7 @@ export default function AssignmentsPage() {
                 <p className={styles.courseName}>
                   {assignment.description}
                 </p>
+                <p>{assignment.deadline}</p>
 
                 {assignment.submission && (
                   <div className={styles.metaInfo}>

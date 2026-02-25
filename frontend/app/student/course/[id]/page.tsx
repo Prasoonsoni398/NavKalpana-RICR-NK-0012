@@ -29,6 +29,8 @@ const RESOURCE_LABEL: Record<string, string> = {
   video: 'Video', notes: 'Notes', quiz: 'Quiz', codelab: 'CodeLab',
 };
 
+
+
 function calcProgress(lessons: Array<{ completed: boolean }>) {
   if (!lessons.length) return 0;
   return Math.round((lessons.filter(l => l.completed).length / lessons.length) * 100);
