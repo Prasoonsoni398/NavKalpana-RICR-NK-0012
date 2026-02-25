@@ -2,41 +2,37 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import styles from "@/styles/Assignment.module.css";
+import styles from "@/styles/AssignmentDetails.module.css";
 import AssignmentHeader from "@/components/features/AssignmentHeader";
 import SubmissionSection from "@/components/features/SubmissionSection";
 import SubmissionDetails from "@/components/features/SubmissionDetails";
-import EvaluationSection from "@/components/features/EvaluationSection";
 import { assignmentService } from "@/services/assignment.services";
-import type { AssignmentWithSubmissionResponse } from "@/models/assignment-submission.model";
-
-interface DescriptionProps {
-  description: string;
-}
-
-function LocalAssignmentDescription({ description }: DescriptionProps) {
-  return (
-    <div style={{ padding: '20px', backgroundColor: '#fff', borderRadius: '8px', marginTop: '20px', border: '1px solid #e2e8f0' }}>
-      <h3 style={{ marginBottom: '10px', color: '#1e293b' }}>Assignment Description</h3>
-      <p style={{ color: '#475569', lineHeight: '1.6' }}>{description}</p>
-    </div>
-  );
-}
-
-
+import { fileUploadService } from "@/services/fileupload.services";
+import type {
+  AssignmentWithSubmissionResponse,
+} from "@/models/assignment-submission.model";
 
 export default function AssignmentPage() {
   const params = useParams();
   const assignmentId = params?.id ? Number(params.id) : null;
 
-  const [data, setData] = useState<AssignmentWithSubmissionResponse | null>(null);
+  const [data, setData] =
+    useState<AssignmentWithSubmissionResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showEvaluation, setShowEvaluation] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
+  // ----------------------------
+  // Fetch Assignment + Submission
+  // ----------------------------
   const fetchData = async () => {
     if (!assignmentId) return;
+
     try {
-      const response = await assignmentService.getAssignmentWithSubmission(assignmentId);
+      setLoading(true);
+      const response =
+        await assignmentService.getAssignmentWithSubmission(
+          assignmentId
+        );
       setData(response);
     } catch (error) {
       console.error("Fetch error:", error);
@@ -49,60 +45,135 @@ export default function AssignmentPage() {
     fetchData();
   }, [assignmentId]);
 
-  // Submit assignment
-  const handleSubmit = async (formData: FormData) => {
+  // ----------------------------
+  // Submit Assignment
+  // ----------------------------
+  const handleSubmit = async (formValues: {
+    file?: File;
+    textAnswer?: string;
+    externalLink?: string;
+  }) => {
     if (!assignmentId) return;
+
     try {
+      setSubmitting(true);
+
+      let fileUrl: string | undefined;
+
+      // 1️⃣ Upload file first
+      if (formValues.file) {
+        const uploadRes = await fileUploadService.uploadFile(
+          formValues.file
+        );
+        fileUrl = uploadRes?.url || uploadRes?.fileUrl;
+      }
+
+      // 2️⃣ Prepare FormData
+      const formData = new FormData();
+      if (fileUrl) formData.append("fileUrl", fileUrl);
+      if (formValues.textAnswer)
+        formData.append("textAnswer", formValues.textAnswer);
+      if (formValues.externalLink)
+        formData.append("externalLink", formValues.externalLink);
+
+      // 3️⃣ Submit
       await assignmentService.submit(assignmentId, formData);
-      await fetchData(); // डेटा रिफ्रेश करें
+
+      // 4️⃣ Refresh page data
+      await fetchData();
     } catch (error) {
       console.error("Submission error:", error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (loading) return <div className={styles.container}><p>Loading...</p></div>;
-  if (!data || !data.assignment) return <div className={styles.container}><p>No assignment found</p></div>;
+  // ----------------------------
+  // Loading
+  // ----------------------------
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loadingState}>
+          Loading assignment details...
+        </div>
+      </div>
+    );
+  }
+
+  if (!data || !data.assignment) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loadingState}>
+          No assignment found.
+        </div>
+      </div>
+    );
+  }
 
   const { assignment, submission, isSubmitted } = data;
-  const status = submission?.status?.toUpperCase();
 
   return (
     <div className={styles.container}>
-      {/* Header section */}
+      
+      {/* ================= HEADER ================= */}
       <AssignmentHeader
-        title={assignment.title || "Untitled Assignment"}
+        title={assignment.title}
         deadline={new Date(assignment.deadline)}
-        status={submission?.status || "Not Submitted"}
+        status={
+          submission?.status
+            ? submission.status
+            : "NOT_SUBMITTED"
+        }
       />
 
-      {/* Description section - Using local fixed component */}
-      <LocalAssignmentDescription description={assignment.description || "No description provided."} />
+      {/* ================= DESCRIPTION CARD ================= */}
+      <div className={`${styles.card} ${styles.descriptionBox}`}>
+        <h3>Assignment Description</h3>
+        <p>{assignment.description}</p>
+      </div>
 
-      {/* Submission logic */}
+      {/* ================= SUBMISSION SECTION ================= */}
+
       {!isSubmitted && (
-        <SubmissionSection onSubmit={handleSubmit} />
+        <div className={styles.card}>
+          <SubmissionSection
+            onSubmit={handleSubmit}
+            submitting={submitting}
+          />
+        </div>
       )}
 
       {isSubmitted && submission && (
-        <div style={{ marginTop: '20px' }}>
+        <div className={styles.card}>
+
+          {/* Submitted Details */}
           <SubmissionDetails submission={submission} />
 
-          {/* Evaluate Button */}
-          {status === "SUBMITTED" && (
-            <div className={styles.evaluateWrapper}>
-              <button
-                className={styles.evaluateBtn}
-                onClick={() => setShowEvaluation(true)}
-              >
-                Evaluate Assignment
-              </button>
+          {/* Pending */}
+          {submission.status === "PENDING" && (
+            <div className={styles.pendingBox}>
+              ⏳ Your submission is under review.
             </div>
           )}
 
-          {/* Show Evaluation Section After Click */}
-          {showEvaluation && (
-            <EvaluationSection submission={submission} />
+          {/* Evaluated */}
+          {submission.status === "EVALUATED" && (
+            <div className={styles.evaluatedBox}>
+              <h4>Evaluation Result</h4>
+
+              <p>
+                <strong>Marks:</strong>{" "}
+                {submission.marks ?? 0}
+              </p>
+
+              <p>
+                <strong>Feedback:</strong>{" "}
+                {submission.feedback ?? "No feedback provided."}
+              </p>
+            </div>
           )}
+
         </div>
       )}
     </div>

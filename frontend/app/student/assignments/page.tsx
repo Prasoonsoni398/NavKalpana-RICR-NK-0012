@@ -1,163 +1,173 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Upload, X, Link as LinkIcon, MessageSquare, FileText, CheckCircle } from "lucide-react";
-import { courseService } from "@/services/user.services";
+import React, { useEffect, useState, useMemo } from "react";
+import {
+  FileText,
+  CheckCircle,
+  Clock,
+  Search,
+} from "lucide-react";
+import { assignmentService } from "@/services/assignment.services";
 import styles from "@/styles/Assignment.module.css";
+import { useRouter } from "next/navigation";
 
 export default function AssignmentsPage() {
+  const router = useRouter();
   const [assignments, setAssignments] = useState<any[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAssignment, setSelectedAssignment] = useState<any>(null);
-  
-  // Form States
-  const [file, setFile] = useState<File | null>(null);
-  const [externalLink, setExternalLink] = useState("");
-  const [textAnswer, setTextAnswer] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
 
-  // Fetch assignments on mount
   useEffect(() => {
-    const fetchList = async () => {
+    const fetchAssignments = async () => {
       try {
-        const data = await courseService.getAllAssignments();
+        const data = await assignmentService.getAll();
         setAssignments(data || []);
-      } catch (err) {
-        console.error("Failed to fetch assignments");
+      } catch (error) {
+        console.error("Failed to fetch assignments", error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchList();
+
+    fetchAssignments();
   }, []);
 
-  const openSubmitModal = (assignment: any) => {
-    setSelectedAssignment(assignment);
-    setIsModalOpen(true);
-  };
+ const handleCardClick = (assignment: any) => {
+  if (assignment.submission) {
+    router.push(`/student/assignments/${assignment.id}/view`);
+  } else {
+    router.push(`/student/assignments/${assignment.id}/submit`);
+  }
+};
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedAssignment) return;
+  // 🔥 Filtering + Search Logic
+  const filteredAssignments = useMemo(() => {
+    return assignments
+      .filter((a) =>
+        a.title.toLowerCase().includes(search.toLowerCase())
+      )
+      .filter((a) => {
+        if (filter === "completed") return !!a.submission;
+        if (filter === "pending") return !a.submission;
+        return true;
+      });
+  }, [assignments, search, filter]);
 
-    try {
-      setSubmitting(true);
-      let finalFileUrl = "";
+  const completedCount = assignments.filter(a => a.submission).length;
+  const pendingCount = assignments.length - completedCount;
 
-      // 1. File Upload (using the fixed service function)
-      if (file) {
-        const uploadRes = await courseService.uploadFile(file);
-        finalFileUrl = uploadRes.url || uploadRes.fileUrl; 
-      }
-
-      // 2. Payload Division (Exact Swagger Match)
-      const submissionPayload = {
-        fileUrl: finalFileUrl,
-        textAnswer: textAnswer || "No description provided",
-        externalLink: externalLink
-      };
-
-      // 3. API Call with Path ID
-      await courseService.submitAssignment(selectedAssignment.id, submissionPayload);
-      
-      alert("असाइनमेंट सबमिट हो गया! ✅");
-      setIsModalOpen(false);
-      
-      // Reset Form
-      setFile(null);
-      setExternalLink("");
-      setTextAnswer("");
-    } catch (error: any) {
-      console.error("❌ Submission Error:", error.response?.data || error.message);
-      alert("सबमिशन फेल! कंसोल चेक करें।");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  if (loading) {
+    return <p className={styles.loading}>Loading assignments...</p>;
+  }
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <h1>My Assignments</h1>
-        <p>Complete your tasks and track your progress</p>
-      </header>
+      {/* Header */}
+      <div className={styles.header}>
+        <div>
+          <h1>My Assignments</h1>
+          <p>Track your assignment status</p>
+        </div>
 
-      <div className={styles.grid}>
-        {/* Example Card - Mapping assignments logic should be here */}
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-             <div className={styles.iconBg}><FileText size={24} /></div>
-             <span className={styles.statusBadge}>PENDING</span>
+        {/* Stats */}
+        <div className={styles.statsRow}>
+          <div className={styles.statBox}>
+            <span className={styles.statVal}>{assignments.length}</span>
+            <span className={styles.statLab}>Total</span>
           </div>
-          <h3>React Project Submission</h3>
-          <p className={styles.courseName}>Frontend Development</p>
-          <button 
-            className={styles.submitBtn} 
-            onClick={() => openSubmitModal({id: "1", title: "React Project"})}
-          >
-            <Upload size={16} /> Submit Now
-          </button>
+          <div className={styles.statBox}>
+            <span className={styles.statVal}>{completedCount}</span>
+            <span className={styles.statLab}>Completed</span>
+          </div>
+          <div className={styles.statBox}>
+            <span className={styles.statVal}>{pendingCount}</span>
+            <span className={styles.statLab}>Pending</span>
+          </div>
         </div>
       </div>
 
-      {/* 🆕 MODAL SECTION */}
-      {isModalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <div className={styles.modalHeader}>
-              <h2>Submit: {selectedAssignment?.title}</h2>
-              <button className={styles.closeBtn} onClick={() => setIsModalOpen(false)}><X size={20} /></button>
-            </div>
+      {/* Controls */}
+      <div className={styles.controls}>
+        <div className={styles.searchBar}>
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Search assignments..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
-            <form onSubmit={handleSubmit} className={styles.modalForm}>
-              {/* File Input */}
-              <div className={styles.inputGroup}>
-                <label>Upload Assignment File</label>
-                <div className={styles.fileDropZone}>
-                  <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} className={styles.fileInput} />
-                  <div className={styles.dropZoneContent}>
-                    <Upload size={24} color="var(--primary-hover)" />
-                    <p>{file ? file.name : "Choose a file or drag here"}</p>
+        <div className={styles.filterGroup}>
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Cards */}
+      <div className={styles.grid}>
+        {filteredAssignments.length === 0 ? (
+          <p>No assignments found.</p>
+        ) : (
+          filteredAssignments.map((assignment) => (
+            <div key={assignment.id} className={styles.card}>
+              <div className={styles.cardHeader}>
+                <div className={`${styles.iconBg} ${styles.bgYellow}`}>
+                  <FileText size={20} />
+                </div>
+
+                <span
+                  className={`${styles.statusBadge} ${
+                    assignment.submission
+                      ? styles.completed
+                      : styles.pending
+                  }`}
+                >
+                  {assignment.submission ? "COMPLETED" : "PENDING"}
+                </span>
+              </div>
+
+              <div className={styles.cardBody}>
+                <h3>{assignment.title}</h3>
+                <p className={styles.courseName}>
+                  {assignment.description}
+                </p>
+
+                {assignment.submission && (
+                  <div className={styles.metaInfo}>
+                    <div className={styles.metaItem}>
+                      <CheckCircle size={16} />
+                      Marks:{" "}
+                      {assignment.submission.marks ?? "Not Evaluated"}
+                    </div>
+                    <div className={styles.metaItem}>
+                      <Clock size={16} />
+                      Feedback:{" "}
+                      {assignment.submission.feedback ??
+                        "No feedback yet"}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
-              {/* Text Answer */}
-              <div className={styles.inputGroup}>
-                <label>Short Description (textAnswer)</label>
-                <div className={styles.linkInputWrapper}>
-                  <MessageSquare size={18} />
-                  <input 
-                    type="text" 
-                    placeholder="Write your notes here..." 
-                    value={textAnswer}
-                    onChange={(e) => setTextAnswer(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* External Link */}
-              <div className={styles.inputGroup}>
-                <label>Project Link (externalLink)</label>
-                <div className={styles.linkInputWrapper}>
-                  <LinkIcon size={18} />
-                  <input 
-                    type="url" 
-                    placeholder="https://github.com/your-project" 
-                    value={externalLink}
-                    onChange={(e) => setExternalLink(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className={styles.modalActions}>
-                <button type="button" className={styles.cancelBtn} onClick={() => setIsModalOpen(false)}>Cancel</button>
-                <button type="submit" className={styles.confirmBtn} disabled={submitting}>
-                  {submitting ? "Submitting..." : "Confirm Submission"}
+              <div className={styles.cardFooter}>
+                <button className={styles.submitBtn} onClick={() => handleCardClick(assignment)}>
+                  {assignment.submission
+                    ? "View Submission"
+                    : "Submit Assignment"}
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
