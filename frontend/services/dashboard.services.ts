@@ -2,18 +2,47 @@
 import axios from "axios";
 
 export const dashboardService = {
-  getUserStats: async () => {
-    const res = await axios.get("/api/user/stats");
-    return res.data;
-  },
-  
-  getLeaderboard: async () => {
-    const res = await axios.get("/api/user/leaderboard");
+  getStudentDashboard: async (token?: string) => {
+    const res = await axios.get("/api/user/student-dashboard", {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : {},
+    });
     return res.data;
   },
 
-  getUpcomingEvents: async () => {
-    const res = await axios.get("/api/user/upcoming-events");
+  getUserStats: async (token?: string) => {
+    const res = await axios.get("/api/user/stats", {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : {},
+    });
     return res.data;
-  }
+  },
+
+  getLeaderboard: async (token?: string) => {
+    const res = await axios.get("/api/user/leaderboard", {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : {},
+    });
+    return res.data;
+  },
+
+  getUpcomingEvents: async (token?: string) => {
+    const res = await axios.get("/api/user/upcoming-events", {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : {},
+    });
+    return res.data;
+  },
 };

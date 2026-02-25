@@ -3,7 +3,6 @@
 import { useState } from "react";
 import styles from "@/styles/ChangePassword.module.css";
 import { FiEye } from "react-icons/fi";
-// import { userService } from "@/services/user.services";
 
 export default function ChangePassword() {
   const [current, setCurrent] = useState("");
@@ -30,7 +29,7 @@ export default function ChangePassword() {
     newPass === confirm &&
     current.length > 0;
 
-  // ✅ API CALL ADDED HERE
+  //  API CALL ADDED HERE
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
@@ -40,11 +39,6 @@ export default function ChangePassword() {
     setMessage("");
 
     try {
-      // const res = await userService.changepassword({
-      //   oldpassword: current,
-      //   newpassword: newPass,
-      //   confirmpassword:confirm,
-      // });
 
       setMessage( "Password updated successfully!");
       setCurrent("");

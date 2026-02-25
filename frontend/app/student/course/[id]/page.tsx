@@ -573,8 +573,6 @@ export default function CoursePage() {
 
         const data = await courseDetailsService.getAll(courseId);
         const course = Array.isArray(data) ? data[0] : data;
-
-        // Map modules -> lessons -> resources to ensure type safety
         const fixedModules = course.modules.map((mod: Module) => ({
           ...mod,
           lessons: mod.lessons.map((lesson: Lesson) => ({
@@ -583,19 +581,17 @@ export default function CoursePage() {
               ...res,
               type: ["video", "notes", "quiz", "codelab"].includes(res.type)
                 ? (res.type as "video" | "notes" | "quiz" | "codelab")
-                : "notes", // fallback default
+                : "notes", 
             })),
           })),
         }));
 
-        // Set course state with fixed modules
         setCourse({
           ...course,
           modules: fixedModules,
           thumbnailUrl: course.thumbnailUrl ?? null,
         });
 
-        // Prepare lesson completion states
         const states: Record<number, boolean> = {};
         fixedModules.forEach((mod: Module) =>
           mod.lessons.forEach((l: Lesson) => {
@@ -652,7 +648,7 @@ export default function CoursePage() {
     <>
       <div className={styles.shell}>
 
-        {/* ── TOP BAR ─────────────────────────────────────────────────────── */}
+        {/* ── TOP BAR ── */}
         <div className={styles.topbar}>
           <div className={styles.topbarBreadcrumb}>
             <a href="/student/my-courses" className={styles.topbarLink}>My Courses</a>
@@ -662,7 +658,7 @@ export default function CoursePage() {
           <div className={styles.topbarSpacer} />
         </div>
 
-        {/* ── 3-PANEL BODY ────────────────────────────────────────────────── */}
+        {/* ── 3-PANEL BODY ── */}
         <div className={styles.body}>
 
           {/* LEFT — module + lesson tree */}
