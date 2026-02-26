@@ -25,36 +25,36 @@ interface Quiz {
 export default function QuizPage() {
   const params = useParams();
   const router = useRouter();
-
   const quizId = Number(params.id);
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [current, setCurrent] = useState(0);
 
+  const [finalScore, setFinalScore] =
+    useState<number | null>(null);
+
   /* ================= LOAD QUIZ ================= */
 
   useEffect(() => {
-    const loadQuiz = async () => {
-      try {
-        console.log("Loading quiz:", quizId);
+    const init = async () => {
+      const quizData = await quizService.getById(quizId);
+      setQuiz(quizData);
 
-        const data = await quizService.getById(quizId);
-
-        console.log("Quiz Data:", data);
-
-        if (!data) {
-          alert("Quiz not found");
-          router.push("/student/quiz-model");
-          return;
-        }
-
-        setQuiz(data);
-        setTimeLeft(data.durationMinutes * 60);
-      } catch (error) {
-        console.error("Load error:", error);
-        alert("Error loading quiz");
+      // ✅ If already attempted → show score
+      if (quizData.scorePercentage !== null && quizData.scorePercentage !== undefined) {
+        setFinalScore(quizData.scorePercentage);
+        return;
       }
+
+      // Otherwise start attempt
+      const attempt = await quizService.startAttempt({
+        quizId,
+        studentId: 1,
+      });
+
+      setAttemptId(attempt.id);
+      setTimeLeft(quizData.durationMinutes * 60);
     };
 
     if (quizId) loadQuiz();
@@ -74,13 +74,76 @@ export default function QuizPage() {
 
   /* ================= LOADING ================= */
 
-  if (!quiz || timeLeft === null) {
+  /* ================= SUBMIT QUIZ ================= */
+
+  const submitQuiz = async () => {
+    if (!attemptId || !quiz) return;
+
+    const formatted: Answer[] =
+      Object.entries(answers).map(([qId, opts]) => ({
+        questionId: Number(qId),
+        selectedOptionIds: opts,
+      }));
+
+    const result = await quizService.submitAttempt({
+      attemptId,
+      answers: formatted,
+    });
+
+    setFinalScore(result.scorePercentage);
+  };
+
+  /* ================= LOADING ================= */
+
+  if (!quiz)
+    return <div className={styles.centered}>Loading...</div>;
+
+  /* ===================================================
+     ✅ SCORE VIEW (If Already Submitted OR Just Finished)
+  =================================================== */
+
+  if (finalScore !== null) {
+    const passed = finalScore >= 50;
+
     return (
-      <div className={styles.centered}>
-        <p>Loading quiz...</p>
+      <div className={styles.overlay}>
+        <div className={styles.modal}>
+          <div className={styles.resultCard}>
+            <h2>Quiz Completed 🎉</h2>
+
+            <div
+              className={styles.score}
+              style={{
+                color: passed ? "#22c55e" : "#ef4444",
+              }}
+            >
+              {finalScore}%
+            </div>
+
+            <p>
+              {passed
+                ? "Congratulations! You passed."
+                : "You did not pass. Try again."}
+            </p>
+
+            <button
+              className={`${styles.btn} ${styles.nextBtn}`}
+              onClick={() => router.push("/student/quiz-model")}
+            >
+              Back to Quizzes
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
+
+  /* ===================================================
+     NORMAL QUIZ FLOW
+  =================================================== */
+
+  if (timeLeft === null)
+    return <div className={styles.centered}>Loading...</div>;
 
   const question = quiz.questions[current];
 
@@ -96,7 +159,7 @@ export default function QuizPage() {
           <div className={styles.timer}>{timeLeft}s</div>
         </div>
 
-        {/* Progress */}
+        {/* PROGRESS */}
         <div className={styles.progressTrack}>
           <div
             className={styles.progressFill}
@@ -104,7 +167,27 @@ export default function QuizPage() {
           />
         </div>
 
-        {/* Question */}
+        {/* QUESTION NAV */}
+        <div className={styles.questionBar}>
+          {quiz.questions.map((q, index) => {
+            const answered = answers[q.id];
+
+            return (
+              <button
+                key={q.id}
+                className={`${styles.qBtn}
+                  ${current === index ? styles.qActive : ""}
+                  ${answered ? styles.qAnswered : ""}
+                `}
+                onClick={() => setCurrent(index)}
+              >
+                {index + 1}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* QUESTION */}
         <div className={styles.question}>
           {current + 1}. {question.question}
         </div>

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { Course } from '../../common/entities/course.entity';
 import { Module as CourseModule } from '../../common/entities/module.entity';
 import { Lesson } from '../../common/entities/lesson.entity';
@@ -10,7 +11,7 @@ import { CourseProgress } from '../../common/entities/course_progress.entity';
 import { User } from 'src/common/entities/user.entity';
 import { StudentActivityType } from '../../common/enums/student-activity-type.enum';
 import { ActivityEntityType } from '../../common/enums/activity-entity-type.enum';
-import { StudentActivityLog } from 'src/common/entities/student-activity-log.entity';
+import { StudentActivityServiceService } from '../student-activity-service/student-activity-service.service';
 
 @Injectable()
 export class CourseDetailService {
@@ -29,217 +30,196 @@ export class CourseDetailService {
     private readonly courseProgressRepo: Repository<CourseProgress>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-    @InjectRepository(StudentActivityLog)
-    private readonly studentActivityLogRepo: Repository<StudentActivityLog>,
+    private readonly studentActivityService: StudentActivityServiceService, // 🔹 inject global service
   ) {}
 
   async getCourseDetail(courseId: number, studentId?: number) {
-  const student = await this.userRepo.findOne({
-    where: { id: studentId, role: 'STUDENT' },
-  });
+    const student = await this.userRepo.findOne({
+      where: { id: studentId, role: 'STUDENT' },
+    });
 
-  if (!student) {
-    throw new BadRequestException('Student not found');
-  }
+    if (!student) throw new BadRequestException('Student not found');
 
-  const course = await this.courseRepo.findOne({
-    where: { id: courseId },
-    relations: [
-      'modules',
-      'modules.lessons',
-      'modules.lessons.resources',
-    ],
-  });
+    const course = await this.courseRepo.findOne({
+      where: { id: courseId },
+      relations: ['modules', 'modules.lessons', 'modules.lessons.resources'],
+    });
 
-  if (!course) throw new NotFoundException('Course not found');
+    if (!course) throw new NotFoundException('Course not found');
 
-  // ✅ LOG COURSE OPENED
-  await this.studentActivityLogRepo.save({
-    student: { id: studentId },
-    activityType: StudentActivityType.OPENED,
-    entityType: ActivityEntityType.COURSE,
-    entityId: Number(courseId),
-  });
+    // 🔹 LOG COURSE OPENED via service
+    await this.studentActivityService.logActivity(
+      student.id,
+      StudentActivityType.OPENED,
+      ActivityEntityType.COURSE,
+      courseId,
+    );
 
-  const lessonProgress = await this.lessonProgressRepo.find({
-    where: { student: { id: studentId } },
-    relations: ['lesson'],
-  });
+    const lessonProgress = await this.lessonProgressRepo.find({
+      where: { student: { id: studentId } },
+      relations: ['lesson'],
+    });
 
-  const lessonProgressMap: Record<number, boolean> = {};
-  lessonProgress.forEach(lp => {
-    if (lp.lesson) {
-      lessonProgressMap[lp.lesson.id] = lp.completed;
-    }
-  });
+    const lessonProgressMap: Record<number, boolean> = {};
+    lessonProgress.forEach(lp => {
+      if (lp.lesson) lessonProgressMap[lp.lesson.id] = lp.completed;
+    });
 
-  let totalLessonsCount = 0;
-  let totalCompletedCount = 0;
+    let totalLessonsCount = 0;
+    let totalCompletedCount = 0;
 
-  const modules = course.modules.map(module => {
-    const lessons = module.lessons.map(lesson => {
-      const completed = lessonProgressMap[lesson.id] || false;
+    const modules = course.modules.map(module => {
+      const lessons = module.lessons.map(lesson => {
+        const completed = lessonProgressMap[lesson.id] || false;
 
-      totalLessonsCount++;
-      if (completed) totalCompletedCount++;
+        totalLessonsCount++;
+        if (completed) totalCompletedCount++;
+
+        return {
+          id: lesson.id,
+          title: lesson.title,
+          difficulty: lesson.difficulty,
+          completed,
+          progress: completed ? 100 : 0,
+          resources: lesson.resources.map(r => ({
+            id: r.id,
+            type: r.resourceType,
+            title: r.title,
+            url: r.resourceUrl,
+            metadata: r.metadataJson,
+          })),
+        };
+      });
+
+      const completedCount = lessons.filter(l => l.completed).length;
+      const moduleProgress = lessons.length
+        ? Math.round((completedCount / lessons.length) * 100)
+        : 0;
 
       return {
-        id: lesson.id,
-        title: lesson.title,
-        difficulty: lesson.difficulty,
-        completed,
-        progress: completed ? 100 : 0,
-        resources: lesson.resources.map(r => ({
-          id: r.id,
-          type: r.resourceType,
-          title: r.title,
-          url: r.resourceUrl,
-          metadata: r.metadataJson,
-        })),
+        id: module.id,
+        title: module.title,
+        position: module.position,
+        progress: moduleProgress,
+        lessons,
       };
     });
 
-    const completedCount = lessons.filter(l => l.completed).length;
-
-    const moduleProgress = lessons.length
-      ? Math.round((completedCount / lessons.length) * 100)
+    const progress = totalLessonsCount
+      ? Math.round((totalCompletedCount / totalLessonsCount) * 100)
       : 0;
 
     return {
-      id: module.id,
-      title: module.title,
-      position: module.position,
-      progress: moduleProgress,
-      lessons,
+      id: course.id,
+      title: course.title,
+      description: course.description,
+      instructorName: course.instructorName,
+      thumbnailUrl: course.thumbnailUrl,
+      isPublished: course.isPublished,
+      progress,
+      modules,
     };
-  });
+  }
 
-  // ✅ Calculate course progress dynamically
-  const progress = totalLessonsCount
-    ? Math.round((totalCompletedCount / totalLessonsCount) * 100)
-    : 0;
-
-  return {
-    id: course.id,
-    title: course.title,
-    description: course.description,
-    instructorName: course.instructorName,
-    thumbnailUrl: course.thumbnailUrl,
-    isPublished: course.isPublished,
-    progress,
-    modules,
-  };
-}
-async markLessonCompleted(
-  lessonId: string,
-  studentId: number,
-) {
-  const lesson = await this.lessonRepo.findOne({
-    where: { id: lessonId },
-    relations: ['module', 'module.course'],
-  });
-
-  if (!lesson) throw new NotFoundException('Lesson not found');
-
-  let lessonProgress = await this.lessonProgressRepo.findOne({
-    where: {
-      lesson: { id: lessonId },
-      student: { id: studentId },
-    },
-  });
-
-  if (!lessonProgress) {
-    lessonProgress = this.lessonProgressRepo.create({
-      lesson,
-      student: { id: studentId },
-      completed: true,
+  async markLessonCompleted(lessonId: number, studentId: number) {
+    const lesson = await this.lessonRepo.findOne({
+      where: { id: lessonId },
+      relations: ['module', 'module.course'],
     });
-  } else {
-    lessonProgress.completed = true;
-  }
+    if (!lesson) throw new NotFoundException('Lesson not found');
 
-  await this.lessonProgressRepo.save(lessonProgress);
-
-  const courseId = lesson.module.course.id;
-
-  const totalLessons = await this.lessonRepo.count({
-    where: {
-      module: { course: { id: courseId } },
-    },
-  });
-
-  const completedLessons = await this.lessonProgressRepo.count({
-    where: {
-      student: { id: studentId },
-      completed: true,
-      lesson: {
-        module: { course: { id: courseId } },
-      },
-    },
-  });
-
-  const progressPercentage = totalLessons
-    ? Math.round((completedLessons / totalLessons) * 100)
-    : 0;
-
-  let courseProgress = await this.courseProgressRepo.findOne({
-    where: {
-      course: { id: courseId },
-      student: { id: studentId },
-    },
-  });
-
-  if (!courseProgress) {
-    courseProgress = this.courseProgressRepo.create({
-      course: { id: courseId },
-      student: { id: studentId },
-      progressPercentage,
+    let lessonProgress = await this.lessonProgressRepo.findOne({
+      where: { lesson: { id: lessonId }, student: { id: studentId } },
     });
-  } else {
-    courseProgress.progressPercentage = progressPercentage;
+
+    if (!lessonProgress) {
+      lessonProgress = this.lessonProgressRepo.create({
+        lesson,
+        student: { id: studentId },
+        completed: true,
+      });
+    } else {
+      lessonProgress.completed = true;
+    }
+
+    await this.lessonProgressRepo.save(lessonProgress);
+
+    const courseId = lesson.module.course.id;
+    const totalLessons = await this.lessonRepo.count({
+      where: { module: { course: { id: courseId } } },
+    });
+    const completedLessons = await this.lessonProgressRepo.count({
+      where: { student: { id: studentId }, completed: true, lesson: { module: { course: { id: courseId } } } },
+    });
+    const progressPercentage = totalLessons
+      ? Math.round((completedLessons / totalLessons) * 100)
+      : 0;
+
+    let courseProgress = await this.courseProgressRepo.findOne({
+      where: { course: { id: courseId }, student: { id: studentId } },
+    });
+
+    if (!courseProgress) {
+      courseProgress = this.courseProgressRepo.create({
+        course: { id: courseId },
+        student: { id: studentId },
+        progressPercentage,
+      });
+    } else {
+      courseProgress.progressPercentage = progressPercentage;
+    }
+
+    await this.courseProgressRepo.save(courseProgress);
+
+    // 🔹 LOG LESSON COMPLETED via service
+    await this.studentActivityService.logActivity(
+      studentId,
+      StudentActivityType.COMPLETED,
+      ActivityEntityType.LESSON,
+      lessonId,
+      { courseId, progressPercentage }, // optional metadata
+    );
+
+    return { message: 'Lesson marked as completed', progressPercentage };
   }
 
-  await this.courseProgressRepo.save(courseProgress);
+  async markCourseCompleted(courseId: number, studentId: number) {
+    const lessons = await this.lessonRepo.find({
+      where: { module: { course: { id: courseId } } },
+      select: ['id'],
+    });
 
-  // ✅ LOG LESSON COMPLETED
-  await this.studentActivityLogRepo.save({
-    student: { id: studentId },
-    activityType: StudentActivityType.COMPLETED,
-    entityType: ActivityEntityType.LESSON,
-    entityId: Number(lessonId),
-    metadataJson: {
-      courseId,
-      progressPercentage,
-    },
-  });
+    if (!lessons.length) throw new NotFoundException('No lessons found for this course');
 
-  return {
-    message: 'Lesson marked as completed',
-    progressPercentage,
-  };
-}
+    await Promise.all(
+      lessons.map(lesson => this.markLessonCompleted(lesson.id, studentId)),
+    );
 
-async markCourseCompleted(courseId: number, studentId: number) {
-  const lessons = await this.lessonRepo.find({
-    where: { module: { course: { id: courseId } } },
-    select: ['id'],
-  });
-
-  if (!lessons.length) {
-    throw new NotFoundException('No lessons found for this course');
+    return { message: 'All lessons completed successfully' };
   }
 
-  await Promise.all(
-    lessons.map((lesson) =>
-      this.markLessonCompleted(lesson.id.toString(), studentId),
-    ),
-  );
+  async markModuleCompleted(moduleId: number, studentId: number) {
+    const module = await this.moduleRepo.findOne({
+      where: { id: moduleId },
+      relations: ['course', 'lessons'],
+    });
 
-  return {
-    message: 'All lessons completed successfully',
-  };
-}
+    if (!module) throw new NotFoundException('Module not found');
+    if (!module.lessons.length) throw new NotFoundException('No lessons found in this module');
 
+    await Promise.all(
+      module.lessons.map(lesson => this.markLessonCompleted(lesson.id, studentId)),
+    );
 
+    // 🔹 LOG MODULE COMPLETED via service
+    await this.studentActivityService.logActivity(
+      studentId,
+      StudentActivityType.COMPLETED,
+      ActivityEntityType.MODULE,
+      moduleId,
+      { courseId: module.course.id },
+    );
 
+    return { message: 'Module marked as completed successfully' };
+  }
 }

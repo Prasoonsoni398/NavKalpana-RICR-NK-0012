@@ -36,4 +36,16 @@ export class DashboardController {
     const userId = req.user?.id || req.user?.userId;
     return this.dashboardService.getTeacherStats(userId);
   }
+
+  // // ✅ ANALYTICS DASHBOARD
+  // @Get('analytics')
+  // @ApiOperation({ summary: 'Get detailed analytics for logged-in student' })
+  // @ApiResponse({ status: 200, description: 'Student analytics data' })
+  // async getAnalyticsDashboard(@Req() req: any) {
+  //   const userId = req.user?.id || req.user?.userId;
+  //   const analytics = await this.dashboardService.getStudentDashboardData(userId);
+  //   return {
+  //     data: analytics,  
+  //   }
+  // }
 }

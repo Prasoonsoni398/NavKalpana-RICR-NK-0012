@@ -1,172 +1,316 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
-  FileText,
-  CheckCircle,
+  Link2,
+  Type,
   Clock,
-  Search,
+  CheckCircle,
+  AlertCircle,
+  Award,
+  MessageSquare,
+  Upload,
+  Send,
+  Calendar,
+  AlertTriangle,
+  ChevronRight,
+  FileUp,
+  ExternalLink,
 } from "lucide-react";
-import { assignmentService } from "@/services/assignment.services";
 import styles from "@/styles/Assignment.module.css";
-import { useRouter } from "next/navigation";
+import { assignmentService } from "@/services/assignment.services";
+import { fileUploadService } from "@/services/fileupload.services";
+import type {
+  AssignmentWithSubmissionResponse,
+} from "@/models/assignment-submission.model";
+import toast from "react-hot-toast";
 
-export default function AssignmentsPage() {
-  const router = useRouter();
-  const [assignments, setAssignments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
+type SubmissionType = "file" | "text" | "link";
 
-  useEffect(() => {
-    const fetchAssignments = async () => {
-      try {
-        const data = await assignmentService.getAll();
-        setAssignments(data || []);
-      } catch (error) {
-        console.error("Failed to fetch assignments", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAssignments();
-  }, []);
-
- const handleCardClick = (assignment: any) => {
-  if (assignment.submission) {
-    router.push(`/student/assignments/${assignment.id}/view`);
-  } else {
-    router.push(`/student/assignments/${assignment.id}/submit`);
-  }
+const getStatusDisplay = (
+  status: string
+): "NOT_SUBMITTED" | "SUBMITTED" | "LATE_SUBMITTED" | "EVALUATED" => {
+  const statusMap: Record<
+    string,
+    "NOT_SUBMITTED" | "SUBMITTED" | "LATE_SUBMITTED" | "EVALUATED"
+  > = {
+    NOT_SUBMITTED: "NOT_SUBMITTED",
+    SUBMITTED: "SUBMITTED",
+    LATE_SUBMITTED: "LATE_SUBMITTED",
+    EVALUATED: "EVALUATED",
+    PENDING: "SUBMITTED",
+    COMPLETED: "EVALUATED",
+    GRADED: "EVALUATED",
+  };
+  return statusMap[status] || "NOT_SUBMITTED";
 };
 
-  // 🔥 Filtering + Search Logic
-  const filteredAssignments = useMemo(() => {
-    return assignments
-      .filter((a) =>
-        a.title.toLowerCase().includes(search.toLowerCase())
-      )
-      .filter((a) => {
-        if (filter === "completed") return !!a.submission;
-        if (filter === "pending") return !a.submission;
-        return true;
-      });
-  }, [assignments, search, filter]);
+export default function AssignmentPage() {
+  const params = useParams();
+  const router = useRouter();
+  const assignmentId = params?.id ? Number(params.id) : null;
 
-  const completedCount = assignments.filter(a => a.submission).length;
-  const pendingCount = assignments.length - completedCount;
+  const [data, setData] =
+    useState<AssignmentWithSubmissionResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [selectedType, setSelectedType] =
+    useState<SubmissionType>("file");
 
+  const [formData, setFormData] = useState({
+    file: null as File | null,
+    text: "",
+    link: "",
+  });
+
+  // ================= FETCH =================
+  useEffect(() => {
+    if (!assignmentId) return;
+    fetchAssignment();
+  }, [assignmentId]);
+
+  const fetchAssignment = async () => {
+    try {
+      setLoading(true);
+      const res =
+        await assignmentService.getAssignmentWithSubmission(
+          assignmentId!
+        );
+      setData(res);
+    } catch {
+      toast.error("Failed to load assignment");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ================= SUBMIT =================
+  const handleSubmit = async (
+    e: React.FormEvent
+  ) => {
+    e.preventDefault();
+    if (!assignmentId) return;
+
+    if (selectedType === "file" && !formData.file) {
+      toast.error("Please upload a file");
+      return;
+    }
+
+    if (selectedType === "text" && !formData.text.trim()) {
+      toast.error("Please write your answer");
+      return;
+    }
+
+    if (selectedType === "link" && !formData.link.trim()) {
+      toast.error("Please enter a link");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      let fileUrl = "";
+
+      if (formData.file) {
+        const upload =
+          await fileUploadService.uploadFile(formData.file);
+        fileUrl = upload?.url || upload?.fileUrl || "";
+      }
+
+      const body = new FormData();
+      if (fileUrl) body.append("fileUrl", fileUrl);
+      if (formData.text)
+        body.append("textAnswer", formData.text);
+      if (formData.link)
+        body.append("externalLink", formData.link);
+
+      await assignmentService.submit(assignmentId, body);
+
+      toast.success("Assignment submitted!");
+      fetchAssignment();
+    } catch {
+      toast.error("Submission failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // ================= LOADING =================
   if (loading) {
-    return <p className={styles.loading}>Loading assignments...</p>;
+    return (
+      <div className={styles.loadingContainer}>
+        <p>Loading assignment...</p>
+      </div>
+    );
   }
 
+  if (!data?.assignment) {
+    return (
+      <div className={styles.errorContainer}>
+        <AlertCircle size={48} />
+        <h2>Assignment Not Found</h2>
+      </div>
+    );
+  }
+
+  const { assignment, submission, isSubmitted } = data;
+
+  // ================= UI =================
   return (
     <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div>
-          <h1>My Assignments</h1>
-          <p>Track your assignment status</p>
-        </div>
+      {/* HEADER */}
+      <motion.div
+        className={styles.header}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <h1>{assignment.title}</h1>
 
-        {/* Stats */}
-        <div className={styles.statsRow}>
-          <div className={styles.statBox}>
-            <span className={styles.statVal}>{assignments.length}</span>
-            <span className={styles.statLab}>Total</span>
+        {submission && (
+          <span className={styles.statusBadge}>
+            {getStatusDisplay(submission.status)}
+          </span>
+        )}
+      </motion.div>
+
+      <div className={styles.contentGrid}>
+        {/* LEFT SIDE */}
+        <div className={styles.leftColumn}>
+          <div className={styles.card}>
+            <h2>Description</h2>
+            <p>{assignment.description}</p>
           </div>
-          <div className={styles.statBox}>
-            <span className={styles.statVal}>{completedCount}</span>
-            <span className={styles.statLab}>Completed</span>
-          </div>
-          <div className={styles.statBox}>
-            <span className={styles.statVal}>{pendingCount}</span>
-            <span className={styles.statLab}>Pending</span>
-          </div>
-        </div>
-      </div>
 
-      {/* Controls */}
-      <div className={styles.controls}>
-        <div className={styles.searchBar}>
-          <Search size={18} />
-          <input
-            type="text"
-            placeholder="Search assignments..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-
-        <div className={styles.filterGroup}>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="completed">Completed</option>
-            <option value="pending">Pending</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Cards */}
-      <div className={styles.grid}>
-        {filteredAssignments.length === 0 ? (
-          <p>No assignments found.</p>
-        ) : (
-          filteredAssignments.map((assignment) => (
-            <div key={assignment.id} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <div className={`${styles.iconBg} ${styles.bgYellow}`}>
-                  <FileText size={20} />
-                </div>
-
-                <span
-                  className={`${styles.statusBadge} ${
-                    assignment.submission
-                      ? styles.completed
-                      : styles.pending
-                  }`}
-                >
-                  {assignment.submission ? "COMPLETED" : "PENDING"}
-                </span>
-              </div>
-
-              <div className={styles.cardBody}>
-                <h3>{assignment.title}</h3>
-                <p className={styles.courseName}>
-                  {assignment.description}
-                </p>
-
-                {assignment.submission && (
-                  <div className={styles.metaInfo}>
-                    <div className={styles.metaItem}>
-                      <CheckCircle size={16} />
-                      Marks:{" "}
-                      {assignment.submission.marks ?? "Not Evaluated"}
-                    </div>
-                    <div className={styles.metaItem}>
-                      <Clock size={16} />
-                      Feedback:{" "}
-                      {assignment.submission.feedback ??
-                        "No feedback yet"}
-                    </div>
-                  </div>
+          {submission &&
+            getStatusDisplay(submission.status) ===
+              "EVALUATED" && (
+              <div className={styles.evaluationCard}>
+                <h3>Marks: {submission.marks ?? 0}</h3>
+                {submission.feedback && (
+                  <p>{submission.feedback}</p>
                 )}
               </div>
+            )}
+        </div>
 
-              <div className={styles.cardFooter}>
-                <button className={styles.submitBtn} onClick={() => handleCardClick(assignment)}>
-                  {assignment.submission
-                    ? "View Submission"
-                    : "Submit Assignment"}
+        {/* RIGHT SIDE */}
+        <div className={styles.rightColumn}>
+          {!isSubmitted ? (
+            <div className={styles.submissionCard}>
+              <h2>Submit Assignment</h2>
+
+              <div className={styles.typeSelector}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedType("file")
+                  }
+                >
+                  <FileUp size={16} /> File
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedType("text")
+                  }
+                >
+                  <Type size={16} /> Text
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedType("link")
+                  }
+                >
+                  <Link2 size={16} /> Link
                 </button>
               </div>
+
+              <form onSubmit={handleSubmit}>
+                {selectedType === "file" && (
+                  <input
+                    type="file"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        file:
+                          e.target.files?.[0] || null,
+                      })
+                    }
+                  />
+                )}
+
+                {selectedType === "text" && (
+                  <textarea
+                    value={formData.text}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        text: e.target.value,
+                      })
+                    }
+                  />
+                )}
+
+                {selectedType === "link" && (
+                  <input
+                    type="url"
+                    value={formData.link}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        link: e.target.value,
+                      })
+                    }
+                  />
+                )}
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                >
+                  {submitting
+                    ? "Submitting..."
+                    : "Submit"}
+                  <Send size={14} />
+                </button>
+              </form>
             </div>
-          ))
-        )}
+          ) : (
+            <div className={styles.submissionCard}>
+              <h2>Your Submission</h2>
+
+              {submission?.fileUrl && (
+                <a
+                  href={submission.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View File
+                  <ExternalLink size={14} />
+                </a>
+              )}
+
+              {submission?.content && (
+                <p>{submission.content}</p>
+              )}
+
+              <button
+                onClick={() =>
+                  router.push(
+                    "/student/assignments"
+                  )
+                }
+              >
+                <ChevronRight size={14} />
+                Back
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

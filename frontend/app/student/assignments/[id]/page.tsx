@@ -21,18 +21,11 @@ export default function AssignmentPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // ----------------------------
-  // Fetch Assignment + Submission
-  // ----------------------------
   const fetchData = async () => {
     if (!assignmentId) return;
-
     try {
       setLoading(true);
-      const response =
-        await assignmentService.getAssignmentWithSubmission(
-          assignmentId
-        );
+      const response = await assignmentService.getAssignmentWithSubmission(assignmentId);
       setData(response);
     } catch (error) {
       console.error("Fetch error:", error);
@@ -45,30 +38,22 @@ export default function AssignmentPage() {
     fetchData();
   }, [assignmentId]);
 
-  // ----------------------------
-  // Submit Assignment
-  // ----------------------------
   const handleSubmit = async (formValues: {
     file?: File;
     textAnswer?: string;
     externalLink?: string;
   }) => {
     if (!assignmentId) return;
-
     try {
       setSubmitting(true);
+      let fileUrl = "";
 
-      let fileUrl: string | undefined;
-
-      // 1️⃣ Upload file first
       if (formValues.file) {
-        const uploadRes = await fileUploadService.uploadFile(
-          formValues.file
-        );
+        const uploadRes = await fileUploadService.uploadFile(formValues.file);
         fileUrl = uploadRes?.url || uploadRes?.fileUrl;
       }
 
-      // 2️⃣ Prepare FormData
+      //  Prepare FormData
       const formData = new FormData();
       if (fileUrl) formData.append("fileUrl", fileUrl);
       if (formValues.textAnswer)
@@ -76,21 +61,19 @@ export default function AssignmentPage() {
       if (formValues.externalLink)
         formData.append("externalLink", formValues.externalLink);
 
-      // 3️⃣ Submit
+      // Submit
       await assignmentService.submit(assignmentId, formData);
 
-      // 4️⃣ Refresh page data
+      //  Refresh page data
       await fetchData();
     } catch (error) {
+      alert("Submission failed. Please try again.");
       console.error("Submission error:", error);
     } finally {
       setSubmitting(false);
     }
   };
 
-  // ----------------------------
-  // Loading
-  // ----------------------------
   if (loading) {
     return (
       <div className={styles.container}>
@@ -173,7 +156,6 @@ export default function AssignmentPage() {
               </p>
             </div>
           )}
-
         </div>
       )}
     </div>

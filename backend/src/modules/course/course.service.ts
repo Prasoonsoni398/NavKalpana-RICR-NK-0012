@@ -125,7 +125,11 @@ export class CourseService {
       id: course.id,
       title: course.title,
       description: course.description,
-
+      instructorName: course.instructorName,
+      thumbnailUrl: course.thumbnailUrl,
+      isPublished: course.isPublished,
+      createdAt: course.createdAt,
+     
       // 🎯 Attendance
       attendancePercentage,
       totalClasses,

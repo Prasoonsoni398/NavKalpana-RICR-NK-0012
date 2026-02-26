@@ -2,14 +2,19 @@ import { api } from "../lib/api";
 import type {
   AssignmentWithSubmissionResponse,
   SubmissionData,
+  AssignmentData,
 } from "@/models/assignment-submission.model";
 
 class AssignmentService {
   private baseUrl = "/assignments";
 
-  // 🔥 Get All Assignments
-  async getAll() {
-    const response = await api.get(`${this.baseUrl}`);
+// 🔥 Get Assignment With Student Submission
+  async getAll(
+  ): Promise<AssignmentData[]> {
+    const response = await api.get(
+      `${this.baseUrl}`
+    );
+
     return response.data;
   }
 
@@ -26,7 +31,7 @@ class AssignmentService {
   ): Promise<SubmissionData> {
     const response = await api.post(
       `${this.baseUrl}/${assignmentId}/submit`,
-      formData,
+      formData
     );
 
     return response.data;
@@ -47,10 +52,19 @@ class AssignmentService {
 
   // 🔥 Get Assignment With Student Submission
   async getAssignmentWithSubmission(
-    assignmentId: number 
+    assignmentId: number
   ): Promise<AssignmentWithSubmissionResponse> {
     const response = await api.get(
       `${this.baseUrl}/my-assignment/${assignmentId}`
+    );
+
+    return response.data;
+  }
+
+  // ✅ 🔥 NEW: Request Revaluation
+  async requestRevaluation(submissionId: number) {
+    const response = await api.post(
+      `${this.baseUrl}/revaluation/${submissionId}`
     );
 
     return response.data;
