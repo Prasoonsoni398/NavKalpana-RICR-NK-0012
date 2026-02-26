@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState } from "react"; 
 import { usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar/StudentSidebar";
 import styles from "@/styles/StudentLayout.module.css";
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false); 
   const pathname = usePathname();
   const isCourseClassroom = pathname?.startsWith("/student/course/");
 
@@ -15,9 +15,9 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
       {!isCourseClassroom && (
         <div className={styles.sidebarWrapper}>
           <Sidebar
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed}
-          />
+  isCollapsed={isCollapsed}
+  setIsCollapsed={setIsCollapsed}
+/>
         </div>
       )}
       <main
