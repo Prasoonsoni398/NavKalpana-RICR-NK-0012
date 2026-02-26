@@ -53,8 +53,9 @@ export class QuizController {
 
   @Get(':id')
   @ApiParam({ name: 'id', type: Number })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.quizService.findOne(id);
+  findOne(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    const studentId = req.user.id;
+    return this.quizService.findOne(id, studentId);
   }
 
   @Delete(':id')

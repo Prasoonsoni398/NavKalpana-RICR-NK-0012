@@ -11,6 +11,9 @@ export interface Quiz {
   isPublished: boolean;
   moduleTitle: string;
   courseTitle: string;
+  scorePercentage?: number; // only for attempted quizzes
+  isAttempted: boolean;
+  scourePercentage?: number;
 }
 
 // --------------------
@@ -20,6 +23,9 @@ export interface Quiz {
 export interface QuizDetailResponse {
   id: number;
   title: string;
+  scorePercentage?: number; // only for attempted quizzes
+  isAttempted: boolean;
+  scourePercentage?: number;
   durationMinutes: number;
   totalQuestions: number;
   questions: Question[];

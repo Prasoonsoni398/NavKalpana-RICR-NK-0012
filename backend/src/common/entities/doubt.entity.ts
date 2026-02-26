@@ -15,11 +15,11 @@ import { DoubtStatus } from '../enums/doubt-status.enum';
 @Entity({ name: 'doubts' })
 export class Doubt {
 
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number ;
 
-  @Column({ name: 'student_id', type: 'uuid' })
-  studentId: string;
+  @Column({ name: 'student_id', type: 'int' })
+  studentId: number;
 
   @Column({ name: 'topic', type: 'varchar', length: 255 })
   topic: string;
