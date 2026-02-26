@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import styles from "@/styles/Auth.module.css";
 import { authService } from "@/services/auth.services";
+import { useId } from 'react';
 import {
   TextField,
   IconButton,
@@ -50,6 +51,9 @@ export default function StudentLogin() {
     }
   }, []);
 
+  const emailId = useId();
+  const passwordId = useId();
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -62,7 +66,7 @@ export default function StudentLogin() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    
+
     // Clear error for this field
     if (touched[name as keyof typeof touched]) {
       setFormErrors(prev => ({ ...prev, [name]: "" }));
@@ -71,7 +75,7 @@ export default function StudentLogin() {
 
   const handleBlur = (field: string) => {
     setTouched(prev => ({ ...prev, [field]: true }));
-    
+
     // Validate on blur
     if (field === 'email' && form.email && !validateEmail(form.email)) {
       setFormErrors(prev => ({ ...prev, email: "Please enter a valid email address" }));
@@ -91,17 +95,17 @@ export default function StudentLogin() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Validate all fields
     setTouched({ email: true, password: true });
-    
+
     if (!validateEmail(form.email)) {
       setFormErrors(prev => ({ ...prev, email: "Please enter a valid email address" }));
     }
     if (!validatePassword(form.password)) {
       setFormErrors(prev => ({ ...prev, password: "Password must be at least 6 characters" }));
     }
-    
+
     if (!isFormValid()) return;
 
     setLoading(true);
@@ -163,12 +167,12 @@ export default function StudentLogin() {
         err?.message ||
         "Invalid email or password";
 
-      toast.error(errorMessage, { 
+      toast.error(errorMessage, {
         id: toastId,
         icon: '❌',
         duration: 4000
       });
-      
+
       // Shake animation for form
       const formElement = document.querySelector(`.${styles.authCard}`);
       formElement?.classList.add(styles.shake);
@@ -185,7 +189,7 @@ export default function StudentLogin() {
       {/* Background decoration */}
       <div className={styles.bgCircle1}></div>
       <div className={styles.bgCircle2}></div>
-      
+
       <div className={styles.authCard}>
         {/* Logo/Brand */}
         <div className={styles.logoSection}>
@@ -210,6 +214,7 @@ export default function StudentLogin() {
               Email Address
             </label>
             <TextField
+              id={emailId}
               name="email"
               value={form.email}
               onChange={handleChange}
@@ -244,6 +249,7 @@ export default function StudentLogin() {
               Password
             </label>
             <TextField
+              id={passwordId}
               name="password"
               value={form.password}
               onChange={handleChange}

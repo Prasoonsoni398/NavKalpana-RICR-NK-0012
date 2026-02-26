@@ -1,102 +1,165 @@
 /* MyCourses.module.css */
 
 .container {
-  padding: 40px;
-  background-color: var(--bg-white, #ffffff);
-  min-height: 100vh;
-}
-.container {
-  margin: 0 !important;
-  padding: 0 !important;
-  background-color: var(--bg-white, #ffffff);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-.headerWrapper {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.title {
-  font-size: 32px;
+.pageTitle {
+  font-size: 2rem;
   font-weight: 700;
-  color: #111827;
-  border-bottom: 4px solid #FACC15; /* आपकी Yellow थीम */
-  display: inline-block;
-  padding-bottom: 10px;
-}
-
-.loader {
-  text-align: center;
-  margin-top: 50px;
-  color: #FACC15;
-  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
 }
 
 .coursesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
-.emptyState {
-  text-align: center;
-  grid-column: 1 / -1;
-  padding: 40px;
+.courseCard {
+  background: var(--bg-white);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.emptyText {
-  color: #6B7280;
-  font-size: 18px;
+.courseCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
-.exploreBtn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #FACC15;
+.thumbnail {
+  height: 160px;
+  background: linear-gradient(135deg, var(--primary-yellow) 0%, #fbbf24 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+}
+
+.placeholderThumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-light);
+  color: var(--text-secondary);
+}
+
+.cardContent {
+  padding: 1.5rem;
+}
+
+.courseTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+}
+
+.instructor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.progressSection {
+  margin-bottom: 1rem;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.progressBar {
+  height: 6px;
+  background: var(--border-light);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--primary-yellow);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.attendance {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.viewBtn {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  background: var(--primary-yellow);
+  color: var(--text-primary);
   border: none;
   border-radius: 8px;
-  font-weight: bold;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.viewBtn:hover {
+  background: var(--primary-yellow-hover);
+}
+
+.completeBtn {
+  padding: 0.5rem 1rem;
+  background: #10B981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: background 0.2s ease;
 }
 
-.exploreBtn:hover {
-  transform: scale(1.05);
-  background-color: #eab308;
+.completeBtn:hover:not(:disabled) {
+  background: #059669;
 }
 
-/* MyCourses.module.css */
-
-.container {
-  padding: 40px;
-  background-color: var(--bg-white, #ffffff);
-  min-height: 100vh;
+.completeBtn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-.coursesGrid {
-  display: grid;
-  /* ✨ यही वो लाइन है जो एक लाइन में 3 कार्ड लाएगी */
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 30px; /* कार्ड्स के बीच की जगह */
-  margin-top: 40px;
-  max-width: 1200px; /* पेज को बहुत ज़्यादा फैलने से रोकने के लिए */
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* 📱 मोबाइल के लिए: एक लाइन में एक कार्ड */
-@media (max-width: 1024px) {
-  .coursesGrid {
-    grid-template-columns: repeat(2, 1fr); /* टैबलेट पर 2 */
-  }
-}
-
-@media (max-width: 768px) {
-  .coursesGrid {
-    grid-template-columns: 1fr; /* मोबाइल पर 1 */
-  }
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
 }

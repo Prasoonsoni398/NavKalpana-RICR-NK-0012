@@ -25,8 +25,8 @@ import {
 import styles from '@/styles/Assignment.module.css';
 import { assignmentService } from '@/services/assignment.services';
 import { fileUploadService } from '@/services/fileupload.services';
-import type { 
-  AssignmentWithSubmissionResponse, 
+import type {
+  AssignmentWithSubmissionResponse,
   SubmissionData,
 } from '@/models/assignment-submission.model';
 import toast from 'react-hot-toast';
@@ -108,7 +108,7 @@ export default function AssignmentPage() {
       setLoading(true);
       const response = await assignmentService.getAssignmentWithSubmission(assignmentId!);
       setData(response);
-      
+
       // Pre-fill form if there's an existing submission
       if (response.submission) {
         setFormData({
@@ -171,17 +171,17 @@ export default function AssignmentPage() {
 
       // Create FormData object for submission
       const formDataObj = new FormData();
-      
+
       // Add file URL if available
       if (fileUrl) {
         formDataObj.append('fileUrl', fileUrl);
       }
-      
+
       // Add text content if available
       if (formData.text) {
         formDataObj.append('textAnswer', formData.text);
       }
-      
+
       // Add external link if available
       if (formData.link) {
         formDataObj.append('externalLink', formData.link);
@@ -193,7 +193,7 @@ export default function AssignmentPage() {
       toast.success('Assignment submitted successfully!', { id: toastId });
       await fetchAssignmentData(); // Refresh data
       setShowPreview(true); // Show success preview
-      
+
       // Reset form after successful submission
       setFormData({
         file: null,
@@ -210,16 +210,16 @@ export default function AssignmentPage() {
 
   const getStatusBadge = (status: string) => {
     const displayStatus = getStatusDisplay(status);
-    
+
     const statusConfig = {
       NOT_SUBMITTED: { label: 'Not Submitted', color: '#64748B', icon: <AlertCircle size={14} /> },
       SUBMITTED: { label: 'Submitted', color: '#3B82F6', icon: <CheckCircle size={14} /> },
       LATE_SUBMITTED: { label: 'Late Submitted', color: '#F59E0B', icon: <AlertTriangle size={14} /> },
       EVALUATED: { label: 'Evaluated', color: '#10B981', icon: <Award size={14} /> }
     };
-    
+
     const config = statusConfig[displayStatus];
-    
+
     return (
       <span className={styles.statusBadge} style={{ backgroundColor: `${config.color}15`, color: config.color }}>
         {config.icon}
@@ -266,7 +266,7 @@ export default function AssignmentPage() {
   return (
     <div className={styles.container}>
       {/* Header Section */}
-      <motion.div 
+      <motion.div
         className={styles.header}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -293,7 +293,7 @@ export default function AssignmentPage() {
       {/* Main Content Grid */}
       <div className={styles.contentGrid}>
         {/* Left Column - Assignment Details */}
-        <motion.div 
+        <motion.div
           className={styles.leftColumn}
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -305,7 +305,7 @@ export default function AssignmentPage() {
           </div>
 
           {submission && getStatusDisplay(submission.status) === 'EVALUATED' && (
-            <motion.div 
+            <motion.div
               className={styles.evaluationCard}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -332,76 +332,75 @@ export default function AssignmentPage() {
         </motion.div>
 
         {/* Right Column - Submission Form */}
-        <motion.div 
+        <motion.div
           className={styles.rightColumn}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           {!isSubmitted ? (
+            /* 📝 केस 1: जब छात्र को असाइनमेंट जमा करना है */
             <div className={styles.submissionCard}>
               <h2 className={styles.cardTitle}>Submit Assignment</h2>
-              
+
               {/* Submission Type Selector */}
               <div className={styles.typeSelector}>
                 <button
                   className={`${styles.typeButton} ${selectedType === 'file' ? styles.active : ''}`}
                   onClick={() => setSelectedType('file')}
                 >
-                  <FileUp size={18} />
-                  File Upload
+                  <FileUp size={18} /> File Upload
                 </button>
                 <button
                   className={`${styles.typeButton} ${selectedType === 'text' ? styles.active : ''}`}
                   onClick={() => setSelectedType('text')}
                 >
-                  <Type size={18} />
-                  Text Answer
+                  <Type size={18} /> Text Answer
                 </button>
                 <button
                   className={`${styles.typeButton} ${selectedType === 'link' ? styles.active : ''}`}
                   onClick={() => setSelectedType('link')}
                 >
-                  <Link2 size={18} />
-                  External Link
+                  <Link2 size={18} /> External Link
                 </button>
               </div>
 
               <div className={styles.cardBody}>
                 <h3>{assignment.title}</h3>
-                <p className={styles.courseName}>
-                  {assignment.description}
-                </p>
+                <p className={styles.courseName}>{assignment.description}</p>
 
-                {assignment.submission && (
+                {/* 💡 यहाँ आपका Submit Button और Input Fields आएँगे */}
+                <div className={styles.formPlaceholder}>
+                  {/* selectedType के हिसाब से इनपुट दिखाएँ */}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.submissionCard}>
+              <h2 className={styles.cardTitle}>Submission Details</h2>
+
+              <div className={styles.cardBody}>
                   <div className={styles.metaInfo}>
                     <div className={styles.metaItem}>
-                      <CheckCircle size={16} />
-                      Marks:{" "}
-                      {assignment.submission.marks ?? "Not Evaluated"}
+                      <CheckCircle size={16} color="#22c55e" />
+                      <strong>Marks:</strong> {submission.marks ?? "Not Evaluated"}
                     </div>
-                  )}
+                  </div>
+                
 
-                  {submission.fileUrl && (
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>External Link</span>
-                      <a 
-                        href={submission.fileUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className={styles.link}
-                      >
-                        {submission.fileUrl}
-                        <ExternalLink size={12} />
-                      </a>
-                    </div>
-                  )}
-                </div>
+                {submission?.fileUrl && (
+                  <div className={styles.detailItem}>
+                    <span className={styles.detailLabel}>Your Submission:</span>
+                    <a href={submission.fileUrl} target="_blank" rel="noopener noreferrer" className={styles.link}>
+                      View Link <ExternalLink size={12} />
+                    </a>
+                  </div>
+                )}
 
-                {getStatusDisplay(submission.status) !== 'EVALUATED' && (
+                {submission?.status !== 'EVALUATED' && (
                   <div className={styles.pendingMessage}>
                     <Clock size={16} />
-                    <span>Your submission is pending evaluation. You'll receive feedback soon.</span>
+                    <span>Pending evaluation. You'll receive feedback soon.</span>
                   </div>
                 )}
 
@@ -409,11 +408,10 @@ export default function AssignmentPage() {
                   onClick={() => router.push('/student/assignments')}
                   className={styles.backToAssignments}
                 >
-                  <ChevronRight size={16} />
-                  Back to Assignments
+                  <ChevronRight size={16} /> Back to Assignments
                 </button>
-              </motion.div>
-            )
+              </div>
+            </div>
           )}
         </motion.div>
       </div>
