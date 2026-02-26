@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import styles from '@/styles/StudentDashboard.module.css';
-import { studentService } from '@/services/student.services';
-import { courseService } from '@/services/user.services';
 import { useRouter } from "next/navigation";
 import { dashboardService } from '@/services/dashboard.services';
 import { useSelector } from 'react-redux';
@@ -177,11 +175,11 @@ export default function StudentDashboard() {
 
         // Fetch profile and courses in parallel
         const [profileData, coursesData] = await Promise.all([
-          studentService.getProfile().catch((err) => {
+          dashboardService.getProfile().catch((err) => {
             console.error("Profile fetch error:", err);
             return null;
           }),
-          courseService.getMyCourses().catch((err) => {
+          dashboardService.getMyCourses().catch((err) => {
             console.error("Courses fetch error:", err);
             return [];
           })
