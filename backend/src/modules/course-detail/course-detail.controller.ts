@@ -89,7 +89,5 @@ async markModuleComplete(
     Number(studentId),
   );
 }             
-   
-
 
 }

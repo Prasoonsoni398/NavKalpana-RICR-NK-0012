@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import styles from "@/styles/Quiz.module.css";
 import { quizService } from "@/services/quiz.services";
 import { Quiz } from "@/models/quiz.model";
-
 import {
   Layers,
   GraduationCap,
@@ -15,7 +14,6 @@ import {
 
 export default function QuizListPage() {
   const router = useRouter();
-
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,15 +32,11 @@ export default function QuizListPage() {
     fetchQuizzes();
   }, []);
 
- const handleCardClick = (id: number) => {
-  if (id) {
+  const handleCardClick = (id: number) => {
     router.push(`/student/quiz-model/${id}`);
-  } else {
-    router.push(`/student/quiz-model/${id}`);
-  }
-};
+  };
 
-  /* ---------- Loading ---------- */
+  /* ================= LOADING ================= */
   if (loading) {
     return (
       <div className={styles.centered}>
@@ -52,44 +46,66 @@ export default function QuizListPage() {
     );
   }
 
-  /* ---------- Empty ---------- */
+  /* ================= EMPTY ================= */
   if (!quizzes.length) {
     return (
       <div className={styles.centered}>
-        <p className={styles.errorText}>
+        <p className={styles.loadingText}>
           No quizzes available right now
         </p>
       </div>
     );
   }
 
+  /* ================= PAGE ================= */
   return (
     <div className={styles.page}>
-      <h2 className={styles.heading}>Available Quizzes</h2>
+      <h1 className={styles.heading}>Available Quizzes</h1>
 
       <div className={styles.grid}>
         {quizzes.map((quiz) => (
-          <div key={quiz.id} className={styles.quizCard}>
-            <span className={styles.badge}>Quiz</span>
+          <div
+            key={quiz.id}
+            className={styles.quizCard}
+            onClick={() => handleCardClick(quiz.id)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                handleCardClick(quiz.id);
+              }
+            }}
+          >
+            {/* TITLE */}
+            <div className={styles.quizTitle}>
+              <HelpCircle size={20} /> {quiz.title}
+            </div>
 
-            <h3 className={styles.quizTitle}>
-              {quiz.title}
-            </h3>
+            {/* ATTEMPT BADGE */}
+            {quiz.isAttempted && (
+              <div className={styles.badge}>
+                Completed {quiz.scourePercentage ?? 0}%
+              </div>
+            )}
 
             {/* COURSE INFO */}
             <div className={styles.courseInfo}>
-              <div className={styles.courseItem}>
-                <GraduationCap size={16} />
-                {quiz.courseTitle}
-              </div>
+              {quiz.courseTitle && (
+                <div className={styles.courseItem}>
+                  <GraduationCap size={14} />
+                  {quiz.courseTitle}
+                </div>
+              )}
 
-              <div className={styles.courseItem}>
-                <Layers size={16} />
-                {quiz.moduleTitle}
-              </div>
+              {quiz.moduleTitle && (
+                <div className={styles.courseItem}>
+                  <Layers size={14} />
+                  {quiz.moduleTitle}
+                </div>
+              )}
             </div>
 
-            {/* META */}
+            {/* META INFO */}
             <div className={styles.metaRow}>
               <div className={styles.metaItem}>
                 <Clock size={14} />
@@ -97,17 +113,20 @@ export default function QuizListPage() {
               </div>
 
               <div className={styles.metaItem}>
-                <HelpCircle size={14} />
+                <GraduationCap size={14} />
                 {quiz.totalQuestions} Questions
               </div>
             </div>
 
-            {/*  ROUTER PUSH BUTTON */}
+            {/* BUTTON */}
             <button
               className={styles.btnPrimary}
-              onClick={() => handleCardClick(quiz.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCardClick(quiz.id);
+              }}
             >
-              Start Quiz →
+              {quiz.isAttempted ? "Retake Quiz →" : "Start Quiz →"}
             </button>
           </div>
         ))}
