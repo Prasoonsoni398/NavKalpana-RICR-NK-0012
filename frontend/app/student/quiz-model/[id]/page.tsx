@@ -104,7 +104,27 @@ export default function QuizPage() {
           />
         </div>
 
-        {/* Question */}
+        {/* ⭐ QUESTION NAVIGATION BAR */}
+        <div className={styles.questionBar}>
+          {quiz.questions.map((q, index) => {
+            const answered = answers[q.id];
+
+            return (
+              <button
+                key={q.id}
+                className={`${styles.qBtn}
+                  ${current === index ? styles.qActive : ""}
+                  ${answered ? styles.qAnswered : ""}
+                `}
+                onClick={() => setCurrent(index)}
+              >
+                {index + 1}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* QUESTION */}
         <div className={styles.question}>
           {current + 1}. {question.question}
         </div>

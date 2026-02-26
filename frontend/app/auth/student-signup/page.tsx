@@ -29,7 +29,6 @@ export default function StudentSignup() {
     e.preventDefault();
     setLoading(true);
     
-    // अगर OTP अभी नहीं भेजा गया है, तो पहले रजिस्ट्रेशन/OTP जनरेट करें
     if (!isOtpSent) {
       const toastId = toast.loading("Sending OTP to your email...");
       try {
@@ -39,7 +38,7 @@ export default function StudentSignup() {
           password: form.password,
         });
         toast.success("OTP sent successfully! 📧", { id: toastId });
-        setIsOtpSent(true); // OTP वाला सेक्शन दिखाएँ
+        setIsOtpSent(true); 
       } catch (err: any) {
         const errorMsg = err?.response?.data?.message || "Check your API path (404 Error)";
         toast.error(errorMsg, { id: toastId });
@@ -79,7 +78,6 @@ export default function StudentSignup() {
 
         <form onSubmit={handleSubmit} className={styles.formElement}>
           {!isOtpSent ? (
-            /* --- स्टेप 1: रजिस्ट्रेशन फॉर्म --- */
             <>
               <div className={styles.formGroup}>
                 <label>Full Name</label>
@@ -95,7 +93,6 @@ export default function StudentSignup() {
               </div>
             </>
           ) : (
-            /* --- स्टेप 2: OTP इनपुट सेक्शन --- */
             <div className={styles.formGroup}>
               <label>Enter 6-Digit OTP</label>
               <TextField

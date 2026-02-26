@@ -1,7 +1,7 @@
 import { api } from "../lib/api";
 
 class FileUploadService {
-  private baseUrl = "/upload"; // change if your backend route is different
+  private baseUrl = "/file-upload"; // change if your backend route is different
 
   // Upload single file
   async uploadFile(file: File): Promise<any> {

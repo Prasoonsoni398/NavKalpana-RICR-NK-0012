@@ -13,8 +13,8 @@ import { Lesson } from './lesson.entity';
 import { ModuleSkill } from './module-skill.entity';
 @Entity({ name: 'modules' })
 export class Module {
-  @PrimaryGeneratedColumn('increment')
-  id: string;
+ @PrimaryGeneratedColumn('increment')
+id: number;   // ✅ change from string to number
 
   @ManyToOne(() => Course, (course) => course.modules)
   @JoinColumn({ name: 'course_id' })

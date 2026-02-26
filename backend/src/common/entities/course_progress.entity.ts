@@ -13,9 +13,8 @@ import { Course } from './course.entity';
 @Entity({ name: 'course_progress' })
 @Index(['student', 'course'], { unique: true })
 export class CourseProgress {
-  @PrimaryGeneratedColumn('increment')
-  id: string;
-
+ @PrimaryGeneratedColumn('increment')
+id: number;   // ✅ change from string to number
   @ManyToOne(() => User, (user) => user.courseProgress)
   @JoinColumn({ name: 'user_id' })
   student: User;

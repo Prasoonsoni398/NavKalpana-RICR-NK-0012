@@ -8,11 +8,10 @@ export default function EvaluationSection({ submission }: any) {
 
   const percentage = (score / total) * 100;
 
-  // 🎯 Dynamic Color
   const progressColor = useMemo(() => {
-    if (percentage >= 75) return "#22c55e"; // Green
-    if (percentage >= 40) return "#f59e0b"; // Yellow
-    return "#ef4444"; // Red
+    if (percentage >= 75) return "#22c55e"; 
+    if (percentage >= 40) return "#f59e0b"; 
+    return "#ef4444"; 
   }, [percentage]);
 
   const size = 140;

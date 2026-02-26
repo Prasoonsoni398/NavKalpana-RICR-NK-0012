@@ -3,7 +3,13 @@
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { User, CheckCircle, CalendarDays, ArrowRight } from "lucide-react";
+import {
+  User,
+  CheckCircle,
+  CalendarDays,
+  ArrowRight,
+  BookOpen,
+} from "lucide-react";
 import styles from "@/styles/CourseCard1.module.css";
 import { CourseResponse } from "@/models/course.model";
 import { courseDetailsService } from "@/services/course-detail.services";
@@ -12,20 +18,20 @@ import toast from "react-hot-toast";
 const CourseCard = ({ course }: { course: CourseResponse }) => {
   const router = useRouter();
 
+  // 🔥 Use completionPercentage instead of attendance
   const [progressWidth, setProgressWidth] = useState(
-    course.attendancePercentage || 0
+    course.completionPercentage || 0
   );
+
   const [loading, setLoading] = useState(false);
-  const [completed, setCompleted] = useState(
-    (course.attendancePercentage || 0) === 100
-  );
+  const [completed, setCompleted] = useState(course.isCompleted);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setProgressWidth(course.attendancePercentage || 0);
+      setProgressWidth(course.completionPercentage || 0);
     }, 300);
     return () => clearTimeout(timer);
-  }, [course.attendancePercentage]);
+  }, [course.completionPercentage]);
 
   const markCourseComplete = async () => {
     if (completed || loading) return;
@@ -85,14 +91,28 @@ const CourseCard = ({ course }: { course: CourseResponse }) => {
             </span>
           </div>
 
-          {/* Progress Bar */}
+          {/* Lesson Info */}
+          <div style={{ display: "flex", gap: "15px", marginBottom: "10px" }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <BookOpen size={15} /> {course.completedLessons}/
+              {course.totalLessons} Lessons Completed
+            </span>
+          </div>
+
+          {/* Progress Bar (Lesson Completion) */}
           <div className={styles.progressContainer}>
             <div
               className={styles.progressFill}
-              style={{ width: `${progressWidth}%`, transition: "width 0.4s ease" }}
+              style={{
+                width: `${progressWidth}%`,
+                transition: "width 0.4s ease",
+              }}
             />
           </div>
-          <p className={styles.progressText}>{progressWidth}% Attendance</p>
+
+          <p className={styles.progressText}>
+            {progressWidth}% Course Completion
+          </p>
 
           {/* Buttons */}
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>

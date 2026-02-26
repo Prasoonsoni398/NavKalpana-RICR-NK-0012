@@ -131,7 +131,7 @@ export class CourseDetailService {
   };
 }
 async markLessonCompleted(
-  lessonId: string,
+  lessonId: number,
   studentId: number,
 ) {
   const lesson = await this.lessonRepo.findOne({
@@ -231,7 +231,7 @@ async markCourseCompleted(courseId: number, studentId: number) {
 
   await Promise.all(
     lessons.map((lesson) =>
-      this.markLessonCompleted(lesson.id.toString(), studentId),
+      this.markLessonCompleted(lesson.id, studentId),
     ),
   );
 
@@ -240,6 +240,43 @@ async markCourseCompleted(courseId: number, studentId: number) {
   };
 }
 
+
+async markModuleCompleted(moduleId: number, studentId: number) {
+  const module = await this.moduleRepo.findOne({
+    where: { id: moduleId },
+    relations: ['course', 'lessons'],
+  });
+
+  if (!module) {
+    throw new NotFoundException('Module not found');
+  }
+
+  if (!module.lessons.length) {
+    throw new NotFoundException('No lessons found in this module');
+  }
+
+  //  Mark each lesson completed
+  await Promise.all(
+    module.lessons.map((lesson) =>
+      this.markLessonCompleted(lesson.id, studentId),
+    ),
+  );
+
+  //  Log module completed
+  await this.studentActivityLogRepo.save({
+    student: { id: studentId },
+    activityType: StudentActivityType.COMPLETED,
+    entityType: ActivityEntityType.MODULE,
+    entityId: Number(moduleId),
+    metadataJson: {
+      courseId: module.course.id,
+    },
+  });
+
+  return {
+    message: 'Module marked as completed successfully',
+  };
+}
 
 
 }
