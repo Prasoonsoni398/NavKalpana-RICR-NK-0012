@@ -25,7 +25,10 @@ export class LearningSupportService {
   // ========================================
   // 1️⃣ Submit Doubt
   // ========================================
-  async submitDoubt(studentId: string, createDoubtDto: CreateDoubtDto) {
+  async submitDoubt(
+    studentId: number,   // ✅ FIXED (was string)
+    createDoubtDto: CreateDoubtDto,
+  ) {
     const { courseId, topic, description, fileUrl } = createDoubtDto;
 
     const course = await this.courseRepository.findOne({
@@ -44,11 +47,11 @@ export class LearningSupportService {
       course,
     });
 
-    await this.doubtRepository.save(doubt);
+    const savedDoubt = await this.doubtRepository.save(doubt);
 
     return {
       message: 'Doubt submitted successfully',
-      doubt,
+      doubt: savedDoubt,
     };
   }
 
@@ -56,7 +59,7 @@ export class LearningSupportService {
   // 2️⃣ Request Backup Class
   // ========================================
   async requestBackupClass(
-    studentId: string,
+    studentId: number,   // ✅ FIXED (was string)
     createBackupDto: CreateBackupRequestDto,
   ) {
     const { courseId, topic, description } = createBackupDto;
@@ -76,18 +79,18 @@ export class LearningSupportService {
       course,
     });
 
-    await this.backupRepository.save(backupRequest);
+    const savedRequest = await this.backupRepository.save(backupRequest);
 
     return {
       message: 'Backup class request submitted successfully',
-      backupRequest,
+      backupRequest: savedRequest,
     };
   }
 
   // ========================================
   // 3️⃣ Get Student Doubts
   // ========================================
-  async getStudentDoubts(studentId: string) {
+  async getStudentDoubts(studentId: number) {   // ✅ FIXED
     return this.doubtRepository.find({
       where: { studentId },
       relations: ['course'],
@@ -98,7 +101,7 @@ export class LearningSupportService {
   // ========================================
   // 4️⃣ Get Student Backup Requests
   // ========================================
-  async getStudentBackupRequests(studentId: string) {
+  async getStudentBackupRequests(studentId: number) {  // ✅ FIXED
     return this.backupRepository.find({
       where: { studentId },
       relations: ['course'],

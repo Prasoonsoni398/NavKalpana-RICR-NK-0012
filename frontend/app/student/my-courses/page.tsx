@@ -26,6 +26,8 @@ const MyCourses = () => {
     fetchCourses();
   }, []);
 
+  
+
   // Skeleton loader component
   const SkeletonCard = () => (
     <div className={styles.wrapper}>

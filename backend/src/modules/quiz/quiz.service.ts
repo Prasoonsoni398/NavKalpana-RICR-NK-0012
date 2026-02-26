@@ -86,46 +86,92 @@ async findAll(studentId: number) {
     ],
   });
 
-  const result = quizzes.map((quiz) => {
+  const result = await Promise.all(quizzes.map(async (quiz) => {
 
     const courseTitle =
       quiz.lesson?.module?.course?.title ?? null;
 
+      const quizAttempt = await this.attemptRepo.findOne({
+        where: {
+          quizId: quiz.id,
+          studentId,
+        },
+      });
+
     return {
-      quizId: quiz.id,
+      id: quiz.id,
       title: quiz.title,
+      
+      isAttempted: quizAttempt ? true : false,
+      scourePercentage: quizAttempt?.scorePercentage ?? null,
       durationMinutes: quiz.durationMinutes,
       totalQuestions: quiz.totalQuestions,
-
+      
       lessonId: quiz.lesson?.id ?? null,
       moduleTitle: quiz.lesson?.module?.title ?? null,
       courseTitle: courseTitle,
     };
-  });
+  }));
 
   return result
 }
-
-async findOne(id: number): Promise<any> {
+async findOne(
+  id: number,
+  studentId: number,
+): Promise<any> {
   const quiz = await this.quizRepo.findOne({
     where: { id },
-    relations: ['questions', 'questions.options'],
+    relations: [
+      'questions',
+      'questions.options',
+      'lesson',
+      'lesson.module',
+      'lesson.module.course',
+    ],
   });
 
   if (!quiz) {
     throw new NotFoundException('Quiz not found');
   }
 
-  // Remove isCorrect from options
-  const sanitizedQuiz = {
-    ...quiz,
+  // 🔥 Get student attempt
+  const attempt = await this.attemptRepo.findOne({
+    where: {
+      quizId: id,
+      studentId,
+    },
+  });
+
+  const isSubmitted = !!attempt?.submittedAt;
+
+  return {
+    id: quiz.id,
+    title: quiz.title,
+    durationMinutes: quiz.durationMinutes,
+    totalQuestions: quiz.totalQuestions,
+
+    lessonId: quiz.lesson?.id ?? null,
+    moduleTitle: quiz.lesson?.module?.title ?? null,
+    courseTitle: quiz.lesson?.module?.course?.title ?? null,
+
+    //  Attempt Info
+    isAttempted: isSubmitted,
+    scorePercentage: isSubmitted
+      ? attempt?.scorePercentage ?? 0
+      : null,
+
+    //  Questions (sanitized)
     questions: quiz.questions.map((question) => ({
-      ...question,
-      options: question.options.map(({ isCorrect, ...option }) => option),
+      id: question.id,
+      quizId: question.quizId,
+      question: question.question,
+      questionType: question.questionType,
+      explanation: question.explanation,
+      options: question.options.map(
+        ({ isCorrect, ...option }) => option
+      ),
     })),
   };
-
-  return sanitizedQuiz;
 }
 
 async startAttempt(dto: StartQuizAttemptDto, studentId: number): Promise<QuizAttempt> {

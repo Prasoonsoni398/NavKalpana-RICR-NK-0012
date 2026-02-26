@@ -35,3 +35,4 @@ export interface UpdateCourseRequest {
   thumbnailUrl?: string;
   isPublished?: boolean;
 }
+

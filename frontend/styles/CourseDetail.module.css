@@ -28,16 +28,6 @@
 }
 
 
-.container{
-  display: flex;
-  position: fixed;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  background-color: var(--bg);
-  margin-left: -220px;
-}
-
 
 /* ─── Theme toggle button ────────────────────────────────────────────────────*/
 .themeToggle {

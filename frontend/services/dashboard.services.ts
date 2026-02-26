@@ -1,48 +1,25 @@
-// services/dashboard.services.ts
-import axios from "axios";
+import { api } from "../lib/api";
+
+
 
 export const dashboardService = {
-  getStudentDashboard: async (token?: string) => {
-    const res = await axios.get("/api/user/student-dashboard", {
-      headers: token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : {},
-    });
+  getStudentDashboard: async () => {
+    const res = await api.get("/user/student-dashboard");
     return res.data;
   },
 
-  getUserStats: async (token?: string) => {
-    const res = await axios.get("/api/user/stats", {
-      headers: token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : {},
-    });
+  getUserStats: async () => {
+    const res = await api.get("/user/stats");
     return res.data;
   },
 
-  getLeaderboard: async (token?: string) => {
-    const res = await axios.get("/api/user/leaderboard", {
-      headers: token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : {},
-    });
+  getLeaderboard: async () => {
+    const res = await api.get("/user/leaderboard");
     return res.data;
   },
 
-  getUpcomingEvents: async (token?: string) => {
-    const res = await axios.get("/api/user/upcoming-events", {
-      headers: token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : {},
-    });
+  getUpcomingEvents: async () => {
+    const res = await api.get("/user/upcoming-events");
     return res.data;
   },
 };

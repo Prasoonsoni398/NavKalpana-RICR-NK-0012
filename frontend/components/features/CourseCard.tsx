@@ -1,3 +1,4 @@
+// components/CourseCard.tsx
 import styles from "@/styles/CourseCard.module.css";
 import Link from "next/link";
 import type { CourseResponse } from "@/models/course.model";
@@ -5,6 +6,7 @@ import type { CourseResponse } from "@/models/course.model";
 export default function CourseCard(data: CourseResponse) {
   return (
     <div className={styles.card}>
+      {/* Thumbnail / Image */}
       <div className={styles.imageWrapper}>
         {data.thumbnailUrl ? (
           <img
@@ -24,6 +26,8 @@ export default function CourseCard(data: CourseResponse) {
         <p className={styles.instructor}>By {data.instructorName}</p>
 
         <div className={styles.footer}>
+          {/* Remove price if not available */}
+          {/* <span className={styles.price}>{price}</span> */}
         </div>
       </div>
     </div>

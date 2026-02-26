@@ -12,7 +12,7 @@
   flex-direction: column;
   background: var(--bg-light);
   transition: all 0.3s ease; /* साइडबार के साथ स्मूथ एनीमेशन */
-  padding: 20px;
+  /* padding: 20px; */
 }
 
 /* अगर साइडबार Fixed है, तो सिर्फ margin-left को dynamic रखें */

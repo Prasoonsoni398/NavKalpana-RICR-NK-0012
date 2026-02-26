@@ -12,11 +12,11 @@ import { BackupStatus } from '../enums/backup-status.enum';
 @Entity({ name: 'backup_class_requests' })
 export class BackupClassRequest {
 
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-  @Column({ name: 'student_id', type: 'uuid' })
-  studentId: string;
+  @Column({ name: 'student_id', type: 'int' })
+  studentId: number;
 
   @Column({ name: 'topic', type: 'varchar', length: 255 })
   topic: string;
