@@ -59,7 +59,7 @@ export default function AttendancePage() {
                 <div key={index} className={styles.courseCard}>
                   <h3>{course.name}</h3>
                   <div className={styles.circularProgress} style={{
-                    background: `conic-gradient(#FACC15 ${percentage * 3.6}deg, #e2e8f0 0deg)`
+                    background: `conic-gradient(#4F46E5 ${percentage * 3.6}deg, #e2e8f0 0deg)`
                   }}>
                     <div className={styles.innerCircle}>
                       <span>{percentage}%</span>

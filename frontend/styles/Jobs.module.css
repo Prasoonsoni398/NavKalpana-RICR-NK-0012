@@ -3,8 +3,10 @@
     background: var(--bg-light);
 }
 
+
 .heading {
     font-size: 26px;
+    align-self:center;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 30px;
@@ -29,20 +31,6 @@
     flex-direction: column;
 }
 
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-}
-
-/* Badge */
-.badge {
-    background: rgba(250, 204, 21, 0.15);
-    color: var(--primary-yellow);
-    padding: 5px 14px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-}
 
 
 /* Role */
@@ -77,6 +65,7 @@
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  color: white;
 }
 
 /* Outer wrapper */
@@ -87,7 +76,7 @@
 /* Inner flip container */
 .skillInner {
   position: relative;
-  width: 80px;
+  width: 90px;
   height: 34px;
   transition: transform 0.6s;
   transform-style: preserve-3d;
@@ -114,6 +103,8 @@
   border: 1px solid var(--border-light);
 }
 
+
+
 /* Front */
 .skillFront {
   background: var(--bg-light);
@@ -123,7 +114,7 @@
 /* Back */
 .skillBack {
   background: var(--primary-yellow);
-  color: var(--text-primary);
+  color: white;
   transform: rotateY(180deg);
   border-color: var(--primary-yellow);
 }
@@ -136,12 +127,14 @@
     padding: 12px;
     border-radius: 12px;
     font-weight: 600;
+    color: white;
     text-decoration: none;
     transition: background var(--transition-speed);
 }
 
 .button:hover {
     background: var(--primary-yellow-hover);
+    transition: ease-in;
 }
 
 /* Filter Tabs */
@@ -175,9 +168,9 @@
 /* Active State */
 .activeTab {
     background: var(--primary-yellow);
-    color: var(--text-primary);
+    color: white;
     border-color: var(--primary-yellow);
-    box-shadow: 0 4px 10px rgba(250, 204, 21, 0.25);
+    box-shadow: 0 4px 10px rgba(120, 21, 250, 0.193);
 }
 
 .badge {
@@ -185,7 +178,7 @@
   align-items: center;
   gap: 6px;
   justify-content: center;
-
+    
   padding: 6px 14px;
   border-radius: 999px;
 
@@ -193,10 +186,11 @@
   font-weight: 600;
   letter-spacing: 0.3px;
     color:black;
-  background: rgba(250, 204, 21, 0.12);
-  /* color: var(--primary-yellow); */
-  border: 1px solid rgba(250, 204, 21, 0.35);
+  background: rgba(142, 42, 173, 0.078);
+  border: 1px solid rgba(250, 21, 238, 0.081);
 
   width: fit-content;
 }
+
+
 

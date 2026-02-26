@@ -10,7 +10,6 @@ import {
   ClipboardCheck,
   BookUser,
   GraduationCap,
-  Settings, 
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -51,7 +50,6 @@ const Sidebar = () => {
     { name: "Learning Support", icon: <BookUser size={20} />, path: "/student/learning-support" },
     { name: "Job & Internship", icon: <Briefcase size={20} />, path: "/student/jobs" },
     { name: "Alumni Network", icon: <GraduationCap size={20} />, path: "/student/alumni" },
-    { name: "Settings", icon: <Settings size={20} />, path: "/settings" },
 
   ];
 

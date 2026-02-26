@@ -27,7 +27,7 @@
 }
 
 .card:hover {
-   transform: translate(-8px , -8px);
+   transform: translate(-3px , -2px);
   box-shadow: 0 25px 45px rgba(0, 0, 0, 0.08);
   border-color: var(--primary-yellow);
 }
@@ -106,16 +106,16 @@
 
 /* Back */
 .companyBack {
-    background: rgba(250, 204, 21, 0.15);
+    background: rgba(142, 42, 173, 0.078);
     color: var(--text-primary);
-    border-color: rgba(250, 204, 21, 0.4);
+    border: 1px solid rgba(250, 21, 238, 0.081);
     transform: rotateY(180deg);
 }
 
 /* Hover Glow */
 .companyWrapper:hover .companyFront,
 .companyWrapper:hover .companyBack {
-    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.25);
+    box-shadow: 0 4px 12px rgba(170, 21, 250, 0.125);
 }
 
 /* Fade Slide In Animation */
@@ -142,7 +142,7 @@
 .button {
     display: inline-block;
     background: var(--primary-yellow);
-    color: var(--text-primary);
+    color: white;
     padding: 10px 18px;
     border-radius: 12px;
     font-weight: 600;
@@ -152,21 +152,11 @@
 
 .button:hover {
     background: var(--primary-yellow-hover);
+    transform: translateY(-2px);
 }
 
 
 
-.card {
-    background: var(--bg-white);
-    padding: 28px;
-    border-radius: 16px;
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-sm);
-    text-align: center;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: cardReveal 0.6s ease forwards;
-}
 
 /* Card Animation */
 @keyframes cardReveal {
