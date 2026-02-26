@@ -21,9 +21,10 @@ export default function QuizListPage() {
     const fetchQuizzes = async () => {
       try {
         const data = await quizService.getAll();
+        console.log("Quizzes:", data);
         setQuizzes(data);
       } catch (error) {
-        console.error(error);
+        console.error("Fetch error:", error);
       } finally {
         setLoading(false);
       }
@@ -40,8 +41,7 @@ export default function QuizListPage() {
   if (loading) {
     return (
       <div className={styles.centered}>
-        <div className={styles.spinner}></div>
-        <p className={styles.loadingText}>Loading quizzes...</p>
+        <p>Loading quizzes...</p>
       </div>
     );
   }
@@ -88,7 +88,6 @@ export default function QuizListPage() {
               </div>
             )}
 
-            {/* COURSE INFO */}
             <div className={styles.courseInfo}>
               {quiz.courseTitle && (
                 <div className={styles.courseItem}>
