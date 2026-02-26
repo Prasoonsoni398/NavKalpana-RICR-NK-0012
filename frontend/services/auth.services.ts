@@ -19,10 +19,18 @@ class AuthService {
     return response.data;
   }
 
-  async verifyOtp(data: { email: string; otp: string }){
+  async verifyOtp(data: { email: string; otp: string }) {
     const response = await api.post(`${this.baseUrl}/verify-otp`, {
       email: data.email,
-      code: String(data.otp)
+      code: String(data.otp),
+    });
+    return response.data;
+  }
+
+  // ✅ ADD THIS METHOD
+  async resendOtp(data: { email: string }): Promise<{ message: string }> {
+    const response = await api.post(`${this.baseUrl}/resend-otp`, {
+      email: data.email,
     });
     return response.data;
   }
