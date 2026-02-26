@@ -14,6 +14,7 @@ import { QuizModule } from './modules/quiz/quiz.module';
 import { LearningSupportModule } from './modules/learning-support/learning-support.module';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { StudentActivityServiceModule } from './modules/student-activity-service/student-activity-service.module';
 import mailConfig from './common/config/mail/mail.config'; // ✅ import the mail config
 
 @Module({
@@ -34,6 +35,7 @@ import mailConfig from './common/config/mail/mail.config'; // ✅ import the mai
     LearningSupportModule,
     FileUploadModule,
     DashboardModule,
+    StudentActivityServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
