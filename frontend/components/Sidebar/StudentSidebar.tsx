@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import styles from '@/styles/Sidebar.module.css';
 import { Dispatch, SetStateAction } from "react";
 import {
@@ -42,7 +42,7 @@ const StudentSidebar = ({ isCollapsed, setIsCollapsed }: SidebarProps) => {
     });
 
     // 4️⃣ Redirect to login page
-    router.push("/auth/student-login");
+    window.location.href = "/auth/student-login";
 
     // 5️⃣ Optional hard refresh
     setTimeout(() => {
