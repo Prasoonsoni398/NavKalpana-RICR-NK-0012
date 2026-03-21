@@ -1,160 +1,472 @@
-/* --- Sidebar Container --- */
+/* Sidebar.module.css */
+
+:root {
+  --primary-yellow: #FACC15;
+  --primary-yellow-hover: #EAB308;
+  --bg-white: #FFFFFF;
+  --bg-light: #F8FAFC;
+  --bg-dark: #1E293B;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --border-light: #E2E8F0;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 80px;
+  --header-height: 70px;
+}
+
+/* Sidebar Base */
 .sidebar {
-  width: 240px;
-  height: 100vh;
   position: fixed;
   left: 0;
-  background-color: #ffffff;
-  border-right: 1px solid #f1f5f9;
+  top: 0;
+  height: 100vh;
+  background: linear-gradient(180deg, var(--bg-white) 0%, #FAFAFA 100%);
+  border-right: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: width 0.3s ease;
   display: flex;
   flex-direction: column;
-  padding: 25px 15px;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
 }
 
-/* Collapsed State Width */
-.sidebar.collapsed {
-  width: 85px;
-  padding: 25px 10px;
+/* Hide scrollbar for cleaner look */
+.sidebar::-webkit-scrollbar {
+  width: 4px;
 }
 
-/* --- Toggle Arrow Button --- */
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Collapsed State */
+.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+/* Toggle Button */
 .toggleBtn {
   position: absolute;
   right: -12px;
-  top: 40px;
-  background: #FACC15; 
-  border: none;
-  width: 26px;
-  height: 26px;
+  top: 20px;
+  width: 24px;
+  height: 24px;
+  background: var(--primary-yellow);
+  border: 2px solid var(--bg-white);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.4);
-  z-index: 1001;
-  color: #000;
-  transition: transform 0.2s ease;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+  transition: all var(--transition-speed) ease;
 }
 
 .toggleBtn:hover {
+  background: var(--primary-yellow-hover);
   transform: scale(1.1);
 }
 
-/* --- Logo Section --- */
+/* Logo Container */
 .logoContainer {
+  padding: 1.5rem 1rem;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 8px;
-  margin-bottom: 35px;
-  overflow: hidden;
-  white-space: nowrap;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .logoIcon {
-  background: #FACC15;
-  color: #000;
-  min-width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
+  background: var(--primary-yellow);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
-  font-size: 24px;
-  font-weight: 900;
-  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex-shrink: 0;
 }
 
 .logoText {
-  font-size: 22px;
-  font-weight: 800;
-  color: #0F172A;
-  letter-spacing: -0.5px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .logoText span {
-  color: #FACC15;
+  color: var(--primary-yellow);
 }
 
-/* --- Navigation Menu --- */
+/* User Profile */
+.userProfile {
+  padding: 1.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.userAvatar {
+  width: 48px;
+  height: 48px;
+  background: var(--bg-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  border: 2px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.userInfo h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.userInfo p {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Navigation Menu */
 .navMenu {
+  flex: 1;
+  padding: 1.5rem 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1;
+  gap: 0.25rem;
 }
 
+/* Bottom Menu */
+.bottomMenu {
+  padding: 1rem 0;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Navigation Items */
 .navItem {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin: 0 0.5rem;
+  border-radius: 10px;
+  color: var(--text-secondary);
   text-decoration: none;
-  color: #64748B;
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: 12px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  transition: all var(--transition-speed) ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: calc(100% - 1rem);
+  font-size: 0.95rem;
 }
 
 .navItem:hover {
-  background-color: #FEFCE8; /* हल्का पीला */
-  color: #FACC15;
-  transform: translateX(5px);
+  background: var(--bg-light);
+  color: var(--text-primary);
 }
 
-/* --- Active Link Style --- */
-.navActive {
-  background-color: #FACC15 !important;
-  color: #000 !important;
-  box-shadow: 0 8px 15px -3px rgba(250, 204, 21, 0.3);
+.navItem.active {
+  background: var(--primary-yellow);
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
-/* Collapsed Navigation Adjustments */
-.sidebar.collapsed .navItem {
-  justify-content: center;
-  padding: 14px 0;
-}
-
-.sidebar.collapsed .navItem:hover {
-  transform: scale(1.05); /* छोटे मोड में खिसकने के बजाय थोड़ा बड़ा होगा */
-}
-
-/* --- Logout Wrapper --- */
-.logoutWrapper {
-  border-top: 1px solid #f1f5f9;
-  padding-top: 20px;
-}
-
-.logoutBtn {
+.navIcon {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  text-decoration: none;
-  color: #EF4444; /* रेड कलर फॉर लॉगआउट */
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: 12px;
-  transition: background 0.2s;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.navText {
   white-space: nowrap;
 }
 
+/* Active Indicator */
+.activeIndicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: var(--primary-yellow);
+  border-radius: 0 3px 3px 0;
+}
+
+/* Logout Button */
+.logoutBtn {
+  color: #EF4444;
+}
+
 .logoutBtn:hover {
-  background-color: #FEF2F2;
+  background: #FEE2E2;
+  color: #EF4444;
 }
 
-.sidebar.collapsed .logoutBtn {
-  justify-content: center;
-  padding: 14px 0;
+/* Version Info */
+.versionInfo {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-light);
 }
 
-/* --- Smooth Transitions for Text --- */
-.navItem span, .logoText, .logoutBtn span {
-  transition: opacity 0.2s ease;
+.versionInfo p {
+  margin: 0;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .sidebar {
+    left: -280px;
+    width: 280px !important;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .sidebar.mobileOpen {
+    left: 0;
+  }
+
+  .toggleBtn {
+    display: none;
+  }
+
+  .mobileHeader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    z-index: 999;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .menuButton {
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all var(--transition-speed) ease;
+  }
+
+  .menuButton:hover {
+    background: var(--bg-light);
+  }
+
+  .mobileLogo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobileLogoIcon {
+    width: 32px;
+    height: 32px;
+    background: var(--primary-yellow);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .mobileLogoText {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .mobileActions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobileNotification {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all var(--transition-speed) ease;
+  }
+
+  .mobileNotification:hover {
+    background: var(--bg-light);
+  }
+
+  .notificationBadge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    background: #EF4444;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid var(--bg-white);
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    background: var(--bg-light);
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: all var(--transition-speed) ease;
+    z-index: 10;
+  }
+
+  .closeButton:hover {
+    background: var(--primary-yellow);
+    transform: scale(1.1);
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(4px);
+  }
+
+  .mainContent {
+    margin-left: 0 !important;
+    padding-top: var(--header-height);
+  }
+}
+
+/* Mobile Landscape */
+@media (max-width: 640px) {
+  .mobileLogoText {
+    display: none;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .sidebar {
+    background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+    border-right-color: #334155;
+  }
+
+  .logoContainer,
+  .userProfile,
+  .bottomMenu {
+    border-color: #334155;
+  }
+
+  .navItem:hover {
+    background: #334155;
+    color: #F1F5F9;
+  }
+
+  .navItem.active {
+    background: var(--primary-yellow);
+    color: var(--text-primary);
+  }
+
+  .userAvatar {
+    background: #334155;
+    border-color: #475569;
+  }
+
+  .versionInfo {
+    border-color: #334155;
+  }
+
+  .mobileHeader {
+    background: #1E293B;
+    border-color: #334155;
+  }
+
+  .closeButton {
+    background: #334155;
+    color: #F1F5F9;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .navItem,
+  .toggleBtn,
+  .overlay {
+    transition: none !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .sidebar {
+    display: none;
+  }
 }

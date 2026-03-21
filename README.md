@@ -3,8 +3,10 @@
 A comprehensive, secure, and scalable Learning Management System built with the "Double Nest" stack.
 
 ## 👥 Team Members & Roles
-* **[Name]** - Full Stack Engineer (Auth & Database)
-* **[Name]** - Frontend Developer (UI/UX & Next.js)
+* **[Uttam Panwar]** - Frontend (UI & UX)
+* **[Ritam Sundar Sandhaki]** - Backend & Database
+* **[Prasoon Soni]** - Frontend 
+* **[Ashish Sahu]** - Frontend 
 
 ## 🛠️ Problem Statement
 Traditional learning platforms often struggle with slow page loads and fragmented security. The **LMS Project** provides a unified TypeScript environment that ensures high-speed content delivery via Next.js and a robust, type-safe API via NestJS to manage courses, students, and certifications securely.

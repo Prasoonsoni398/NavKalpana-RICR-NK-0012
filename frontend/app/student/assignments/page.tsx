@@ -18,14 +18,16 @@ import {
   ChevronRight,
   FileUp,
   ExternalLink,
-} from "lucide-react";
-import styles from "@/styles/Assignment.module.css";
-import { assignmentService } from "@/services/assignment.services";
-import { fileUploadService } from "@/services/fileupload.services";
-import type {
-  AssignmentWithSubmissionResponse,
-} from "@/models/assignment-submission.model";
-import toast from "react-hot-toast";
+  Save
+} from 'lucide-react';
+import styles from '@/styles/Assignment.module.css';
+import { assignmentService } from '@/services/assignment.services';
+import { fileUploadService } from '@/services/fileupload.services';
+import type { 
+  AssignmentWithSubmissionResponse, 
+  SubmissionData,
+} from '@/models/assignment-submission.model';
+import toast from 'react-hot-toast';
 
 type SubmissionType = "file" | "text" | "link";
 
@@ -74,13 +76,22 @@ export default function AssignmentPage() {
   const fetchAssignment = async () => {
     try {
       setLoading(true);
-      const res =
-        await assignmentService.getAssignmentWithSubmission(
-          assignmentId!
-        );
-      setData(res);
-    } catch {
-      toast.error("Failed to load assignment");
+      const response = await assignmentService.getAssignmentWithSubmission(assignmentId!);
+      setData(response);
+      
+      // Pre-fill form if there's an existing submission
+      if (response.submission) {
+        setFormData({
+          file: null,
+          text: response.submission.content || '',
+          link: response.submission.fileUrl || ''
+        });
+        if (response.submission.content) setSelectedType('text');
+        if (response.submission.fileUrl) setSelectedType('link');
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      toast.error('Failed to load assignment');
     } finally {
       setLoading(false);
     }
@@ -118,25 +129,75 @@ export default function AssignmentPage() {
         fileUrl = upload?.url || upload?.fileUrl || "";
       }
 
-      const body = new FormData();
-      if (fileUrl) body.append("fileUrl", fileUrl);
-      if (formData.text)
-        body.append("textAnswer", formData.text);
-      if (formData.link)
-        body.append("externalLink", formData.link);
+      // Create FormData object for submission
+      const formDataObj = new FormData();
+      
+      // Add file URL if available
+      if (fileUrl) {
+        formDataObj.append('fileUrl', fileUrl);
+      }
+      
+      // Add text content if available
+      if (formData.text) {
+        formDataObj.append('textAnswer', formData.text);
+      }
+      
+      // Add external link if available
+      if (formData.link) {
+        formDataObj.append('externalLink', formData.link);
+      }
 
-      await assignmentService.submit(assignmentId, body);
+      // Submit using FormData
+      await assignmentService.submit(assignmentId, formDataObj);
 
-      toast.success("Assignment submitted!");
-      fetchAssignment();
-    } catch {
-      toast.error("Submission failed");
+      toast.success('Assignment submitted successfully!', { id: toastId });
+      await fetchAssignmentData(); // Refresh data
+      setShowPreview(true); // Show success preview
+      
+      // Reset form after successful submission
+      setFormData({
+        file: null,
+        text: '',
+        link: ''
+      });
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast.error('Failed to submit assignment. Please try again.', { id: toastId });
     } finally {
       setSubmitting(false);
     }
   };
 
-  // ================= LOADING =================
+  const getStatusBadge = (status: string) => {
+    const displayStatus = getStatusDisplay(status);
+    
+    const statusConfig = {
+      NOT_SUBMITTED: { label: 'Not Submitted', color: '#64748B', icon: <AlertCircle size={14} /> },
+      SUBMITTED: { label: 'Submitted', color: '#3B82F6', icon: <CheckCircle size={14} /> },
+      LATE_SUBMITTED: { label: 'Late Submitted', color: '#F59E0B', icon: <AlertTriangle size={14} /> },
+      EVALUATED: { label: 'Evaluated', color: '#10B981', icon: <Award size={14} /> }
+    };
+    
+    const config = statusConfig[displayStatus];
+    
+    return (
+      <span className={styles.statusBadge} style={{ backgroundColor: `${config.color}15`, color: config.color }}>
+        {config.icon}
+        {config.label}
+      </span>
+    );
+  };
+
+  // Helper function to safely format date
+  const formatDate = (date: Date | string | undefined) => {
+    if (!date) return 'N/A';
+    try {
+      return new Date(date).toLocaleString();
+    } catch {
+      return 'Invalid date';
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -159,8 +220,8 @@ export default function AssignmentPage() {
   // ================= UI =================
   return (
     <div className={styles.container}>
-      {/* HEADER */}
-      <motion.div
+      {/* Header Section */}
+      <motion.div 
         className={styles.header}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -175,18 +236,31 @@ export default function AssignmentPage() {
       </motion.div>
 
       <div className={styles.contentGrid}>
-        {/* LEFT SIDE */}
-        <div className={styles.leftColumn}>
+        {/* Left Column - Assignment Details */}
+        <motion.div 
+          className={styles.leftColumn}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <div className={styles.card}>
             <h2>Description</h2>
             <p>{assignment.description}</p>
           </div>
 
-          {submission &&
-            getStatusDisplay(submission.status) ===
-              "EVALUATED" && (
-              <div className={styles.evaluationCard}>
-                <h3>Marks: {submission.marks ?? 0}</h3>
+          {submission && getStatusDisplay(submission.status) === 'EVALUATED' && (
+            <motion.div 
+              className={styles.evaluationCard}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h2 className={styles.cardTitle}>Evaluation Result</h2>
+              <div className={styles.evaluationContent}>
+                <div className={styles.marksContainer}>
+                  <span className={styles.marksLabel}>Marks Obtained</span>
+                  <span className={styles.marksValue}>{submission.marks || 0} / 100</span>
+                </div>
                 {submission.feedback && (
                   <p>{submission.feedback}</p>
                 )}
@@ -194,12 +268,19 @@ export default function AssignmentPage() {
             )}
         </div>
 
-        {/* RIGHT SIDE */}
-        <div className={styles.rightColumn}>
+        {/* Right Column - Submission Form */}
+        <motion.div 
+          className={styles.rightColumn}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           {!isSubmitted ? (
+            /* 📝 केस 1: जब छात्र को असाइनमेंट जमा करना है */
             <div className={styles.submissionCard}>
-              <h2>Submit Assignment</h2>
-
+              <h2 className={styles.cardTitle}>Submit Assignment</h2>
+              
+              {/* Submission Type Selector */}
               <div className={styles.typeSelector}>
                 <button
                   type="button"
@@ -207,7 +288,8 @@ export default function AssignmentPage() {
                     setSelectedType("file")
                   }
                 >
-                  <FileUp size={16} /> File
+                  <FileUp size={18} />
+                  File Upload
                 </button>
 
                 <button
@@ -216,7 +298,8 @@ export default function AssignmentPage() {
                     setSelectedType("text")
                   }
                 >
-                  <Type size={16} /> Text
+                  <Type size={18} />
+                  Text Answer
                 </button>
 
                 <button
@@ -225,92 +308,60 @@ export default function AssignmentPage() {
                     setSelectedType("link")
                   }
                 >
-                  <Link2 size={16} /> Link
+                  <Link2 size={18} />
+                  External Link
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit}>
-                {selectedType === "file" && (
-                  <input
-                    type="file"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        file:
-                          e.target.files?.[0] || null,
-                      })
-                    }
-                  />
-                )}
+              <div className={styles.cardBody}>
+                <h3>{assignment.title}</h3>
+                <p className={styles.courseName}>
+                  {assignment.description}
+                </p>
 
-                {selectedType === "text" && (
-                  <textarea
-                    value={formData.text}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        text: e.target.value,
-                      })
-                    }
-                  />
-                )}
+                {assignment.submission && (
+                  <div className={styles.metaInfo}>
+                    <div className={styles.metaItem}>
+                      <CheckCircle size={16} />
+                      Marks:{" "}
+                      {assignment.submission.marks ?? "Not Evaluated"}
+                    </div>
+                  )}
 
-                {selectedType === "link" && (
-                  <input
-                    type="url"
-                    value={formData.link}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        link: e.target.value,
-                      })
-                    }
-                  />
+                  {submission.fileUrl && (
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>External Link</span>
+                      <a 
+                        href={submission.fileUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className={styles.link}
+                      >
+                        {submission.fileUrl}
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                {getStatusDisplay(submission.status) !== 'EVALUATED' && (
+                  <div className={styles.pendingMessage}>
+                    <Clock size={16} />
+                    <span>Your submission is pending evaluation. You'll receive feedback soon.</span>
+                  </div>
                 )}
 
                 <button
                   type="submit"
                   disabled={submitting}
                 >
-                  {submitting
-                    ? "Submitting..."
-                    : "Submit"}
-                  <Send size={14} />
+                  <ChevronRight size={16} />
+                  Back to Assignments
                 </button>
-              </form>
-            </div>
-          ) : (
-            <div className={styles.submissionCard}>
-              <h2>Your Submission</h2>
-
-              {submission?.fileUrl && (
-                <a
-                  href={submission.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View File
-                  <ExternalLink size={14} />
-                </a>
-              )}
-
-              {submission?.content && (
-                <p>{submission.content}</p>
-              )}
-
-              <button
-                onClick={() =>
-                  router.push(
-                    "/student/assignments"
-                  )
-                }
-              >
-                <ChevronRight size={14} />
-                Back
-              </button>
-            </div>
+              </motion.div>
+            )
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
